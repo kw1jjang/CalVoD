@@ -1,0 +1,104 @@
+$def with (nodes_info, n_nodes, videos_info, server_load, server_load_avg)
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+    <META HTTP-EQUIV="refresh" CONTENT="5">
+        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+        <script type="text/javascript">
+            google.load("visualization", "1", {packages:["corechart"]});
+            google.setOnLoadCallback(drawChart);
+            function drawChart() {
+                var data = google.visualization.arrayToDataTable([
+                        ['Time', 'Server load for users', 'Server load for caches'],
+                        $for i in range(len(server_load[0])-1):
+                            ['$i', $server_load[0][i], $server_load[1][i] ],
+                        ['$(len(server_load[0])-1)', $server_load[0][len(server_load[0])-1], $server_load[1][len(server_load[0])-1] ]
+                        ]);
+
+                var options = {
+title: 'Server Load',
+       hAxis: {title: 'Time (sec)',  titleTextStyle: {color: 'red'}}
+                };
+
+                var chart = new google.visualization.AreaChart(document.getElementById('chart_div'));
+                chart.draw(data, options);
+            }
+        </script>
+    </head>
+    <body>
+        <p><h3>Server load</h3>
+        Average server load for users = $server_load_avg[0] Mbps<br>
+        Average server load for caches = $server_load_avg[1] Mbps<br>
+        <div id="chart_div" style="width: 1400px; height: 500px;"></div>
+        </p>
+        <p><h3>Node information</h3>
+        Number of servers = $n_nodes[0]<br>
+        Number of caches = $n_nodes[1]<br>
+        Number of users = $n_nodes[2]<br>
+        <table border=1>
+            <tr>
+                <th>id</th>
+                <th>type</th>
+                <th>ip</th>
+                <th>port</th>
+                <th>Watching_video</th>
+                <th>Stored_chunks</th>
+            </tr>
+            $for each in nodes_info:
+            <tr>
+                $for v in each:
+                <td>$v</td>
+            </tr>
+        </table>
+        </p>
+
+        <!--
+        <p><h3>Stored Chunks at Caches</h3>
+        <table border=1>
+            <tr>
+                <th>Cache ID</th>
+                $for each in videos_info:
+                    <th colspan=$each[3]>$each[1]</th>
+            </tr>
+            $for each in nodes_info:
+                $if each[1] == 'cache':
+                    <tr>
+                        <td>$each[0]</td>
+                        $for each_video in videos_info:
+                            $if each_video[1] not in each[5].keys():
+                                $for i in range(each_video[3]):
+                                    <td>&#1792;</td>
+                            $else:
+                                $for i in range(each_video[3]):
+                                    $if i in each[5][each_video[1]]:
+                                        <td>&#9608;</td>
+                                    $else:
+                                        <td>&#1792;</td>
+
+                    </tr>
+        </table>
+
+        </p>-->
+        
+        <p><h3>Video information</h3>
+        <table border=1>
+            <tr>
+                <th>id</th>
+                <th>video_name</th>
+                <th>n_frms</th>
+                <th>code_n</th>
+                <th>code_k</th>
+                <th>total_size(bytes)</th>
+                <th>chunk_size</th>
+                <th>last_chunk_size</th>
+            </tr>
+            $for each in videos_info:
+            <tr>
+                $for v in each:
+                <td>$v</td>
+            </tr>
+        </table>
+        </p>
+    </body>
+</html>
+
