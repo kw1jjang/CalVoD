@@ -1,0 +1,25 @@
+AMI: amzn-ami-pv-2012.03.3.x86_64-ebs (ami-aecd60c7)	Alarm Status: none
+Zone: us-east-1b	Security Groups: quick-start-1. view rules
+Type: t1.micro	State: running
+Scheduled Events: No scheduled events	Owner: 453026462358
+VPC ID: -	Subnet ID: -
+Source/Dest. Check:	Virtualization: paravirtual
+Placement Group:	Reservation: r-f1c8b796
+RAM Disk ID: -	Platform: -
+Key Pair Name: key1	Kernel ID: aki-88aa75e1
+Monitoring: basic	AMI Launch Index: 0
+Elastic IP: -	Root Device:
+sda1
+Root Device Type: ebs	Tenancy: default
+IAM Role: -	Lifecycle: normal
+EBS Optimized: false
+Block Devices:
+sda1
+Network Interfaces:
+Public DNS: ec2-107-21-135-254.compute-1.amazonaws.com
+Private DNS: ip-10-29-147-60.ec2.internal	Product Codes:
+Private IPs: 10.29.147.60
+Secondary Private IPs: --
+Launch Time: 2012-09-17 10:22 PDT (less than an hour)
+State Transition Reason:
+
