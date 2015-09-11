@@ -16,7 +16,7 @@ import commands
 DEBUGGING_MSG = True
 # Cache Configuration
 # server_address = ("0.0.0.0", 61000)
-server_address = ("localhost", 8082)
+server_address = ("localhost", 8081)
 tracker_address = load_tracker_address()
 path = "."
 movie_config_file = '../config/video_info.csv'

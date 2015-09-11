@@ -1,4 +1,4 @@
 rm log/*
 echo "Initiating tracker..."
-python tracker.py 8081 > log/tracker.txt &
+python tracker.py 8080 > log/tracker.txt &
 

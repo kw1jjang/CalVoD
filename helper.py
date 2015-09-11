@@ -5,8 +5,7 @@ import commands
 import Queue
 
 DEBUGGING_MSG = True
-#tracker_address = 'http://54.227.254.17:8081/req/'
-tracker_address = 'http://localhost:8081/req/'
+tracker_address = 'http://localhost:8080/req/'
 
 def load_tracker_address():
     return tracker_address

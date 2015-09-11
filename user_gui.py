@@ -107,6 +107,7 @@ class P2PUser():
 
         available_chunks = set([])
         print '[user.py] putting VLEN', video_name
+        
         self.clients[0].put_instruction('VLEN file-%s' % (video_name))
         print '[user.py] retrieving VLEN'
         vlen_str = self.clients[0].get_response().split('\n')[0]
