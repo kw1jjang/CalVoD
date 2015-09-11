@@ -15,7 +15,8 @@ import commands
 # Debugging MSG
 DEBUGGING_MSG = True
 # Cache Configuration
-server_address = ("0.0.0.0", 61000)
+# server_address = ("0.0.0.0", 61000)
+server_address = ("localhost", 8081)
 tracker_address = load_tracker_address()
 path = "."
 movie_config_file = '../config/video_info.csv'
@@ -47,6 +48,7 @@ class StreamFTPServer(ftpserver.FTPServer):
     stream_rate = 10000 # default rate (bps), but main() calls with much larger
 
     def __init__(self, address, handler, spec_rate=0):
+        print address, handler
         super(StreamFTPServer, self).__init__(address, handler)
         if spec_rate != 0:
             self.stream_rate = spec_rate
@@ -576,7 +578,7 @@ def main():
     if len(sys.argv) == 2:
         port_num = int(sys.argv[1])
         server_address[1] = port_num
-
+    print server_address
     """Parameters:
         No parameters: run with defaults (assume on ec2server)
     """
@@ -592,16 +594,18 @@ def main():
 
     # Set public address.
     # public_address = '54.235.225.132' #Kang EC2
-    temp_str = commands.getstatusoutput('../config/ip_public.sh')
-    public_address = temp_str[-1].split('\n')[-1]
+    # temp_str = commands.getstatusoutput('../config/ip_public.sh')
+    # public_address = temp_str[-1].split('\n')[-1]
     # public_address = '0.0.0.0'
-    print public_address
+    # print public_address
+    public_address = 'localhost'
 
     handler.masquerade_address = public_address
     req_str = 'REGISTER_SERVER&' + public_address + '_' + str(server_address[1])
 
     # Register server to tracker
     # req_str = 'REGISTER_SERVER&' + server_address[0] + '_' + str(server_address[1])
+    print tracker_address + req_str
     ret_str = urllib2.urlopen(tracker_address + req_str).read()
     print ret_str
     if not ret_str == 'Server is registered':
@@ -629,7 +633,7 @@ def main():
 
     # max # of open files
     #resource.setrlimit(resource.RLIMIT_NOFILE, (5000,-1))
-
+    print server_address, handler, stream_rate
     ftpd = StreamFTPServer(server_address, handler, stream_rate)
     ftpd.serve_forever()
 
