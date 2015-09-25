@@ -3,13 +3,30 @@ import urllib2
 import csv
 import commands
 import Queue
+import sys
 
 DEBUGGING_MSG = True
-#tracker_address = 'http://54.227.254.17:8081/req/'
 tracker_address = 'http://localhost:8081/req/'
-
+#tracker_address = 'http://54.227.254.17:8081/req/'
+#tracker_address = 'http://localhost:8081/req/'
 def load_tracker_address():
+    filename = '/tracker_address.txt'
+    full_filename = os.path.abspath(sys.path[0]) + filename
+    f = open(full_filename,'r')
+    tracker_address = f.read()
+    f.close()
     return tracker_address
+
+def change_tracker_address(port,address):
+    f = open('tracker_address.txt', 'w')
+    f.write('http://' + address + ':' + port + '/req/')
+    f.close()
+    
+    global tracker_address
+    tracker_address = 'http://' + address + ':' + port + '/req/'
+    print 'tracker address changed to: ' + tracker_address
+    #these last 3 lines are only required for tracker.py to know the new tracker_address after.
+    #also, tracker.py should be the only file running this function in the first place
 
 class MovieLUT():
     """

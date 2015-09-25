@@ -1,6 +1,8 @@
 import ast
+import sys
 import web
 import db_manager
+import helper #now importing the helper. The helper is storing the ip address of the tracker. we set the value of this
 from time import gmtime, strftime
 
 urls = (
@@ -273,4 +275,9 @@ class request:
 
 
 if __name__ == "__main__":
-    app.run()
+    helper.change_tracker_address('8080','localhost')
+    if(len(sys.argv) == 2):
+        helper.change_tracker_address(sys.argv[1],'localhost')
+    if(len(sys.argv) == 3):
+        helper.change_tracker_address(sys.argv[1],sys.argv[2])
+    app.run() #if ran from command line, makes the first argument the port of the tracker

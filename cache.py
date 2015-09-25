@@ -733,13 +733,25 @@ def get_server_address(tracker_address):
 def main():
     if len(sys.argv) == 2:
         config = load_cache_config(int(sys.argv[1])) # Look up configuration of the given cache ID
-        if config == None:
-            print '[cache.py] cache_id not found'
+        if config == None:                           # This is kept here for backwards compatibality
+            print '[cache.py] cache_id not found'    
             sys.exit()
     else:
-        print '[cache.py] cache.py needs an argument "cache_id"'
-        sys.exit()
-
+        #print '[cache.py] cache.py needs an argument "cache_id"'
+    #   sys.exit()
+        print 'Please enter x, where cache port = 60000 + x '
+        base_port = raw_input()
+        cache_id = base_port
+        base_port = 60000 + int(base_port)
+        base_port = str(base_port)
+        print 'Please enter either an ip address or localhost' #later we need to have it automatically get the user's ip
+        ip_address_input = raw_input()
+        print 'Please enter public address (for local purposes, just type in localhost'
+        public_address_input = raw_input()
+        print 'Enter cache size. 15000000 is default'
+        cache_size_input = raw_input()
+        config = [cache_id, ip_address_input, base_port, public_address_input, cache_size_input]
+        print config
     #resource.setrlimit(resource.RLIMIT_NOFILE, (5000,-1))
     cache = Cache(config)
     cache.start_cache()

@@ -16,7 +16,9 @@ import commands
 DEBUGGING_MSG = True
 # Cache Configuration
 # server_address = ("0.0.0.0", 61000)
-server_address = ("localhost", 8082)
+server_address = ["localhost", 8082] #this value is no longer used but is kept anyways.
+#used to be a tuple, changed it to a list. It really should be
+#server_address = (ip_address, port) inside of main with sys.argv
 tracker_address = load_tracker_address()
 path = "."
 movie_config_file = '../config/video_info.csv'
@@ -575,9 +577,15 @@ class MovieLister(ftpserver.BufferedIteratorProducer):
         return ''.join(buffer)[:-1]
 
 def main():
-    if len(sys.argv) == 2:
-        port_num = int(sys.argv[1])
+    if len(sys.argv) == 3:
+        port_num = int(sys.argv[2]) #want an input such as python server.py address port
+        server_address[0] = sys.argv[1]
         server_address[1] = port_num
+    else:
+        #print 'You must insert a port address!'
+        #return
+        server_address[0] = 'localhost'
+        server_address[1] = 8082
     print server_address
     """Parameters:
         No parameters: run with defaults (assume on ec2server)
