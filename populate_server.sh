@@ -5,5 +5,5 @@ cd "server"
 echo "Initiating server..."
 rm -r server_load_*
 #python ../server.py  > ../log/server.txt &
-python ../server.py localhost 8082 &
+python ../server.py localhost 8082 > ../log/server.txt &
 cd ".."
