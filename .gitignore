@@ -35,5 +35,8 @@ nosetests.xml
 .project
 .pydevproject
 
+#Added by CJY
+*.flv
+.DS_Store
 # Dropbox
 .dropbox

@@ -46,18 +46,18 @@ class P2PUser():
 
     def VLC_start_video(self, video_path):
         # Put the file into the queue and play it
-        url = 'http://127.0.0.1:8080/requests/status.xml?command=in_play&input=file://'
+        url = 'http://127.0.0.1:8081/requests/status.xml?command=in_play&input=file://'
         url = url + video_path
         urllib2.urlopen(url).read()
 
     def VLC_pause_video(self):
         # Pause or play it
-        url = 'http://127.0.0.1:8080/requests/status.xml?command=pl_pause'
+        url = 'http://127.0.0.1:8081/requests/status.xml?command=pl_pause'
         urllib2.urlopen(url).read()
 
     def VLC_empty_list(self):
         # Empty playlist
-        url = 'http://127.0.0.1:8080/requests/status.xml?command=pl_empty'
+        url = 'http://127.0.0.1:8081/requests/status.xml?command=pl_empty'
         urllib2.urlopen(url).read()
 
     def play(self, video_name, frame_number):

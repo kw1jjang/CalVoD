@@ -4,8 +4,6 @@ base_port=49152 # this is the first of the private ports, so we won't disrupt
 cd "config"
 ./edit_cache_config.sh
 cd ".."
-
-rm log/*
 rm -r caches
 if [ ! -d "caches" ]; then
     mkdir "caches"

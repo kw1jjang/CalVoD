@@ -319,7 +319,7 @@ class FTP:
         return sock
 
     def makepasv(self):
-        if self.af == socket.AF_INET:
+        if 0: ##self.af == socket.AF_INET:
             host, port = parse227(self.sendcmd('PASV'))
         else:
             host, port = parse229(self.sendcmd('EPSV'), self.sock.getpeername())
