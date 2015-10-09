@@ -6,9 +6,8 @@ import Queue
 import sys
 
 DEBUGGING_MSG = True
-tracker_address = 'http://localhost:8081/req/'
-#tracker_address = 'http://54.227.254.17:8081/req/'
-#tracker_address = 'http://localhost:8081/req/'
+tracker_address = 'http://localhost:8080/req/'
+
 def load_tracker_address():
     filename = '/tracker_address.txt'
     full_filename = os.path.abspath(sys.path[0]) + filename
@@ -21,7 +20,7 @@ def change_tracker_address(port,address):
     f = open('tracker_address.txt', 'w')
     f.write('http://' + address + ':' + port + '/req/')
     f.close()
-    
+
     global tracker_address
     tracker_address = 'http://' + address + ':' + port + '/req/'
     print 'tracker address changed to: ' + tracker_address

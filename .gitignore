@@ -38,3 +38,5 @@ nosetests.xml
 #Added by CJY
 *.flv
 .DS_Store
+# Dropbox
+.dropbox
