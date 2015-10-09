@@ -70,4 +70,3 @@ if __name__ == "__main__":
         # movies_path = '/home/ec2-user/movies'
         # os.chdir(movies_path)
         split_and_encode(filestr, k, n)
-]

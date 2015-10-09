@@ -1,6 +1,7 @@
 from zfec import filefec
-import os, sys
+import os, sys, shutil
 from FLVWrapper import FLVWrapper
+import csv
 
 """
 Encodes a file into chunks.
@@ -25,7 +26,12 @@ def split_and_encode(filestr, k, n):
         print "Filename in wrong format. Must be 'file-<filename>.ext."
         return
 
-    dirname = 'video-' + filename
+    server_dir = 'server'
+    dirname = server_dir + '/video-' + filename
+    if os.path.exists(dirname):
+        shutil.rmtree(dirname)
+        print "Encoded videos for " + (filestr.split('.'))[0] + ".flv already exist"
+        print "Deleted existing files and re-encoding..."
     os.mkdir(dirname)
 
     forig = open(filestr, 'rb')
@@ -60,11 +66,45 @@ def code(filestr, prefix, k, n, dirname=''):
 
     os.chdir(current_dir)
 
+def write_csv(filestr, k, n):
+    # automatically update config/video_info.csv with new encoded video
+    #template: file_name dir_num n k file_size first_chunk_size last_chunk_size bandwidth
+    server_dir = 'server'
+    file_name = (((filestr.split('.'))[0]).split('file-'))[1]
+    dir_name = server_dir + '/video-' + file_name
+    dir_num = str(len(os.listdir(dir_name))/2)
+    file_size = str(os.path.getsize(filestr))
+    #example: server/video-ryan/ryan.1.dir/ryan.1.00_40.chunk
+    first_chunk_dir = dir_name + "/" + file_name + ".1.dir/" \
+        + file_name + ".1.00_" + str(n) + ".chunk"
+    last_chunk_dir =  dir_name+"/"+file_name+"."+dir_num+".dir/" \
+        + file_name + "." + dir_num + ".00_" + str(n) + ".chunk"
+    first_chunk_size = str(os.path.getsize(first_chunk_dir))
+    last_chunk_size = str(os.path.getsize(last_chunk_dir))
+    bandwidth = "3.2Mbps"
+    s = " "
+    info = file_name + s + dir_num + s + str(n) + s + str(k) \
+        + s + file_size + s + first_chunk_size + s + last_chunk_size + s + bandwidth
+
+    #write info to video_info.csv
+    reader = csv.reader(open('config/video_info.csv', 'r'))
+    writer = csv.writer(open('config/video_info.csv', 'a'))
+    #find out if entry already exists
+    for row in reader:
+        if str(row[0]).find(info) != -1:
+            print "csv entry already exist"
+            return
+    writer.writerow([info])
+    print "wrote new csv entry"
+
 if __name__ == "__main__":
     """Encodes files within the movies directory."""
 
     k = 20
     n = 40
+    #create ./server directory
+    if os.path.exists("server") == 0:
+        os.mkdir("server")
     print 'sys.argv = ', sys.argv
     if len(sys.argv) < 2:
         print "Usage: python encode.py <filename> <chunk> <coded chunks>"
@@ -74,6 +114,8 @@ if __name__ == "__main__":
         if len(sys.argv) == 4:
             k = int(sys.argv[2])
             n = int(sys.argv[3])
+
         # movies_path = '/home/ec2-user/movies'
         # os.chdir(movies_path)
         split_and_encode(filestr, k, n)
+        write_csv(filestr, k, n)
