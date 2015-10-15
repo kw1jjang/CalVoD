@@ -14,11 +14,17 @@ def split_and_encode(filestr, k, n):
     buffer_size = 10 # (secs)
     filestr_old = filestr
     filestr = filestr.split('file-')[1]
-    flv_input = FLVWrapper(filestr, 'r+b') # FLV wrapper of the input file
+    #flv_input = FLVWrapper(filestr, 'r+b') # FLV wrapper of the input file
+    media_info = MediaInfo.parse(filestr); #takes video file as input, returns metadata
     filestr_ryan = filestr
     filestr = filestr_old
-    average_bit_rate = flv_input.get_Bitrate() # (Kbps)
-    chunk_size = int(buffer_size * average_bit_rate * 1000 / 8) # size of each frame
+    
+    #average_bit_rate = video_bit_rate / 1000 + audio_bit_rate / 1000
+    #average_bit_rate = flv_input.get_Bitrate() # (Kbps)
+    average_bit_rate = get_media_info(media_info) #returns in bps
+    #chunk_size = int(buffer_size * average_bit_rate * 1000 / 8) # size of each frame
+    #Because average_bit_rate is now in bps, we no longer have to convert from Kbps to bps
+    chunk_size = int(buffer_size * average_bit_rate / 8) # size of each frame 
     chunk_num = 1
 
     filename = ''
@@ -26,10 +32,15 @@ def split_and_encode(filestr, k, n):
     try:
         filename=(((filestr.split('.'))[0]).split('file-'))[1]
     except:
-        print "Filename in wrong format. Must be 'file-<filename>.ext."
+        print "input in wrong format. Must be 'file-<filename>.ext."
         return
 
-    dirname = 'video-' + filename
+    server_dir = 'server'
+    dirname = server_dir + '/video-' + filename
+    if os.path.exists(dirname):
+        shutil.rmtree(dirname)
+        print "Encoded videos for " + (filestr.split('.'))[0] + ".flv already exist"
+        print "Deleted existing files and re-encoding..."
     os.mkdir(dirname)
     filestr = filestr_ryan
     forig = open(filestr, 'rb')
@@ -44,7 +55,7 @@ def split_and_encode(filestr, k, n):
         data = forig.read(chunk_size)
         chunk_num += 1
     forig.close()
-
+    
 def code(filestr, prefix, k, n, dirname=''):
     """Makes a directory for the specified file portion to code and stores
     encoded packets into that directory."""
