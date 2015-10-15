@@ -107,7 +107,6 @@ class P2PUser():
 
         available_chunks = set([])
         print '[user.py] putting VLEN', video_name
-        
         self.clients[0].put_instruction('VLEN file-%s' % (video_name))
         print '[user.py] retrieving VLEN'
         vlen_str = self.clients[0].get_response().split('\n')[0]
@@ -116,6 +115,11 @@ class P2PUser():
         num_frames, code_param_n, code_param_k = int(vlen_items[0]), int(vlen_items[4]), int(vlen_items[5])
 
         base_file_name = video_name + '.flv'
+        #turning it into an .mvk also works. Probably should store what kind of file it is server side
+        #or just make everything .mkv. .MKV is a container file for video, audio, and other stuff.
+        #Read here for a nice description:
+        #http://lifehacker.com/5893250/whats-the-difference-between-all-these-video-formats-and-which-one-should-i-use
+        #base_file_name = video_name + '.mkv'
         try:
             os.mkdir('video-' + video_name)
         except:

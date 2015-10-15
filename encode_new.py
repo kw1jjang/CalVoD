@@ -3,19 +3,64 @@ import os, sys, shutil
 from FLVWrapper import FLVWrapper
 import csv
 
+try:
+    from pymediainfo import MediaInfo #used to get the bitrate of the video file.
+except:
+    print 'Must install new dependencies.'
+    print 'First download Mediainfo from here: https://mediaarea.net/en/MediaInfo/Download'
+    print 'If using ubuntu, download with sudo apt-get mediainfo'
+    print 'This is a command line interface for reading different media formats.'
+    print 'Then, install the python wrapper for it: easy_install pymediainfo'
+    print 'With this, we can gather metadata from more file formats than just FLV'
+    print 'FLVWrapper is no longer required or used, however is imported anyways'
+    return
+#install this from doing:
+#easy_install pymediainfo
+#requires Mediainfo from here:
+#https://mediaarea.net/en/MediaInfo/Download
+
 """
 Encodes a file into chunks.
 
 Important: chunk_size: specifies size of chunk.
 """
 
+def get_media_info(media_info):
+    #Depending on the file type, the metadata for encoding is slightly different.
+    #The python wrapper can retrieve the metadata of any video format.
+    #For now, this function only will work for .flv and for .mkv. It is trivial to add others,
+    #However I do not know the exact way how the object will handle the data, thus I did not add.
+    print 'Type = ' + media_info.tracks[0].codec
+    if media_info.tracks[0].codec == 'Flash Video':
+        for track in media_info.tracks:
+            if track.track_type == 'Video':
+                video_bit_rate = track.bit_rate
+            if track.track_type == 'Audio':
+                audio_bit_rate = track.bit_rate
+        average_bit_rate = video_bit_rate + audio_bit_rate
+        return average_bit_rate
+    if media_info.tracks[0].codec == 'Matroska':
+        average_bit_rate = media_info.tracks[0].overall_bit_rate
+        return average_bit_rate
+
+
 def split_and_encode(filestr, k, n):
     # 2/25/2013 : KW Lee
     # Now, it reads 'average bitrate' from the FLV metadata, it automatically decides the size of chunk.
     buffer_size = 10 # (secs)
-    flv_input = FLVWrapper(filestr, 'r+b') # FLV wrapper of the input file
-    average_bit_rate = flv_input.get_Bitrate() # (Kbps)
-    chunk_size = int(buffer_size * average_bit_rate * 1000 / 8) # size of each frame
+    filestr_old = filestr
+    filestr = filestr.split('file-')[1]
+    #flv_input = FLVWrapper(filestr, 'r+b') # FLV wrapper of the input file
+    media_info = MediaInfo.parse(filestr); #takes video file as input, returns metadata
+    filestr_ryan = filestr
+    filestr = filestr_old
+    
+    #average_bit_rate = video_bit_rate / 1000 + audio_bit_rate / 1000
+    #average_bit_rate = flv_input.get_Bitrate() # (Kbps)
+    average_bit_rate = get_media_info(media_info) #returns in bps
+    #chunk_size = int(buffer_size * average_bit_rate * 1000 / 8) # size of each frame
+    #Because average_bit_rate is now in bps, we no longer have to convert from Kbps to bps
+    chunk_size = int(buffer_size * average_bit_rate / 8) # size of each frame 
     chunk_num = 1
 
     filename = ''
@@ -23,7 +68,7 @@ def split_and_encode(filestr, k, n):
     try:
         filename=(((filestr.split('.'))[0]).split('file-'))[1]
     except:
-        print "Filename in wrong format. Must be 'file-<filename>.ext."
+        print "input in wrong format. Must be 'file-<filename>.ext."
         return
 
     server_dir = 'server'
@@ -33,8 +78,9 @@ def split_and_encode(filestr, k, n):
         print "Encoded videos for " + (filestr.split('.'))[0] + ".flv already exist"
         print "Deleted existing files and re-encoding..."
     os.mkdir(dirname)
-
+    filestr = filestr_ryan
     forig = open(filestr, 'rb')
+    filestr = filestr_old
     data = forig.read(chunk_size)
     while data:
         subfilestr = filename.replace('_', '-') + '.' + str(chunk_num)
@@ -70,15 +116,24 @@ def write_csv(filestr, k, n):
     # automatically update config/video_info.csv with new encoded video
     #template: file_name dir_num n k file_size first_chunk_size last_chunk_size bandwidth
     server_dir = 'server'
-    file_name = (((filestr.split('.'))[0]).split('file-'))[1]
+    filestr_old = filestr
+    filestr = filestr.split('file-')[1]
+    file_name = (((filestr_old.split('.'))[0]).split('file-'))[1]
     dir_name = server_dir + '/video-' + file_name
     dir_num = str(len(os.listdir(dir_name))/2)
+    #file_size = str(os.path.getsize(filestr))
+    print file_name
+    print filestr
+    print dir_name
+    print dir_num
     file_size = str(os.path.getsize(filestr))
     #example: server/video-ryan/ryan.1.dir/ryan.1.00_40.chunk
     first_chunk_dir = dir_name + "/" + file_name + ".1.dir/" \
         + file_name + ".1.00_" + str(n) + ".chunk"
     last_chunk_dir =  dir_name+"/"+file_name+"."+dir_num+".dir/" \
         + file_name + "." + dir_num + ".00_" + str(n) + ".chunk"
+    print first_chunk_dir
+    print last_chunk_dir
     first_chunk_size = str(os.path.getsize(first_chunk_dir))
     last_chunk_size = str(os.path.getsize(last_chunk_dir))
     bandwidth = "3.2Mbps"
@@ -107,7 +162,7 @@ if __name__ == "__main__":
         os.mkdir("server")
     print 'sys.argv = ', sys.argv
     if len(sys.argv) < 2:
-        print "Usage: python encode.py <filename> <chunk> <coded chunks>"
+        print "Usage: python encode.py <file-filename> <chunk> <coded chunks>"
         print "Defaults: <chunk=20> <coded chunks=40>"
     else:
         filestr = sys.argv[1]
