@@ -13,7 +13,6 @@ except:
     print 'Then, install the python wrapper for it: easy_install pymediainfo'
     print 'With this, we can gather metadata from more file formats than just FLV'
     print 'FLVWrapper is no longer required or used, however is imported anyways'
-    return
 #install this from doing:
 #easy_install pymediainfo
 #requires Mediainfo from here:
