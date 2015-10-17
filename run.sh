@@ -1,4 +1,4 @@
-#rm -r log/*
+rm -r log/*
 mkdir -p log
 mkdir -p users/user001
 mkdir -p caches/cache001
