@@ -120,19 +120,12 @@ def write_csv(filestr, k, n):
     file_name = (((filestr_old.split('.'))[0]).split('file-'))[1]
     dir_name = server_dir + '/video-' + file_name
     dir_num = str(len(os.listdir(dir_name))/2)
-    #file_size = str(os.path.getsize(filestr))
-    print file_name
-    print filestr
-    print dir_name
-    print dir_num
     file_size = str(os.path.getsize(filestr))
     #example: server/video-ryan/ryan.1.dir/ryan.1.00_40.chunk
     first_chunk_dir = dir_name + "/" + file_name + ".1.dir/" \
         + file_name + ".1.00_" + str(n) + ".chunk"
     last_chunk_dir =  dir_name+"/"+file_name+"."+dir_num+".dir/" \
         + file_name + "." + dir_num + ".00_" + str(n) + ".chunk"
-    print first_chunk_dir
-    print last_chunk_dir
     first_chunk_size = str(os.path.getsize(first_chunk_dir))
     last_chunk_size = str(os.path.getsize(last_chunk_dir))
     bandwidth = "3.2Mbps"
@@ -143,10 +136,11 @@ def write_csv(filestr, k, n):
     #write info to video_info.csv
     reader = csv.reader(open('config/video_info.csv', 'r'))
     writer = csv.writer(open('config/video_info.csv', 'a'))
+    
     #find out if entry already exists
     for row in reader:
         if str(row[0]).find(info) != -1:
-            print "csv entry already exist"
+            print "csv entry already exist, keep it there"
             return
     writer.writerow([info])
     print "wrote new csv entry"
@@ -164,12 +158,10 @@ if __name__ == "__main__":
         print "Usage: python encode.py <file-filename> <chunk> <coded chunks>"
         print "Defaults: <chunk=20> <coded chunks=40>"
     else:
-        filestr = sys.argv[1]
+        filestr = "file-" + sys.argv[1]
         if len(sys.argv) == 4:
             k = int(sys.argv[2])
             n = int(sys.argv[3])
 
-        # movies_path = '/home/ec2-user/movies'
-        # os.chdir(movies_path)
         split_and_encode(filestr, k, n)
         write_csv(filestr, k, n)

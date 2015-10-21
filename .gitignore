@@ -37,6 +37,12 @@ nosetests.xml
 
 #Added by CJY
 *.flv
+*.mkv
 .DS_Store
+caches/*
+log/*
+server/*
+users/*
+
 # Dropbox
 .dropbox
