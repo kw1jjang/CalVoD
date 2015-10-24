@@ -10,6 +10,24 @@ urls = (
     '/test', 'test',
     '/req/(.*)', 'request',
 )
+
+#all of app.run does the following: return wsgi.runwsgi(self.wsgifunc(*middleware))
+#wsgifunc takes the *middleware input and makes it readable for runwsgi. aka dont touch this.
+#ultimately, app.run() will run:
+#return httpserver.runsimple(func, validip(listget(sys.argv, 1, '')))
+#So long as fcgi or scgi are not in the command line.
+
+#validip checks if what you entered was a valid ip address (i.e. 1.2.3.4 or 0.0.0.0), and returns a tuple
+#with its second value automatically set to 8080. An example of what validip returns is:
+#('1.2.3.4', 8080)
+#validip will think that 'localhost' is not a valid ip.
+#listget takes a list, and index, and a default value.
+#for example with (listget(sys.argv,1,'')), it checks if list sys.argv exists,
+#if it does, it returns the first index. if it does not, it returns ''.
+#runsimple is by default this: def runsimple(func, server_address=("0.0.0.0", 8080)):
+#inside of httpserver.py. This is what actually runs our shiz.
+
+
 app = web.application(urls, globals())
 render = web.template.render('templates/')
 user_population = {}
