@@ -299,17 +299,21 @@ if __name__ == "__main__":
     print(len(sys.argv))
     print('above was the length')
     if(len(sys.argv) == 1):
-        helper.change_tracker_address('8080','localhost')
+        helper.change_tracker_address('localhost','8080')
     if(len(sys.argv) == 2):
-        helper.change_tracker_address(sys.argv[1],'localhost')
+        helper.change_tracker_address('localhost',sys.argv[1])
         server_port = sys.argv[1]
         server_address = '0.0.0.0'
         sys.argv[1] = server_address + ':' + server_port
     if(len(sys.argv) == 3):
-        helper.change_tracker_address(sys.argv[1],sys.argv[2])
-        server_port = sys.argv[1]
-        server_address = sys.argv[2]
+        #helper.change_tracker_address(sys.argv[2],sys.argv[1])
+        server_port = sys.argv[2]
+        server_address = sys.argv[1]
+        if(web.net.validip6addr(server_address)):
+            server_address = '[' + server_address + ']'
         sys.argv[1] = server_address + ':' + server_port
+        helper.change_tracker_address(server_address, server_port)
+        print sys.argv[1]
     app = web.application(urls,globals())
     app.run() #takes commandline input of ip_address:port. i.e. 0.0.0.0:8080 on sys.argv[1].
     #tracker.py takes an input of port ip_address. i.e.

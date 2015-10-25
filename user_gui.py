@@ -86,6 +86,7 @@ class P2PUser():
         self.not_connected_caches = not_connected_caches = []
         # Connect to the caches
         cache_ip_addr = retrieve_caches_address_from_tracker(self.tracker_address, 100, self.user_name)
+        #cache_ip_addr[0][0] = '[' + cache_ip_addr[0][0] + ']'
         self.cache_ip_addr = cache_ip_addr
         self.num_of_caches = min(self.num_of_caches, len(cache_ip_addr))
 

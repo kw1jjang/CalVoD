@@ -13,10 +13,11 @@ def load_tracker_address():
     full_filename = os.path.abspath(sys.path[0]) + filename
     f = open(full_filename,'r')
     tracker_address = f.read()
+    tracker_address = tracker_address.split('\n')[0] #in case there is a \n at the end
     f.close()
     return tracker_address
 
-def change_tracker_address(port,address):
+def change_tracker_address(address,port):
     f = open('tracker_address.txt', 'w')
     f.write('http://' + address + ':' + port + '/req/')
     f.close()
