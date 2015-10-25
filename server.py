@@ -607,7 +607,9 @@ def main():
     # public_address = '0.0.0.0'
     # print public_address
     public_address = 'localhost'
-
+    public_address = server_address[0]
+    #text above sets the public address
+    
     handler.masquerade_address = public_address
     req_str = 'REGISTER_SERVER&' + public_address + '_' + str(server_address[1])
 

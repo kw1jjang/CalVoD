@@ -296,6 +296,8 @@ class request:
 
 
 if __name__ == "__main__":
+    print(len(sys.argv))
+    print('above was the length')
     if(len(sys.argv) == 1):
         helper.change_tracker_address('8080','localhost')
     if(len(sys.argv) == 2):
