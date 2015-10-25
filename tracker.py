@@ -25,12 +25,15 @@ urls = (
 #for example with (listget(sys.argv,1,'')), it checks if list sys.argv exists,
 #if it does, it returns the first index. if it does not, it returns ''.
 #runsimple is by default this: def runsimple(func, server_address=("0.0.0.0", 8080)):
-#inside of httpserver.py. This is what actually runs our shiz.
+#inside of httpserver.py. This is what actually runs our stuff.
 
 
-app = web.application(urls, globals())
+
+
+
 render = web.template.render('templates/')
 user_population = {}
+
 
 def log_load():
     # Open log files
@@ -293,9 +296,19 @@ class request:
 
 
 if __name__ == "__main__":
-    helper.change_tracker_address('8080','localhost')
+    if(len(sys.argv) == 1):
+        helper.change_tracker_address('8080','localhost')
     if(len(sys.argv) == 2):
         helper.change_tracker_address(sys.argv[1],'localhost')
+        server_port = sys.argv[1]
+        server_address = '0.0.0.0'
+        sys.argv[1] = server_address + ':' + server_port
     if(len(sys.argv) == 3):
         helper.change_tracker_address(sys.argv[1],sys.argv[2])
-    app.run() #if ran from command line, makes the first argument the port of the tracker
+        server_port = sys.argv[1]
+        server_address = sys.argv[2]
+        sys.argv[1] = server_address + ':' + server_port
+    app = web.application(urls,globals())
+    app.run() #takes commandline input of ip_address:port. i.e. 0.0.0.0:8080 on sys.argv[1].
+    #tracker.py takes an input of port ip_address. i.e.
+    #tracker.py 8080 0.0.0.0 for localhost:8080
