@@ -115,7 +115,7 @@ class P2PUser():
         print "VLEN: ", vlen_items
         num_frames, code_param_n, code_param_k = int(vlen_items[0]), int(vlen_items[4]), int(vlen_items[5])
 
-        base_file_name = video_name + '.flv'
+        base_file_name = video_name + '.mkv'
         #turning it into an .mvk also works. Probably should store what kind of file it is server side
         #or just make everything .mkv. .MKV is a container file for video, audio, and other stuff.
         #Read here for a nice description:
