@@ -606,8 +606,8 @@ def main():
     # public_address = temp_str[-1].split('\n')[-1]
     # public_address = '0.0.0.0'
     # print public_address
-    public_address = 'localhost'
-    public_address = server_address[0]
+    #public_address = 'localhost' uncomment this if you want to force the server to run on localhost
+    public_address = server_address[0] #and comment out this line (regarding above comment)
     #text above sets the public address
     
     handler.masquerade_address = public_address
@@ -625,7 +625,8 @@ def main():
 
     # Register videos to tracker
     handler.movie_LUT = MovieLUT() # Movie lookup table.
-    handler.movie_LUT.update_with_csv(movie_config_file) # Movie lookup table.
+    #handler.movie_LUT.update_with_csv(movie_config_file) # Movie lookup table.
+    handler.movie_LUT.update_with_server_directory()
     for key, value in handler.movie_LUT.movies_LUT.items():
         req_str = 'REGISTER_VIDEO&' + \
         key + '_' + \

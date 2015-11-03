@@ -4,6 +4,7 @@ import csv
 import commands
 import Queue
 import sys
+import math
 
 DEBUGGING_MSG = True
 tracker_address = 'http://localhost:8080/req/'
@@ -41,7 +42,52 @@ class MovieLUT():
         self.chunk_size_index = 4
         self.last_chunk_size_index = 5
         self.movies_LUT = {}
-
+    def update_with_server_directory(self):
+        path_name = os.getcwd()
+        print 'path_name is ' + path_name
+        path_name = path_name + '/'
+        video_list = os.listdir(path_name)
+        new_list = []
+        for e in video_list:
+            if e.find('video-') != -1:
+                new_list.append(e)
+        video_list = new_list
+        for video in video_list:
+            print 'video name is ' + video
+            video_name = video.split('video-')[1]
+            videopath = path_name + video + '/'
+            video_file_contents = os.listdir(videopath)
+            number_of_chunks = len(video_file_contents)/2
+            first_chunk_name = videopath + video_name + '.1'
+            last_chunk_name = videopath + video_name + '.' + str(number_of_chunks)
+            normal_chunk_size = os.path.getsize(first_chunk_name)
+            #retrieve the size of the first chunk. This is used for finding the total file size
+            last_chunk_size = os.path.getsize(last_chunk_name)
+            #print(normal_chunk_size, last_chunk_size)
+            video_size = normal_chunk_size * (number_of_chunks - 1) + last_chunk_size
+            first_chunk_dir = first_chunk_name + '.dir/'
+            first_chunk_list = os.listdir(first_chunk_dir)
+            n = len(first_chunk_list)
+            chunk_name = first_chunk_list[0]
+            first_chunk_size = os.path.getsize(first_chunk_dir + chunk_name)
+            
+            last_chunk_dir = last_chunk_name + '.dir/'
+            last_chunk_list = os.listdir(last_chunk_dir)
+            chunk_name = last_chunk_list[0]
+            last_chunk_size = os.path.getsize(last_chunk_dir + chunk_name)
+            
+            chunked_video_size = first_chunk_size * (n) * (number_of_chunks -1) + last_chunk_size * n
+            temp = float(float(chunked_video_size) / float(video_size)) #MIGHT NEED TO TAKE FLOOR OF THIS
+            print temp
+            k = round(float(n) / float(temp))
+            #for when you have ugly sized n and k values :-D
+            k = int(k)
+            #print 'the k is equal to ' + str(k)
+            movie_name = video_name
+            self.movies_LUT[movie_name] = (int(number_of_chunks), int(n), int(k), int(video_size), int(first_chunk_size), int(last_chunk_size))
+        
+        
+        
     def update_with_csv(self, config_file):
         f = open(config_file)
         fs = csv.reader(f, delimiter = ' ')
