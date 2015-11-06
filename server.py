@@ -577,15 +577,15 @@ class MovieLister(ftpserver.BufferedIteratorProducer):
         return ''.join(buffer)[:-1]
 
 def main():
-    if len(sys.argv) == 3:
-        port_num = int(sys.argv[2]) #want an input such as python server.py address port
+    if len(sys.argv) == 3: #address port
         server_address[0] = sys.argv[1]
-        server_address[1] = port_num
-    else:
-        #print 'You must insert a port address!'
-        #return
+        server_address[1] = sys.argv[2]
+    if len(sys.argv) == 2: #port
         server_address[0] = 'localhost'
-        server_address[1] = 8082
+        server_address[1] = sys.argv[1]
+    if len(sys.argv) == 1: #no argument
+        server_address[0] = 'localhost'
+        server_address[1] = 8081
     print server_address
     """Parameters:
         No parameters: run with defaults (assume on ec2server)

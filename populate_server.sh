@@ -1,9 +1,18 @@
 if [ ! -d "server" ]; then
     mkdir "server"
 fi
-cd "server"
+
+./kill_server.sh
 echo "Initiating server..."
-rm -r server_load_*
-#python ../server.py  > ../log/server.txt &
-python ../server.py localhost 8082 > ../log/server.txt &
-cd ".."
+
+if [ -z "$1" ]
+then
+  python server.py
+elif [ "$1" == "p" ]
+then
+  address=`curl icanhazip.com`
+  python server.py $address $2
+else
+  port=$1
+  python server.py $1
+fi
