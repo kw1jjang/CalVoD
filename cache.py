@@ -746,10 +746,12 @@ def main():
         base_port = str(base_port)
         print 'Please enter either an ip address or localhost' #later we need to have it automatically get the user's ip
         ip_address_input = raw_input()
-        print 'Please enter public address (for local purposes, just type in localhost'
+        print 'Please enter public address (for local purposes, just type in localhost)'
         public_address_input = raw_input()
-        print 'Enter cache size. 15000000 is default'
+        print 'Enter cache size. 15000000 is default (6 zeros)'
         cache_size_input = raw_input()
+        print 'Make sure that the correct tracker address is stored in tracker_address.txt. Enter any key to continue'
+        wait_for_user_input = raw_input()
         config = [cache_id, ip_address_input, base_port, public_address_input, cache_size_input]
         print config
     #resource.setrlimit(resource.RLIMIT_NOFILE, (5000,-1))

@@ -10,9 +10,30 @@ urls = (
     '/test', 'test',
     '/req/(.*)', 'request',
 )
-app = web.application(urls, globals())
+
+#all of app.run does the following: return wsgi.runwsgi(self.wsgifunc(*middleware))
+#wsgifunc takes the *middleware input and makes it readable for runwsgi. aka dont touch this.
+#ultimately, app.run() will run:
+#return httpserver.runsimple(func, validip(listget(sys.argv, 1, '')))
+#So long as fcgi or scgi are not in the command line.
+
+#validip checks if what you entered was a valid ip address (i.e. 1.2.3.4 or 0.0.0.0), and returns a tuple
+#with its second value automatically set to 8080. An example of what validip returns is:
+#('1.2.3.4', 8080)
+#validip will think that 'localhost' is not a valid ip.
+#listget takes a list, and index, and a default value.
+#for example with (listget(sys.argv,1,'')), it checks if list sys.argv exists,
+#if it does, it returns the first index. if it does not, it returns ''.
+#runsimple is by default this: def runsimple(func, server_address=("0.0.0.0", 8080)):
+#inside of httpserver.py. This is what actually runs our stuff.
+
+
+
+
+
 render = web.template.render('templates/')
 user_population = {}
+
 
 def log_load():
     # Open log files
@@ -275,9 +296,25 @@ class request:
 
 
 if __name__ == "__main__":
-    helper.change_tracker_address('8080','localhost')
+    print(len(sys.argv))
+    print('above was the length')
+    if(len(sys.argv) == 1):
+        helper.change_tracker_address('localhost','8080')
     if(len(sys.argv) == 2):
-        helper.change_tracker_address(sys.argv[1],'localhost')
+        helper.change_tracker_address('localhost',sys.argv[1])
+        server_port = sys.argv[1]
+        server_address = '0.0.0.0'
+        sys.argv[1] = server_address + ':' + server_port
     if(len(sys.argv) == 3):
-        helper.change_tracker_address(sys.argv[1],sys.argv[2])
-    app.run() #if ran from command line, makes the first argument the port of the tracker
+        #helper.change_tracker_address(sys.argv[2],sys.argv[1])
+        server_port = sys.argv[2]
+        server_address = sys.argv[1]
+        if(web.net.validip6addr(server_address)):
+            server_address = '[' + server_address + ']'
+        sys.argv[1] = server_address + ':' + server_port
+        helper.change_tracker_address(server_address, server_port)
+        print sys.argv[1]
+    app = web.application(urls,globals())
+    app.run() #takes commandline input of ip_address:port. i.e. 0.0.0.0:8080 on sys.argv[1].
+    #tracker.py takes an input of port ip_address. i.e.
+    #tracker.py 8080 0.0.0.0 for localhost:8080
