@@ -16,6 +16,8 @@ import string
 from infoThread import infoThread
 import ConfigParser
 
+import pdb #to run without stopping, uncomment all pdb.set_trace() that appear
+
 class P2PUser():
     def __init__(self, tracker_address, video_name, user_name):
         """ Create a new P2PUser.  Set the packet size, instantiate the manager,
@@ -99,6 +101,7 @@ class P2PUser():
             self.clients.append(each_client)
             connected_caches.append(each_client)
             print '[user.py] ', i, 'th connection is CONNECTED : ' , cache_ip_addr[i]
+            pdb.set_trace()
 
         for i in range(self.num_of_caches, len(cache_ip_addr)):
             each_client = ThreadClient(self, cache_ip_addr[i], self.packet_size, i)
@@ -163,6 +166,7 @@ class P2PUser():
             inst_NOOP = 'NOOP'
 
             ###### DECIDING WHICH CHUNKS TO DOWNLOAD FROM CACHES: TIME 0 ######
+            pdb.set_trace()
             available_chunks = [0]*len(self.clients) # available_chunks[i] = cache i's availble chunks
             rates = [0]*len(self.clients) # rates[i] = cache i's offered rate
             union_chunks = [] # union of all available indices
@@ -202,6 +206,7 @@ class P2PUser():
                 print "[user.py] [Client " + str(i) + "] flag_deficit: ", flag_deficit, \
                     ", Assigned chunks: ", assigned_chunks[i], \
                     ", Request string: ", client_request_string
+                pdb.set_trace()
                 client.put_instruction(inst_UPDG + str(flag_deficit))
                 client.put_instruction(inst_RETR + '.' + client_request_string)
                 if False: # WHY IS THIS NOT WORKING?
@@ -477,7 +482,8 @@ def main():
 if __name__ == "__main__":
     # Load configurations
     config = ConfigParser.ConfigParser()
-    config.read(sys.argv[1])
+    #config.read(sys.argv[1])
+    config.read('../../development.ini')
 
     # General
     DEBUGGING_MSG = config.getboolean('GUI', 'DEBUGGING_MSG')

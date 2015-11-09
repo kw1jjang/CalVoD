@@ -98,8 +98,8 @@ class infoThread (threading.Thread):
             # request assigned chunks
             for i in range(len(clients_copy)):
                 client = clients_copy[i]
-                print "[user.py] Update_info_loop : [Client " + str(i) + "] flag_deficit: ", flag_deficit, \
-                    ", Assigned chunks: ", assigned_chunks[i]
+               # print "[user.py] Update_info_loop : [Client " + str(i) + "] flag_deficit: ", flag_deficit, \
+               #     ", Assigned chunks: ", assigned_chunks[i]
                 client.put_instruction(inst_UPDG + str(flag_deficit))
 
             sleep(T_update_info)
