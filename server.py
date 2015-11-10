@@ -156,7 +156,7 @@ proto_cmds['ID'] = dict(perm=None, auth=True, arg=True,
                               help='Syntax: ID (string)')
 proto_cmds['RETO'] = dict(perm='l', auth=True, arg=True,
                   help='Syntax: RETO <SP> file-name (retrieve a file).')
-proto_cmds['CACHEDATA'] = dict(perm='l', auth=True, arg=True,
+proto_cmds['CACHEDATA'] = dict(perm=None, auth=True, arg=True,
                                help='Syntax: CACHEDATA (string)')
 
 
