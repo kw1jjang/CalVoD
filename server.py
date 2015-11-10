@@ -154,8 +154,11 @@ proto_cmds['UPDG'] = dict(perm=None, auth=True, arg=True,
                               help='Syntax: UPDG (1 if satisfied, 0 if not).')
 proto_cmds['ID'] = dict(perm=None, auth=True, arg=True,
                               help='Syntax: ID (string)')
-proto_cmds['RETO'] = dict(perm='r', auth=True, arg=True,
+proto_cmds['RETO'] = dict(perm='l', auth=True, arg=True,
                   help='Syntax: RETO <SP> file-name (retrieve a file).')
+proto_cmds['CACHEDATA'] = dict(perm='l', auth=True, arg=True,
+                               help='Syntax: CACHEDATA (string)')
+
 
 class StreamHandler(ftpserver.FTPHandler):
     """The general handler for an FTP Server in this network.
@@ -374,7 +377,18 @@ class StreamHandler(ftpserver.FTPHandler):
         vlen_str = '&'.join(map(str, vlen_items))
         print vlen_str
         self.push_dtp_data(vlen_str, isproducer=False, cmd="VLEN")
-
+        
+        
+    def ftp_CACHEDATA(self, line):
+        """Send the chunks receieved by each cache from the user. Take this information and later send to tracker.
+        For now, it is just written into a file.
+        """
+        print 'WE ARE INSIDE OF FTPCACHEDATA THANK GOD!'
+        print line
+        #self.push_dtp_data(line, isproducer=False, cmd='CDAT')
+        self.respond("200 success.")
+        
+        
     def ftp_CNKS(self, line):
         """
         FTP command: Returns this cache's chunk number set.
@@ -417,6 +431,8 @@ class StreamHandler(ftpserver.FTPHandler):
     def _on_dtp_connection(self):
         """For debugging purposes."""
         return super(StreamHandler, self)._on_dtp_connection()
+    
+
 
 
 class VariablePassiveDTP(ftpserver.PassiveDTP):

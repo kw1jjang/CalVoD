@@ -103,7 +103,8 @@ class P2PUser():
             print '[user.py] ', i, 'th connection is CONNECTED : ' , cache_ip_addr[i]
             pdb.set_trace()
 
-        for i in range(self.num_of_caches, len(cache_ip_addr)):
+        for i in range(self.num_of_caches, len(cache_ip_addr)): #Is it not entering this statement here?
+            pdb.set_trace()
             each_client = ThreadClient(self, cache_ip_addr[i], self.packet_size, i)
             each_client.put_instruction('ID %s' % self.user_name)
             not_connected_caches.append(each_client)
@@ -164,6 +165,7 @@ class P2PUser():
             inst_RETR = 'RETR ' + filename
             inst_UPDG = 'UPDG '
             inst_NOOP = 'NOOP'
+            inst_CACHEDATA = 'CACHEDATA ' 
 
             ###### DECIDING WHICH CHUNKS TO DOWNLOAD FROM CACHES: TIME 0 ######
             pdb.set_trace()
@@ -198,15 +200,19 @@ class P2PUser():
 
             flag_deficit = int(sum(effective_rates) < code_param_k) # True if user needs more rate from caches
 
+            list_of_cache_requests = []
             # request assigned chunks
             for i in range(len(self.clients)):
                 client = self.clients[i]
+                client_ip_address = client.address[0] + ':' + str(client.address[1])
                 print '[user.py] Server_request 2 = "' , assigned_chunks[i] , '"'
                 client_request_string = '%'.join(assigned_chunks[i]) + '&1'
                 print "[user.py] [Client " + str(i) + "] flag_deficit: ", flag_deficit, \
                     ", Assigned chunks: ", assigned_chunks[i], \
                     ", Request string: ", client_request_string
                 pdb.set_trace()
+                cachedata_request_string = client_request_string.replace('&1','&' + client_ip_address)
+                list_of_cache_requests.append(filename+ '.' + cachedata_request_string)
                 client.put_instruction(inst_UPDG + str(flag_deficit))
                 client.put_instruction(inst_RETR + '.' + client_request_string)
                 if False: # WHY IS THIS NOT WORKING?
@@ -219,6 +225,13 @@ class P2PUser():
             ###### DECIDING CHUNKS THAT HAVE TO BE DOWNLOADED FROM CACHE: TIME 0 ######
             # Before CACHE_DOWNLOAD_DURATION, also start requesting chunks from server.
             server_request = []
+            server_request_2 = []
+            cdrs = '_' .join(list_of_cache_requests) #cache data request string. Used for parsing inside of server.py's ftp_CACHEDATA
+            if frame_number < num_frames:
+                size_of_chunks = vlen_items[2]
+            else:
+                size_of_chunks = vlen_items[3]
+            cdrs = cdrs + '?' + str(size_of_chunks)    
             chosen_chunks = list(chosen_chunks)
             num_chunks_rx_predicted = len(chosen_chunks)
             server_request = chunks_to_request(chosen_chunks, range(0, code_param_n), code_param_k - num_chunks_rx_predicted)
@@ -229,9 +242,12 @@ class P2PUser():
             else:
                 print '[user.py] Server_request = "' , server_request , '"'
                 server_request_string = '%'.join(server_request) + '&1'
+                pdb.set_trace()
+                self.server_client.put_instruction(inst_CACHEDATA + cdrs)
                 self.server_client.put_instruction(inst_RETR + '.' + server_request_string)
                 if(DEBUGGING_MSG):
                     print "[user.py] Requesting from server: ", server_request, ", Request string: ", server_request_string
+                    print "[user.py] Sending to server's ftp_CACHEDATA: ", inst_CACHEDATA + cdrs
 
             #update_server_load(tracker_address, video_name, num_of_chks_from_server)
 
