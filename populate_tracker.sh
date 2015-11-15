@@ -1,7 +1,8 @@
 echo ""
-mkdir -p log
+mkdir -p log server
 rm -rf log/*
-echo "cleared ./log directory"
+rm -f server/*.txt
+echo "cleared logs"
 
 rm -rf caches/* users/*
 echo "cleared ./caches directory"
