@@ -1,30 +1,42 @@
-rm -r log/*
+echo ""
 mkdir -p log
-mkdir -p users/user001
-mkdir -p caches/cache001
-rm -r caches/cache001/* users/user001/* rm -r log/*
-./kill_all.sh
-echo "Initiating tracker..."
+rm -rf log/*
+echo "cleared ./log directory"
 
-if [ -z "$1" ]
+rm -rf caches/* users/*
+echo "cleared ./caches directory"
+echo "cleared ./useres directory"
+./kill_all.sh
+echo "killed all active processes"
+
+echo ""
+echo "Initiating tracker, pleae enter the option:"
+echo "(no input -- run tracker on locahost:8080)"
+echo "(PORT_NUMBER -- run tracker on localhost:PORT_NUMBER)"
+echo "(p PORT_NUMBER -- run tracker on PUBLIC_ADDRESS:PORT_NUMBER)"
+read option option2
+
+if [ -z "$option" ]
 then
+  echo ""
+  echo "Tracker will run on localhost:8080"
   python tracker.py > log/tracker.txt &
   sleep .3
   curl localhost:8080/req/RESET
-  echo ""
-  echo "Tracker is running on localhost:8080"
-elif [ "$1" == "p" ]
+
+elif [ "$option" == "p" ]
 then
   address=`curl icanhazip.com`
-  python tracker.py $address $2 > log/tracker.txt &
-  sleep .3
-  curl $address:$2/req/RESET
   echo ""
-  echo "Tracker is running on [$address]:$2"
+  echo "Tracker will runn on [$address]:$option2"
+  python tracker.py $address $option2 > log/tracker.txt &
+  sleep .3
+  curl $address:$option2/req/RESET
+
 else
-  python tracker.py $1 > log/tracker.txt &
-  sleep .3
-  curl localhost:$1/req/RESET
   echo ""
-  echo "Tracker is running on localhost:$1"
+  echo "Tracker will run on localhost:$option"
+  python tracker.py $option > log/tracker.txt &
+  sleep .3
+  curl localhost:$option/req/RESET
 fi

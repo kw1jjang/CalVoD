@@ -3,18 +3,29 @@ if [ ! -d "server" ]; then
 fi
 
 cd "server"
-./kill_server.sh
-echo "Initiating server..."
+echo ""
+echo "Initiating server, pleae enter the option:"
+echo "(no input -- run server on locahost:8081)"
+echo "(PORT_NUMBER -- run server on localhost:PORT_NUMBER)"
+echo "(p PORT_NUMBER -- run server on public_address:PORT_NUMBER)"
+read option option2
 
-if [ -z "$1" ]
+if [ -z "$option" ]
 then
+  echo ""
+  echo "Server will run on localhost:8081"
   python ../server.py
-elif [ "$1" == "p" ]
+elif [ "$option" == "p" ]
 then
   address=`curl icanhazip.com`
-  python ../server.py $address $2
+  echo ""
+  echo "Server will runn on [$address]:$option2"
+  python ../server.py $address $option2
 else
-  port=$1
-  python ../server.py $1
+  echo ""
+  echo "Server will run on localhost:$option"
+  python ../server.py $option
 fi
 cd ".."
+
+#to-do: add some code to write to log/server.txt
