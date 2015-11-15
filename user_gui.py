@@ -382,6 +382,7 @@ class P2PUser():
         my_port = 0
         my_video_name = video_name
         deregister_to_tracker_as_user(tracker_address, my_ip, my_port, video_name)
+        #deregister_to_tracker_as_cache(tracker_address) #for debug - chen
         self.info_thread.flag = False
         self.info_thread.join()
 

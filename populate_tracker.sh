@@ -1,10 +1,14 @@
-echo ""
-mkdir -p log server
+mkdir -p log
+mkdir -p server
 rm -rf log/*
 rm -f server/*.txt
+echo ""
 echo "cleared logs"
 
 rm -rf caches/* users/*
+mkdir caches/cache001
+mkdir users/user001
+
 echo "cleared ./caches directory"
 echo "cleared ./useres directory"
 ./kill_all.sh
