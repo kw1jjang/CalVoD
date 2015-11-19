@@ -39,7 +39,7 @@ def log_load(log_type, load):
 
 def create_cache_json(raw_cache_string, chunk_byte_size):
     cache_dict = {}
-    cache_data = {}
+    cache_d = {}
     (cache_data, cache_address) = raw_cache_string.split('&')
     (ip_address_string, port_string) = cache_address.split(':')
     video_name_string = cache_data.split('file-')[1]
@@ -51,17 +51,17 @@ def create_cache_json(raw_cache_string, chunk_byte_size):
         #That way we know not to do anything for this cache
         return cache_dict
     else:
-        cache_data['full_address'] = cache_address
-        cache_data['ip_address'] = ip_address_string
-        cache_data['port'] = port_string
-        cache_data['video_name'] = video_name_string
+        cache_d['full_address'] = cache_address
+        cache_d['ip_address'] = ip_address_string
+        cache_d['port'] = port_string
+        cache_d['video_name'] = video_name_string
         current_time = strftime("%Y-%m-%d %H:%M:%S")
-        cache_data['time'] = current_time
+        cache_d['time'] = current_time
         chunk_list = raw_chunks.split('%')
-        cache_data['number_of_chunks'] = len(chunk_list)
-        cache_data['bytes_downloaded'] = len(chunk_list) * int(chunk_byte_size)
-        cache_data['chunks'] = chunk_list
-        cache_dict['data'] = cache_data
+        cache_d['number_of_chunks'] = len(chunk_list)
+        cache_d['bytes_downloaded'] = len(chunk_list) * int(chunk_byte_size)
+        cache_d['chunks'] = chunk_list
+        cache_dict['data'] = cache_d
         return cache_dict
     
     
@@ -422,10 +422,10 @@ class StreamHandler(ftpserver.FTPHandler):
         raw_cache_list = line.split('_')
         cache_dicts = []
         for raw_cache_string in raw_cache_list:
-            cache_dict = create_cache_json(raw_cache_string)
+            cache_dict = create_cache_json(raw_cache_string, chunk_size)
             if cache_dict != {}:
                 cache_dicts.append(cache_dict)
-        if len(cache_dicts != 0):
+        if len(cache_dicts) != 0:
             f = open('temporary_test.txt','w')
             for val in cache_dicts:
                 f.write(json.dumps(val))
