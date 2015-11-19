@@ -18,6 +18,8 @@ import ConfigParser
 
 import pdb #to run without stopping, uncomment all pdb.set_trace() that appear
 
+DEBUG_RYAN = True
+
 class P2PUser():
     def __init__(self, tracker_address, video_name, user_name):
         """ Create a new P2PUser.  Set the packet size, instantiate the manager,
@@ -101,10 +103,12 @@ class P2PUser():
             self.clients.append(each_client)
             connected_caches.append(each_client)
             print '[user.py] ', i, 'th connection is CONNECTED : ' , cache_ip_addr[i]
-            pdb.set_trace()
+            if DEBUG_RYAN:
+                pdb.set_trace()
 
         for i in range(self.num_of_caches, len(cache_ip_addr)): #Is it not entering this statement here?
-            pdb.set_trace()
+            if DEBUG_RYAN:
+                pdb.set_trace()
             each_client = ThreadClient(self, cache_ip_addr[i], self.packet_size, i)
             each_client.put_instruction('ID %s' % self.user_name)
             not_connected_caches.append(each_client)
@@ -168,7 +172,8 @@ class P2PUser():
             inst_CACHEDATA = 'CACHEDATA ' 
 
             ###### DECIDING WHICH CHUNKS TO DOWNLOAD FROM CACHES: TIME 0 ######
-            pdb.set_trace()
+            if DEBUG_RYAN:
+                pdb.set_trace()
             available_chunks = [0]*len(self.clients) # available_chunks[i] = cache i's availble chunks
             rates = [0]*len(self.clients) # rates[i] = cache i's offered rate
             union_chunks = [] # union of all available indices
@@ -210,7 +215,8 @@ class P2PUser():
                 print "[user.py] [Client " + str(i) + "] flag_deficit: ", flag_deficit, \
                     ", Assigned chunks: ", assigned_chunks[i], \
                     ", Request string: ", client_request_string
-                pdb.set_trace()
+                if DEBUG_RYAN:
+                    pdb.set_trace()
                 cachedata_request_string = client_request_string.replace('&1','&' + client_ip_address)
                 list_of_cache_requests.append(filename+ '.' + cachedata_request_string)
                 client.put_instruction(inst_UPDG + str(flag_deficit))
@@ -242,7 +248,8 @@ class P2PUser():
             else:
                 print '[user.py] Server_request = "' , server_request , '"'
                 server_request_string = '%'.join(server_request) + '&1'
-                pdb.set_trace()
+                if DEBUG_RYAN:
+                    pdb.set_trace()
                 self.server_client.put_instruction(inst_CACHEDATA + cdrs)
                 self.server_client.put_instruction(inst_RETR + '.' + server_request_string)
                 if(DEBUGGING_MSG):

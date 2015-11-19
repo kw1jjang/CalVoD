@@ -36,6 +36,26 @@ def log_load(log_type, load):
     f_log_user.close()
     f_log_cache.close()
 
+def create_cache_json(raw_cache_string):
+    cache_dict = {}
+    (cache_data, cache_address) = raw_cache_string.split('&')
+    (ip_address_string, port_string) = cache_address.split(':')
+    video_name_string = cache_data.split('file-')[1]
+    video_name_string = video_name_string.split('.')
+    raw_chunks = video_name_string[2]
+    video_name_string = video_name_string[0] + '.' + video_name_string[1]
+    
+    cache_dict['full_address'] = cache_address
+    cache_dict['ip_address'] = ip_address_string
+    cache_dict['port'] = port_string
+    cache_dict['video_name'] = video_name_string
+    
+    
+    
+    
+    
+    
+    
 class StreamFTPServer(ftpserver.FTPServer):
     """One instance of the server is created every time this file is run.
     On a new client connection, the server makes a new FTP connection handler.
@@ -384,7 +404,10 @@ class StreamHandler(ftpserver.FTPHandler):
         For now, it is just written into a file.
         """
         print 'WE ARE INSIDE OF FTPCACHEDATA THANK GOD!'
-        print line
+        (line, chunk_size) = line.split('?')
+        raw_cache_list = line.split('_')
+        
+        
         #self.push_dtp_data(line, isproducer=False, cmd='CDAT')
         self.respond("200 success.")
         

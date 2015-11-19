@@ -15,7 +15,7 @@ import pdb #remove all pdb.set_trace() to make it run continuously
 
 # Debugging MSG
 DEBUGGING_MSG = False
-
+DEBUG_RYAN = True
 # Algorithm DEBUGGING
 POSITIVE_CONSTRAINT = True
 
