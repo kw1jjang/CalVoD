@@ -211,14 +211,11 @@ class StreamHandler(ftpserver.FTPHandler):
 
     def on_disconnect(self):
         print "### to-fix ###"
-        print 'need to refactorize, ip and port - Chen 11/14'
+        print self.remote_ip
         if "127.0.0.1" in self.remote_ip:
-            ip = self.remote_ip.replace("127.0.0.1", "localhost")
+            deregister_to_tracker_as_cache(tracker_address, 'localhost', 60001)
         else:
-            ip = self.remote_ip
-        deregister_to_tracker_as_cache(tracker_address, ip, 60001)
-
-        #do something here
+            deregister_to_tracker_as_cache(tracker_address, 'localhost', 60001) #self.remote_ip, 60001)
 
     @staticmethod
     def set_movies_path(path):

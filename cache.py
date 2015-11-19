@@ -539,7 +539,7 @@ class CacheHandler(StreamHandler):
     stream_rate = 10*1024 # Default is 10 Kbps
     def __init__(self, conn, server, index=0, spec_rate=0):
         print '[cache.py]', index
-        super(CacheHandler, self).__init__(conn, server, index, spec_rate)
+        StreamHandler.__init__(self, conn, server, index, spec_rate)
 
     def close(self): # Callback function on a connection close
         print '[cache.py] connection is closed'
