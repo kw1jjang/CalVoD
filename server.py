@@ -8,7 +8,7 @@ import Queue, time, re
 import threading
 import threadclient
 import resource
-from helper import parse_chunks, MovieLUT, load_tracker_address
+from helper import *
 from time import gmtime, strftime
 import commands
 
@@ -51,7 +51,7 @@ class StreamFTPServer(ftpserver.FTPServer):
 
     def __init__(self, address, handler, spec_rate=0):
         print address, handler
-        super(StreamFTPServer, self).__init__(address, handler)
+        ftpserver.FTPServer.__init__(self, address, handler)
         if spec_rate != 0:
             self.stream_rate = spec_rate
             if DEBUGGING_MSG:
@@ -180,7 +180,7 @@ class StreamHandler(ftpserver.FTPHandler):
         ftpserver.FTPHandler.timeout = 10000 # TIMEOUT SETUP
         print '[server.py] ftpserver.FTPHandler.timeout', ftpserver.FTPHandler.timeout
 
-        (super(StreamHandler, self)).__init__(conn, server)
+        ftpserver.FTPHandler.__init__(self, conn, server)
         self._close_connection = False
         self.producer = ftpserver.FileProducer
         self.passive_dtp = VariablePassiveDTP
@@ -208,6 +208,17 @@ class StreamHandler(ftpserver.FTPHandler):
 
     def on_connect(self):
         print '[server.py] ******** CONNECTION ESTABLISHED'
+
+    def on_disconnect(self):
+        print "### to-fix ###"
+        print 'need to refactorize, ip and port - Chen 11/14'
+        if "127.0.0.1" in self.remote_ip:
+            ip = self.remote_ip.replace("127.0.0.1", "localhost")
+        else:
+            ip = self.remote_ip
+        deregister_to_tracker_as_cache(tracker_address, ip, 60001)
+
+        #do something here
 
     @staticmethod
     def set_movies_path(path):
