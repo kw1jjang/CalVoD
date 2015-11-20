@@ -11,6 +11,7 @@ import resource
 from helper import parse_chunks, MovieLUT, load_tracker_address
 from time import gmtime, strftime
 import commands
+import json
 
 # Debugging MSG
 DEBUGGING_MSG = True
@@ -36,6 +37,39 @@ def log_load(log_type, load):
     f_log_user.close()
     f_log_cache.close()
 
+def create_cache_json(raw_cache_string, chunk_byte_size):
+    cache_dict = {}
+    cache_d = {}
+    (cache_data, cache_address) = raw_cache_string.split('&')
+    (ip_address_string, port_string) = cache_address.split(':')
+    video_name_string = cache_data.split('file-')[1]
+    video_name_string = video_name_string.split('.')
+    raw_chunks = video_name_string[2]
+    video_name_string = video_name_string[0] + '.' + video_name_string[1]
+    if raw_chunks == '':
+        #If no chunks were requested for this cache, return an empty dictionary
+        #That way we know not to do anything for this cache
+        return cache_dict
+    else:
+        cache_d['full_address'] = cache_address
+        cache_d['ip_address'] = ip_address_string
+        cache_d['port'] = port_string
+        cache_d['video_name'] = video_name_string
+        current_time = strftime("%Y-%m-%d %H:%M:%S")
+        cache_d['time'] = current_time
+        chunk_list = raw_chunks.split('%')
+        cache_d['number_of_chunks'] = len(chunk_list)
+        cache_d['bytes_downloaded'] = len(chunk_list) * int(chunk_byte_size)
+        cache_d['chunks'] = chunk_list
+        cache_dict['data'] = cache_d
+        return cache_dict
+    
+    
+    
+    
+    
+    
+    
 class StreamFTPServer(ftpserver.FTPServer):
     """One instance of the server is created every time this file is run.
     On a new client connection, the server makes a new FTP connection handler.
@@ -154,8 +188,11 @@ proto_cmds['UPDG'] = dict(perm=None, auth=True, arg=True,
                               help='Syntax: UPDG (1 if satisfied, 0 if not).')
 proto_cmds['ID'] = dict(perm=None, auth=True, arg=True,
                               help='Syntax: ID (string)')
-proto_cmds['RETO'] = dict(perm='r', auth=True, arg=True,
+proto_cmds['RETO'] = dict(perm='l', auth=True, arg=True,
                   help='Syntax: RETO <SP> file-name (retrieve a file).')
+proto_cmds['CACHEDATA'] = dict(perm=None, auth=True, arg=True,
+                               help='Syntax: CACHEDATA (string)')
+
 
 class StreamHandler(ftpserver.FTPHandler):
     """The general handler for an FTP Server in this network.
@@ -374,7 +411,32 @@ class StreamHandler(ftpserver.FTPHandler):
         vlen_str = '&'.join(map(str, vlen_items))
         print vlen_str
         self.push_dtp_data(vlen_str, isproducer=False, cmd="VLEN")
-
+        
+        
+    def ftp_CACHEDATA(self, line):
+        """Send the chunks receieved by each cache from the user. Take this information and later send to tracker.
+        For now, it is just written into a file.
+        """
+        print 'WE ARE INSIDE OF FTPCACHEDATA THANK GOD!'
+        (line, chunk_size) = line.split('?')
+        raw_cache_list = line.split('_')
+        cache_dicts = []
+        for raw_cache_string in raw_cache_list:
+            cache_dict = create_cache_json(raw_cache_string, chunk_size)
+            if cache_dict != {}:
+                cache_dicts.append(cache_dict)
+        if len(cache_dicts) != 0:
+            f = open('temporary_test.txt','w')
+            for val in cache_dicts:
+                f.write(json.dumps(val))
+                f.write('\n')
+            
+        
+        
+        #self.push_dtp_data(line, isproducer=False, cmd='CDAT')
+        self.respond("200 success.")
+        
+        
     def ftp_CNKS(self, line):
         """
         FTP command: Returns this cache's chunk number set.
@@ -417,6 +479,8 @@ class StreamHandler(ftpserver.FTPHandler):
     def _on_dtp_connection(self):
         """For debugging purposes."""
         return super(StreamHandler, self)._on_dtp_connection()
+    
+
 
 
 class VariablePassiveDTP(ftpserver.PassiveDTP):

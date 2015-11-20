@@ -10,7 +10,8 @@ urls = (
     '/test', 'test',
     '/req/(.*)', 'request',
 )
-
+#import site
+#site.getsitepackages() to find where your site packages are stored
 #all of app.run does the following: return wsgi.runwsgi(self.wsgifunc(*middleware))
 #wsgifunc takes the *middleware input and makes it readable for runwsgi. aka dont touch this.
 #ultimately, app.run() will run:
