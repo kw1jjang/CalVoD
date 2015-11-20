@@ -654,7 +654,7 @@ class CacheHandler(StreamHandler):
             self.push_dtp_data(producer, isproducer=True, file=None, cmd="RETR")
             return
 
-    def on_connect():
+    def on_connect(self):
         print '[cache.py] CONNECTION is ESTABLISHED!!'
 
     def get_chunk_files(self, path, chunks=None):
