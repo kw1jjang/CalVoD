@@ -18,7 +18,7 @@ import ConfigParser
 
 import pdb #to run without stopping, uncomment all pdb.set_trace() that appear
 
-DEBUG_RYAN = True
+DEBUG_RYAN = False
 
 class P2PUser():
     def __init__(self, tracker_address, video_name, user_name):
