@@ -8,7 +8,7 @@ import Queue, time, re
 import threading
 import threadclient
 import resource
-from helper import parse_chunks, MovieLUT, load_tracker_address
+from helper import *
 from time import gmtime, strftime
 import commands
 import json
@@ -85,7 +85,7 @@ class StreamFTPServer(ftpserver.FTPServer):
 
     def __init__(self, address, handler, spec_rate=0):
         print address, handler
-        super(StreamFTPServer, self).__init__(address, handler)
+        ftpserver.FTPServer.__init__(self, address, handler)
         if spec_rate != 0:
             self.stream_rate = spec_rate
             if DEBUGGING_MSG:
@@ -217,7 +217,7 @@ class StreamHandler(ftpserver.FTPHandler):
         ftpserver.FTPHandler.timeout = 10000 # TIMEOUT SETUP
         print '[server.py] ftpserver.FTPHandler.timeout', ftpserver.FTPHandler.timeout
 
-        (super(StreamHandler, self)).__init__(conn, server)
+        ftpserver.FTPHandler.__init__(self, conn, server)
         self._close_connection = False
         self.producer = ftpserver.FileProducer
         self.passive_dtp = VariablePassiveDTP
@@ -245,6 +245,14 @@ class StreamHandler(ftpserver.FTPHandler):
 
     def on_connect(self):
         print '[server.py] ******** CONNECTION ESTABLISHED'
+
+    def on_disconnect(self):
+        print "### to-fix ###"
+        print self.remote_ip
+        # if "127.0.0.1" in self.remote_ip:
+        #     deregister_to_tracker_as_cache(tracker_address, 'localhost', 60001)
+        # else:
+        #     deregister_to_tracker_as_cache(tracker_address, 'localhost', 60001) #self.remote_ip, 60001)
 
     @staticmethod
     def set_movies_path(path):
@@ -478,10 +486,7 @@ class StreamHandler(ftpserver.FTPHandler):
 
     def _on_dtp_connection(self):
         """For debugging purposes."""
-        return super(StreamHandler, self)._on_dtp_connection()
-    
-
-
+        return ftpserver.FTPHandler._on_dtp_connection(self)
 
 class VariablePassiveDTP(ftpserver.PassiveDTP):
     """
@@ -490,7 +495,7 @@ class VariablePassiveDTP(ftpserver.PassiveDTP):
 
     stream_rate = 10*1024
     def __init__(self, cmd_channel, extmode=False, spec_rate=0):
-        super(VariablePassiveDTP, self).__init__(cmd_channel, extmode)
+        ftpserver.PassiveDTP.__init__(self, cmd_channel, extmode)
         if spec_rate != 0:
             self.stream_rate = spec_rate
             if DEBUGGING_MSG:
@@ -557,7 +562,7 @@ class VariableThrottledDTPHandler(ftpserver.ThrottledDTPHandler):
     Inherits from ThrottledDTPHandler; can specify streaming rate.
     """
     def __init__(self, sock_obj, cmd_channel, spec_rate=0):
-        super(VariableThrottledDTPHandler, self).__init__(sock_obj, cmd_channel)
+        ftpserver.ThrottledDTPHandler.__init__(self, sock_obj, cmd_channel)
         if spec_rate != 0:
             self.read_limit = spec_rate
             self.write_limit = spec_rate
@@ -578,7 +583,7 @@ class VariableThrottledDTPHandler(ftpserver.ThrottledDTPHandler):
             self.write_limit = spec_rate
             if self.auto_sized_buffers:
                 self.auto_size_buffers(spec_rate)
-        return super(VariableThrottledDTPHandler, self).recv(buffer_size)
+        return ftpserver.ThrottledDTPHandler.recv(self, buffer_size)
 
     def send(self, data, spec_rate=0):
         if spec_rate != 0:
@@ -586,7 +591,7 @@ class VariableThrottledDTPHandler(ftpserver.ThrottledDTPHandler):
             self.write_limit = spec_rate
             if self.auto_sized_buffers:
                 self.auto_size_buffers(spec_rate)
-        return super(VariableThrottledDTPHandler, self).send(data)
+        return ftpserver.ThrottledDTPHandler.send(self, data)
 
 class FileChunkProducer(ftpserver.FileProducer):
     """Takes a queue of file chunk objects and attempts to send
@@ -619,7 +624,7 @@ class FileChunkProducer(ftpserver.FileProducer):
 
 class MovieLister(ftpserver.BufferedIteratorProducer):
     def __init__(self, iterator):
-        super(MovieLister, self).__init__(iterator)
+        ftpserver.BufferedIteratorProducer.__init__(self, iterator)
 
     def more(self):
         """Attempt a chunk of data from iterator by calling
@@ -641,15 +646,15 @@ class MovieLister(ftpserver.BufferedIteratorProducer):
         return ''.join(buffer)[:-1]
 
 def main():
-    if len(sys.argv) == 3:
-        port_num = int(sys.argv[2]) #want an input such as python server.py address port
+    if len(sys.argv) == 3: #address port
         server_address[0] = sys.argv[1]
-        server_address[1] = port_num
-    else:
-        #print 'You must insert a port address!'
-        #return
+        server_address[1] = sys.argv[2]
+    if len(sys.argv) == 2: #port
         server_address[0] = 'localhost'
-        server_address[1] = 8082
+        server_address[1] = sys.argv[1]
+    if len(sys.argv) == 1: #no argument
+        server_address[0] = 'localhost'
+        server_address[1] = 8081
     print server_address
     """Parameters:
         No parameters: run with defaults (assume on ec2server)

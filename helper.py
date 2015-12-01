@@ -179,6 +179,11 @@ def register_to_tracker_as_cache(tracker_address, ip, port):
     ret_str = urllib2.urlopen(tracker_address + req_str).read()
     return ret_str
 
+def deregister_to_tracker_as_cache(tracker_address, ip, port):
+    req_str = 'REMOVE_CACHE&' + str(ip) + '_' + str(port)
+    ret_str = urllib2.urlopen(tracker_address + req_str).read()
+    return ret_str
+
 def register_to_tracker_as_user(tracker_address, ip, port, watching_movie):
     req_str = 'REGISTER_USER&' + str(ip) + '_' + str(port) + '_' + str(watching_movie)
     ret_str = urllib2.urlopen(tracker_address + req_str).read()
