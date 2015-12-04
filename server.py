@@ -426,7 +426,8 @@ class StreamHandler(ftpserver.FTPHandler):
         For now, it is just written into a file.
         """
         print 'WE ARE INSIDE OF FTPCACHEDATA THANK GOD!'
-        (line, chunk_size) = line.split('?')
+        (line, chunksize_username_metadata) = line.split('?')
+        (chunk_size, user_name) = chunksize_username_metadata.split('_')
         raw_cache_list = line.split('_')
         cache_dicts = []
         for raw_cache_string in raw_cache_list:
@@ -434,7 +435,7 @@ class StreamHandler(ftpserver.FTPHandler):
             if cache_dict != {}:
                 cache_dicts.append(cache_dict)
         if len(cache_dicts) != 0:
-            f = open('temporary_test.txt','w')
+            f = open(user_name + '.txt','w')
             for val in cache_dicts:
                 f.write(json.dumps(val))
                 f.write('\n')
