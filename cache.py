@@ -738,6 +738,8 @@ def main():
         if config == None:                           # This is kept here for backwards compatibality
             print '[cache.py] cache_id not found'    
             sys.exit()
+    elif len(sys.argv) == 3:
+        config = [sys.argv[1], sys.argv[2], str(60000+int(sys.argv[1])), sys.argv[2], 15000000]
     else:
         #print '[cache.py] cache.py needs an argument "cache_id"'
     #   sys.exit()

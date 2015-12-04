@@ -249,6 +249,7 @@ class StreamHandler(ftpserver.FTPHandler):
     def on_disconnect(self):
         print "### to-fix ###"
         print self.remote_ip
+        print self.remote_port
         # if "127.0.0.1" in self.remote_ip:
         #     deregister_to_tracker_as_cache(tracker_address, 'localhost', 60001)
         # else:
