@@ -30,8 +30,9 @@ makeGetRequest = function(url, onSuccess, onFailure) {
 
 
 $(document).ready(function() {
-    chartHolder = $('#allChartHolder')[0].outerHTML;
-    userTemplate = $('user-template')[0].outerHTML;
+    chartHolder = $('#allChartHolder');
+    //chartHolder = $('body');
+    userTemplate = $('#user-template')[0].outerHTML;
     chartHolder.html('');
     
 	/*var chart = new CanvasJS.Chart("chartContainer");
@@ -60,14 +61,14 @@ $(document).ready(function() {
 
     chart.render();
 	*/
-    var render_users = function(data){
+    var render_users = function(data,id){
         
         var newElem = $(userTemplate);
         newElem.removeAttr('id');
-        newElem.setAttribute('id',
-        newElem.find('.lab-table').find('tr')[0].remove();
+        newElem.attr('id','test'+id);
+        chartHolder.append(newElem);
         
-        var chart = new CanvasJS.Chart("chartContainer");
+        var chart = new CanvasJS.Chart('test'+id);
         chart.options.axisY = { prefix: "Bytes Sent "};
         chart.options.data = [];
         var caches = {};
@@ -103,10 +104,10 @@ $(document).ready(function() {
 		var onSuccess = function(data){
 			//Return dictionary of {professor: prof_name, rating_1: value, rating_2: value, etc}
 			console.log(data)
-            
+            chartHolder.html('');
             var i = 0;
             for(i = 0; i < data.length; i++){
-            render_users(data[i]);
+            render_users(data[i],i);
             };
             
 		};
