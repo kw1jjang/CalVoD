@@ -3,7 +3,7 @@
 
 ./kill_users.sh
 mkdir -p users
-rm -rf users/*
+rm -rf users/user001
 
 cd "users"
 echo "Initiating single user..."
