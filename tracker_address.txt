@@ -1,1 +1,1 @@
-http://169.229.69.138:8080/req/
+http://localhost:8080/req/
