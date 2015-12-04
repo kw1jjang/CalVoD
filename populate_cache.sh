@@ -1,4 +1,5 @@
 ./kill_caches.sh
+python remove_cache.py
 
 num_of_caches=5
 echo "Initiating cache, pleae enter the number of caches (default 5):"
