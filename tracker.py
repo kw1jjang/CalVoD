@@ -5,6 +5,7 @@ import db_manager
 import helper #now importing the helper. The helper is storing the ip address of the tracker. we set the value of this
 from time import gmtime, strftime
 import data_visualization as dv
+import json
 
 urls = (
     '/', 'overview',
@@ -175,7 +176,8 @@ class request:
                             'REMOVE_USER',
                             'REMOVE_CACHE',
                             'UPDATE_SERVER_LOAD',
-                            'CACHE_DATA_VIS']
+                            'CACHE_DATA_VIS',
+                            'GET_CACHE_DATA']
         req_type = request_str.split('&')[0]
         if len(request_str.split('&')) > 1:
             req_arg = request_str.split('&')[1]
@@ -306,7 +308,9 @@ class request:
                 return render.index()
             
             elif req_type =='GET_CACHE_DATA':
-                dv
+                web.header('Content-Type', 'application/json')
+                user_data = dv.get_user_logs_as_json()
+                return json.dumps(user_data)
                 #currently reading from file. must later have post request to store data into db
                 
                 

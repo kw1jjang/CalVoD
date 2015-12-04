@@ -1,10 +1,12 @@
 //var apiUrl = 'https://protected-refuge-7067.herokuapp.com';
-    var apiUrl = '';
-
+var apiUrl = '';
+var chartHolder;
+var userTemplate;
 makeGetRequest = function(url, onSuccess, onFailure) {
 		$.ajax({
 			type: 'GET',
 			url: apiUrl + url,
+            contentType: "application/json",
 			dataType: "json",
 			success: onSuccess,
 			error: onFailure
@@ -28,7 +30,11 @@ makeGetRequest = function(url, onSuccess, onFailure) {
 
 
 $(document).ready(function() {
-	var chart = new CanvasJS.Chart("chartContainer");
+    chartHolder = $('#allChartHolder')[0].outerHTML;
+    userTemplate = $('user-template')[0].outerHTML;
+    chartHolder.html('');
+    
+	/*var chart = new CanvasJS.Chart("chartContainer");
 
     chart.options.axisY = { prefix: "$", suffix: "K" };
     chart.options.title = { text: "Fruits sold in First & Second Quarter" };
@@ -53,22 +59,63 @@ $(document).ready(function() {
     ];
 
     chart.render();
-	
+	*/
+    var render_users = function(data){
+        
+        var newElem = $(userTemplate);
+        newElem.removeAttr('id');
+        newElem.setAttribute('id',
+        newElem.find('.lab-table').find('tr')[0].remove();
+        
+        var chart = new CanvasJS.Chart("chartContainer");
+        chart.options.axisY = { prefix: "Bytes Sent "};
+        chart.options.data = [];
+        var caches = {};
+        
+        var i = 0;
+        for(i = 0; i < data.length; i++){
+            var cache_data_for_user = data[i]['data'];
+            var series = {
+                type: "column",
+                name: cache_data_for_user['full_address'],
+                showInLegend: true
+            };
+            
+            chart.options.data.push(series);
+            
+            series.dataPoints = [
+                { label: cache_data_for_user['full_address'], y: cache_data_for_user['bytes_downloaded'] }
+                ];   
+            
+        };
+        chart.render();
+        
+        
+    };
+    
+    
 	
 	window.setInterval(function(){
 		h = new Date();
-		series1.dataPoints[0].y = h.getSeconds();
-		chart.render();
+		//series1.dataPoints[0].y = h.getSeconds();
+		//chart.render();
 		
 		var onSuccess = function(data){
 			//Return dictionary of {professor: prof_name, rating_1: value, rating_2: value, etc}
 			console.log(data)
+            
+            var i = 0;
+            for(i = 0; i < data.length; i++){
+            render_users(data[i]);
+            };
+            
 		};
 		var onFailure = function(data){
 		//console.error('could not retreive overall ratings');
             console.error(data);
+            console.log('there was an error');
 		};
-		makeGetRequest('/req/GET_SERVER_ADDRESS', onSuccess, onFailure);
+		makeGetRequest('/req/GET_CACHE_DATA', onSuccess, onFailure);
 		
 		
 		
