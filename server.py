@@ -435,11 +435,17 @@ class StreamHandler(ftpserver.FTPHandler):
             if cache_dict != {}:
                 cache_dicts.append(cache_dict)
         if len(cache_dicts) != 0:
-            f = open(user_name + '.txt','w')
-            for val in cache_dicts:
+            f = open('user_log/' + user_name + '.txt','w')
+            cache_dicts_length = len(cache_dicts)
+            f.write('[')
+            for i in range(0,cache_dicts_length):
+                val = cache_dicts[i]
                 f.write(json.dumps(val))
-                f.write('\n')
-            
+                if(i != cache_dicts_length - 1):
+                    f.write(',')
+                    f.write('\n')
+            f.write(']')
+            f.close()
         
         
         #self.push_dtp_data(line, isproducer=False, cmd='CDAT')

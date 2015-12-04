@@ -4,6 +4,7 @@ import web
 import db_manager
 import helper #now importing the helper. The helper is storing the ip address of the tracker. we set the value of this
 from time import gmtime, strftime
+import data_visualization as dv
 
 urls = (
     '/', 'overview',
@@ -305,7 +306,9 @@ class request:
                 return render.index()
             
             elif req_type =='GET_CACHE_DATA':
+                dv
                 #currently reading from file. must later have post request to store data into db
+                
                 
 
 
