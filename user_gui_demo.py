@@ -490,7 +490,8 @@ def main():
         for each in movies:
             print '-', each
 
-        video_name = 'sample'
+        movie_list = ['Godfather','TheLordOfTheRings','Titanic','TheShawshankRedemption','OceansEleven','StarWarsForceAwakens','HarryPotter7','Batman-v-Superman','Minions','Spectre007']
+        video_name = random.choice(movie_list)
         rand_sleep = randint(1,10)
         print "sleeping for %i" % rand_sleep
         sleep(rand_sleep)
