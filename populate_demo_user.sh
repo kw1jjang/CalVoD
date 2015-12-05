@@ -2,20 +2,26 @@
 # testing the behavior when the cache is gone
 
 ./kill_users.sh
+python remove_user.py
 mkdir -p users
 
-echo "user number:"
+echo "number of users:"
 read option
 if [ ! -z "$option" ] ; then
     num=$option
 fi
 
 cd "users"
-echo "Initiating single user..."
-rm -rf "user"$num
-mkdir -p "user"$num
-cd "user"$num
-rm -rf video*
+for (( i = 1; i <= num; i++ ))
+do
+    echo "Initiating single user..."
+    rm -rf "user"$i
+    mkdir -p "user"$i
+    cd "user"$i
+    rm -rf video*
+    python ../../user_gui_demo.py ../../development.ini > /dev/null &
+    cd ".."
+    sleep .1
+done
 
-python ../../user_gui_demo.py ../../development.ini
-cd "../.."
+cd ".."

