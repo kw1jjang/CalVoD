@@ -2,17 +2,22 @@
 # testing the behavior when the cache is gone
 
 ./kill_users.sh
-python remove_user.py
+#python remove_user.py
 mkdir -p users
 
-echo "number of users:"
+echo "number of users (lower):"
 read option
 if [ ! -z "$option" ] ; then
-    num=$option
+    num1=$option
+fi
+echo "number of users (upper):"
+read option
+if [ ! -z "$option" ] ; then
+    num2=$option
 fi
 
 cd "users"
-for (( i = 1; i <= num; i++ ))
+for (( i = num1; i <= num2; i++ ))
 do
     echo "Initiating single user..."
     rm -rf "user"$i

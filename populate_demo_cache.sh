@@ -1,18 +1,24 @@
 ./kill_caches.sh
-python remove_cache.py
+#python remove_cache.py
 
 num_of_caches=5
 address=`curl icanhazip.com`
-echo "Initiating cache, pleae enter the number of caches (default 5):"
+
+echo "number of caches (lower):"
 read option
 if [ ! -z "$option" ] ; then
-    num_of_caches=$option
+    num1=$option
+fi
+echo "number of caches (upper):"
+read option
+if [ ! -z "$option" ] ; then
+    num2=$option
 fi
 
 mkdir -p caches
 rm -rf caches/*
 cd "caches"
-for (( i = 1; i <= num_of_caches; i++ ))
+for (( i = num1; i <= num2; i++ ))
 do
     echo "Initiating cache with id # $i ..."
     if [ ! -d "cache"$i ]; then
