@@ -19,15 +19,11 @@ def remove_old_users(user_data_jsoned):
 		#returns difference in seconds
 		tdelta = datetime.strptime(current_time, FMT) - datetime.strptime(old_time, FMT)
 		
-		if(tdelta.seconds < 300):
+		if(tdelta.seconds < 60):
 			new_json_list.append(user_data)
 	
 	return new_json_list
 		
-	
-	
-	
-
 def get_user_logs_as_json():
 	path_name = os.getcwd()
 	print 'path_name is ' + path_name
@@ -43,8 +39,8 @@ def get_user_logs_as_json():
 		f.close()
 		data_list.append(user_data_jsoned)
 	
-	user_data = data_list #for testing purposes
-	#user_data = remove_old_users(data_list)
+	#user_data = data_list #for testing purposes
+	user_data = remove_old_users(data_list)
 	return user_data
 
 

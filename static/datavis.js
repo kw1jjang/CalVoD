@@ -69,7 +69,7 @@ $(document).ready(function() {
         chartHolder.append(newElem);
         
         var chart = new CanvasJS.Chart('test'+id);
-        chart.options.axisY = { prefix: "Bytes Sent "};
+        chart.options.axisY = { prefix: "Chunks Sent "};
         chart.options.data = [];
         var caches = {};
         
@@ -85,7 +85,7 @@ $(document).ready(function() {
             chart.options.data.push(series);
             
             series.dataPoints = [
-                { label: cache_data_for_user['full_address'], y: cache_data_for_user['bytes_downloaded'] }
+                { label: cache_data_for_user['full_address'], y: cache_data_for_user['number_of_chunks'] }
                 ];   
             
         };
