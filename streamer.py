@@ -7,6 +7,7 @@ import threading
 import Queue
 import logging
 
+DEBUG_THREAD_CLOSES = False
 DEBUGGING_MSG = True
 logging.basicConfig(level=logging.DEBUG)
 
@@ -139,7 +140,8 @@ class StreamFTP(threading.Thread, FTP, object):
             fn_name = cmd.split(' ')[0]
             if fn_name == "QUIT":
                 self.quit()
-                print "[streamer.py] Thread closes"
+                if DEBUG_THREAD_CLOSES:
+                    print "[streamer.py] Thread closes"
                 break
             elif fn_name == "RETR":
                 fname = cmd.split(' ')[1]
