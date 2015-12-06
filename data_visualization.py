@@ -33,7 +33,7 @@ def get_user_logs_as_json():
 	data_list = []
 	for name in vl:
 		path = path_name + name
-		print path
+		#print path
 		f = open(path,'r')
 		user_data_jsoned = json.loads(f.read())
 		f.close()
@@ -49,17 +49,28 @@ def rearrange_data_for_caches(user_data):
 	for user in user_data:
 		for cache in user:
 			if cache['data']['full_address'] not in cache_name_list:
+				#If we have never seen this cache before, add it to a list of caches
+				#Initialize the dictionary of its information for below
 				cache_name_list.append(cache['data']['full_address'])
-				cacne_name_dict.append({})
+				temp_dict = {}
+				temp_dict['cache'] = {}
+				cache_name_dict.append(temp_dict)
 				index_of_dict = cache_name_list.index(cache['data']['full_address'])
-				
-				
-				
-	cache_data = []
+				pdb.set_trace()
+				cache_name_dict[index_of_dict]['cache']['full_address'] = cache['data']['full_address']
+				cache_name_dict[index_of_dict]['cache']['contents'] = []
+			i = cache_name_list.index(cache['data']['full_address'])
+			info_dict = {}
+			info_dict['data'] = {}
+			info_dict['data']['full_address'] = cache['data']['full_address']
+			info_dict['data']['user_name'] = cache['data']['user_name']
+			info_dict['data']['bytes_sent'] = cache['data']['bytes_downloaded']
+			info_dict['data']['chunks'] = cache['data']['chunks']
+			#Store only video name. Not video name + chunk number
+			info_dict['data']['video_name'] = cache['data']['video_name'].split('.')[0]
+			cache_name_dict[i]['cache']['contents'].append(info_dict)
 	
-	
-	
-	return cache_data
+	return cache_name_dict
 
 
 
