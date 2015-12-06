@@ -37,7 +37,7 @@ def log_load(log_type, load):
     f_log_user.close()
     f_log_cache.close()
 
-def create_cache_json(raw_cache_string, chunk_byte_size):
+def create_cache_json(raw_cache_string, chunk_byte_size, user_name):
     cache_dict = {}
     cache_d = {}
     (cache_data, cache_address) = raw_cache_string.split('&')
@@ -61,7 +61,9 @@ def create_cache_json(raw_cache_string, chunk_byte_size):
         cache_d['number_of_chunks'] = len(chunk_list)
         cache_d['bytes_downloaded'] = len(chunk_list) * int(chunk_byte_size)
         cache_d['chunks'] = chunk_list
+        cache_d['user_name'] = user_name
         cache_dict['data'] = cache_d
+        
         return cache_dict
     
     
@@ -432,7 +434,7 @@ class StreamHandler(ftpserver.FTPHandler):
         raw_cache_list = line.split('_')
         cache_dicts = []
         for raw_cache_string in raw_cache_list:
-            cache_dict = create_cache_json(raw_cache_string, chunk_size)
+            cache_dict = create_cache_json(raw_cache_string, chunk_size, user_name)
             if cache_dict != {}:
                 cache_dicts.append(cache_dict)
         if len(cache_dicts) != 0:

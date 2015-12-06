@@ -43,6 +43,14 @@ def get_user_logs_as_json():
 	user_data = remove_old_users(data_list)
 	return user_data
 
+def rearrange_data_for_caches(user_data):
+	cache_data = []
+	
+	
+	
+	return cache_data
+
+
 
 #see 
 #http://stackoverflow.com/questions/3096953/difference-between-two-time-intervals-in-python
