@@ -496,7 +496,7 @@ def main():
         #movie_list = ['Godfather','TheLordOfTheRings','Titanic','TheShawshankRedemption','OceansEleven','StarWarsForceAwakens','HarryPotter7','Batman-v-Superman','Minions','Spectre007']
         #movie_list = []
         if 'ryan-test' in movies:
-            movies.remove('ryan-test')
+            movies.remove('ryan-test-3')
         video_name = random.choice(movies)
         rand_sleep = randint(1,100)
         print "sleeping for %i" % rand_sleep
