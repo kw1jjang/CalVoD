@@ -491,8 +491,11 @@ def main():
             print '-', each
 
         os.popen('rm -rf *')
-        movie_list = ['Godfather','TheLordOfTheRings','Titanic','TheShawshankRedemption','OceansEleven','StarWarsForceAwakens','HarryPotter7','Batman-v-Superman','Minions','Spectre007']
-        video_name = random.choice(movie_list)
+        #movie_list = ['Godfather','TheLordOfTheRings','Titanic','TheShawshankRedemption','OceansEleven','StarWarsForceAwakens','HarryPotter7','Batman-v-Superman','Minions','Spectre007']
+        #movie_list = []
+        if 'ryan-test' in movies:
+            movies.remove('ryan-test')
+        video_name = random.choice(movies)
         rand_sleep = randint(1,100)
         print "sleeping for %i" % rand_sleep
         sleep(rand_sleep)
