@@ -9,6 +9,7 @@ T_update_info = 0.1
 CACHE_DOWNLOAD_DURATION = 8 # sec
 SERVER_DOWNLOAD_DURATION = 1.5 # sec
 DEBUGGING_MSG = False
+DEBUG_RYAN = False
 
 class infoThread (threading.Thread):
     def __init__(self, video_name, code_param_n, code_param_k, user):
@@ -98,9 +99,10 @@ class infoThread (threading.Thread):
             # request assigned chunks
             for i in range(len(clients_copy)):
                 client = clients_copy[i]
-                print "[user.py] Update_info_loop : [Client " + str(i) + "] flag_deficit: ", flag_deficit, \
+                if DEBUG_RYAN:
+                    print "[user.py] Update_info_loop : [Client " + str(i) + "] flag_deficit: ", flag_deficit, \
                     ", Assigned chunks: ", assigned_chunks[i]
-                client.put_instruction(inst_UPDG + str(flag_deficit))
+                    client.put_instruction(inst_UPDG + str(flag_deficit))
 
             sleep(T_update_info)
 

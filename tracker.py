@@ -4,6 +4,8 @@ import web
 import db_manager
 import helper #now importing the helper. The helper is storing the ip address of the tracker. we set the value of this
 from time import gmtime, strftime
+import data_visualization as dv
+import json
 
 urls = (
     '/', 'overview',
@@ -149,7 +151,12 @@ class overview:
         server_load = get_server_load()
         average_server_load = [sum(server_load[0])/len(server_load[0]), sum(server_load[1])/len(server_load[1])]
         return render.overview(nodes_info2, n_nodes, videos_info2, server_load, average_server_load)
-
+    
+#class index:
+#    def GET(self):
+#        return render.index()
+#This class is not needed since we are putting the CACHE_DATA_VIS inside of the request class
+    
 class request:
     def parse_request(self, request_str):
         # REQUEST_COMMAND & ARGUMENT
@@ -168,7 +175,9 @@ class request:
                             'REMOVE_SERVER_FOR_CACHE',
                             'REMOVE_USER',
                             'REMOVE_CACHE',
-                            'UPDATE_SERVER_LOAD']
+                            'UPDATE_SERVER_LOAD',
+                            'CACHE_DATA_VIS',
+                            'GET_CACHE_DATA']
         req_type = request_str.split('&')[0]
         if len(request_str.split('&')) > 1:
             req_arg = request_str.split('&')[1]
@@ -294,6 +303,17 @@ class request:
                 arg_vname = req_arg.split('_')[0]
                 arg_n_of_chks = req_arg.split('_')[1]
                 db_manager.add_server_load(arg_vname, arg_n_of_chks)
+                
+            elif req_type == 'CACHE_DATA_VIS':
+                return render.index()
+            
+            elif req_type =='GET_CACHE_DATA':
+                web.header('Content-Type', 'application/json')
+                user_data = dv.get_user_logs_as_json()
+                return json.dumps(user_data)
+                #currently reading from file. must later have post request to store data into db
+                
+                
 
 
 if __name__ == "__main__":

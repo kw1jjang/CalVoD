@@ -427,7 +427,8 @@ class StreamHandler(ftpserver.FTPHandler):
         For now, it is just written into a file.
         """
         print 'WE ARE INSIDE OF FTPCACHEDATA THANK GOD!'
-        (line, chunk_size) = line.split('?')
+        (line, chunksize_username_metadata) = line.split('?')
+        (chunk_size, user_name) = chunksize_username_metadata.split('_')
         raw_cache_list = line.split('_')
         cache_dicts = []
         for raw_cache_string in raw_cache_list:
@@ -435,11 +436,19 @@ class StreamHandler(ftpserver.FTPHandler):
             if cache_dict != {}:
                 cache_dicts.append(cache_dict)
         if len(cache_dicts) != 0:
-            f = open('temporary_test.txt','w')
-            for val in cache_dicts:
-                f.write(json.dumps(val))
-                f.write('\n')
-            
+            f = open('user_log/' + user_name + '.txt','w')
+            f.write(json.dumps(cache_dicts))
+            f.close()
+            #cache_dicts_length = len(cache_dicts)
+            #f.write('[')
+            #for i in range(0,cache_dicts_length):
+            #    val = cache_dicts[i]
+            #    f.write(json.dumps(val))
+            #    if(i != cache_dicts_length - 1):
+            #        f.write(',')
+            #        f.write('\n')
+            #f.write(']')
+            #f.close()
         
         
         #self.push_dtp_data(line, isproducer=False, cmd='CDAT')
