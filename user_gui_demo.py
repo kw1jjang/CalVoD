@@ -7,6 +7,7 @@ from threadclient import ThreadClient
 from ftplib import error_perm
 from zfec import filefec
 import random
+from random import randint
 import urllib2
 import csv
 import math
@@ -15,6 +16,7 @@ import threading
 import string
 from infoThread import infoThread
 import ConfigParser
+from time import sleep
 
 import pdb #to run without stopping, uncomment all pdb.set_trace() that appear
 
