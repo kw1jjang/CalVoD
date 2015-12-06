@@ -2,7 +2,7 @@
 #python remove_cache.py
 
 num_of_caches=5
-address=`curl icanhazip.com`
+#address=`curl icanhazip.com`
 
 echo "number of caches (lower):"
 read option
@@ -26,7 +26,7 @@ do
     fi
     cd "cache"$i
     rm -rf video*
-    python ../../cache.py $i $address > /dev/null &
+    python ../../cache.py $i > /dev/null &
     cd ..
     sleep .1
 done

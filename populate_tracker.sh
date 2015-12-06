@@ -1,3 +1,5 @@
+
+
 mkdir -p log
 mkdir -p server
 rm -rf log/*
@@ -12,6 +14,7 @@ mkdir users/user001
 echo "cleared ./caches directory"
 echo "cleared ./useres directory"
 ./kill_all.sh
+sleep 1
 echo "killed all active processes"
 
 echo ""
