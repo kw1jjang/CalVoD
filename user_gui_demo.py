@@ -7,7 +7,6 @@ from threadclient import ThreadClient
 from ftplib import error_perm
 from zfec import filefec
 import random
-from random import randint
 import urllib2
 import csv
 import math
@@ -16,7 +15,6 @@ import threading
 import string
 from infoThread import infoThread
 import ConfigParser
-from time import sleep
 
 import pdb #to run without stopping, uncomment all pdb.set_trace() that appear
 
@@ -174,8 +172,8 @@ class P2PUser():
             inst_CACHEDATA = 'CACHEDATA ' 
 
             ###### DECIDING WHICH CHUNKS TO DOWNLOAD FROM CACHES: TIME 0 ######
-            if DEBUG_RYAN:
-                pdb.set_trace()
+            #if DEBUG_RYAN:
+                #pdb.set_trace()
             available_chunks = [0]*len(self.clients) # available_chunks[i] = cache i's availble chunks
             rates = [0]*len(self.clients) # rates[i] = cache i's offered rate
             union_chunks = [] # union of all available indices
@@ -239,7 +237,8 @@ class P2PUser():
                 size_of_chunks = vlen_items[2]
             else:
                 size_of_chunks = vlen_items[3]
-            cdrs = cdrs + '?' + str(size_of_chunks)    
+            cdrs = cdrs + '?' + str(size_of_chunks)
+            cdrs = cdrs + '_' + self.user_name
             chosen_chunks = list(chosen_chunks)
             num_chunks_rx_predicted = len(chosen_chunks)
             server_request = chunks_to_request(chosen_chunks, range(0, code_param_n), code_param_k - num_chunks_rx_predicted)
@@ -250,8 +249,8 @@ class P2PUser():
             else:
                 print '[user.py] Server_request = "' , server_request , '"'
                 server_request_string = '%'.join(server_request) + '&1'
-                if DEBUG_RYAN:
-                    pdb.set_trace()
+                #if DEBUG_RYAN:
+                    #pdb.set_trace()
                 self.server_client.put_instruction(inst_CACHEDATA + cdrs)
                 self.server_client.put_instruction(inst_RETR + '.' + server_request_string)
                 if(DEBUGGING_MSG):
@@ -472,6 +471,7 @@ def zipfCDF(n, zipf_param=1):
     for i in range(1,n):
         c[i] = (i, c[i-1][1] + b[i-1])
     return c
+
 
 def main():
     mu = 1
