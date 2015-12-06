@@ -39,11 +39,22 @@ def get_user_logs_as_json():
 		f.close()
 		data_list.append(user_data_jsoned)
 	
-	#user_data = data_list #for testing purposes
-	user_data = remove_old_users(data_list)
+	user_data = data_list #for testing purposes
+	#user_data = remove_old_users(data_list)
 	return user_data
 
 def rearrange_data_for_caches(user_data):
+	cache_name_list = [];
+	cache_name_dict = [];
+	for user in user_data:
+		for cache in user:
+			if cache['data']['full_address'] not in cache_name_list:
+				cache_name_list.append(cache['data']['full_address'])
+				cacne_name_dict.append({})
+				index_of_dict = cache_name_list.index(cache['data']['full_address'])
+				
+				
+				
 	cache_data = []
 	
 	
