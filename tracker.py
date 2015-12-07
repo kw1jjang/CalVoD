@@ -177,7 +177,9 @@ class request:
                             'REMOVE_CACHE',
                             'UPDATE_SERVER_LOAD',
                             'CACHE_DATA_VIS',
-                            'GET_CACHE_DATA']
+                            'CACHE_TO_USER_DATA',
+                            'GET_CACHE_DATA',
+                            'GET_CACHE_DATA2']
         req_type = request_str.split('&')[0]
         if len(request_str.split('&')) > 1:
             req_arg = request_str.split('&')[1]
@@ -307,12 +309,21 @@ class request:
             elif req_type == 'CACHE_DATA_VIS':
                 return render.index()
             
+            elif req_type == 'CACHE_TO_USER_DATA':
+                return render.cache_to_user_data()
+            
             elif req_type =='GET_CACHE_DATA':
                 web.header('Content-Type', 'application/json')
                 user_data = dv.get_user_logs_as_json()
                 return json.dumps(user_data)
                 #currently reading from file. must later have post request to store data into db
-                
+            
+            elif req_type =='GET_CACHE_DATA2':
+                web.header('Content-Type', 'application/json')
+                user_data = dv.get_user_logs_as_json()
+                user_data = dv.rearrange_data_for_caches(user_data)
+                return json.dumps(user_data)
+                #currently reading from file. must later have post request to store data into db
                 
 
 

@@ -8,17 +8,21 @@
 	<!-- Load jQuery library -->
 	<script src="../static/scripts/jquery.min.js"></script>
 	
-	
-  <script type="text/javascript" src="../static/scripts/canvasjs-1.7.0/canvasjs.min.js"></script>
+	<script type="text/javascript" src="../static/scripts/canvasjs-1.7.0/canvasjs.min.js"></script>
 	<script type="text/javascript" src="../static/datavis.js"></script>
 	
+	<script type="text/javascript">
+		$(function() {
+			d = new DataVis();
+			d.start();
+		});
+	</script>
 	
 	
 </head>
 <body>
- 	<div id="chartContainer" style="height: 300px; width: 100%;"></div>
-	<div id="allChartHolder" style="width: 100%;">
-		<div id="user-template" style="height: 300px; width: 50%;"></div>
+ 	<div id="allChartHolder" class="pure-g">
+		<div id="user-template" class="pure-u-1-5" style="height:300px;"></div>
 	</div>
 </body>
 </html>

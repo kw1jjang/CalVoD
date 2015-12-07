@@ -1,8 +1,10 @@
 //var apiUrl = 'https://protected-refuge-7067.herokuapp.com';
+//DataVis = function(){
+
 var apiUrl = '';
 var chartHolder;
 var userTemplate;
-makeGetRequest = function(url, onSuccess, onFailure) {
+	makeGetRequest = function(url, onSuccess, onFailure) {
 		$.ajax({
 			type: 'GET',
 			url: apiUrl + url,
@@ -24,44 +26,8 @@ makeGetRequest = function(url, onSuccess, onFailure) {
 			error: onFailure
 		});
 	};
-
-
-
-
-
-$(document).ready(function() {
-    chartHolder = $('#allChartHolder');
-    //chartHolder = $('body');
-    userTemplate = $('#user-template')[0].outerHTML;
-    chartHolder.html('');
-    
-	/*var chart = new CanvasJS.Chart("chartContainer");
-
-    chart.options.axisY = { prefix: "$", suffix: "K" };
-    chart.options.title = { text: "Fruits sold in First & Second Quarter" };
-
-    var series1 = { //dataSeries - first quarter
-        type: "column",
-        name: "First Quarter",
-        showInLegend: true
-    };
-
-
-    chart.options.data = [];
-    chart.options.data.push(series1);
-
-
-    series1.dataPoints = [
-            { label: "banana", y: 18 },
-            { label: "orange", y: 29 },
-            { label: "apple", y: 40 },
-            { label: "mango", y: 34 },
-            { label: "grape", y: 24 }
-    ];
-
-    chart.render();
-	*/
-    var render_users = function(data,id){
+	
+	render_users = function(data,id){
         
         var newElem = $(userTemplate);
         newElem.removeAttr('id');
@@ -93,14 +59,13 @@ $(document).ready(function() {
         
         
     };
-    
-    
 	
-	window.setInterval(function(){
+	start_window = function() {
+	
+		window.setInterval(function(){
 		h = new Date();
 		//series1.dataPoints[0].y = h.getSeconds();
-		//chart.render();
-		
+		//chart.render();	
 		var onSuccess = function(data){
 			//Return dictionary of {professor: prof_name, rating_1: value, rating_2: value, etc}
 			console.log(data)
@@ -108,39 +73,33 @@ $(document).ready(function() {
             var i = 0;
             for(i = 0; i < data.length; i++){
             render_users(data[i],i);
-            };
-            
+            };    
 		};
+			
 		var onFailure = function(data){
 		//console.error('could not retreive overall ratings');
             console.error(data);
             console.log('there was an error');
 		};
-		makeGetRequest('/req/GET_CACHE_DATA', onSuccess, onFailure);
-		
-		
-		
-		
-		
+			
+		makeGetRequest('/req/GET_CACHE_DATA', onSuccess, onFailure);	
 	}, 10000);
-	
-	
-	
-	
-	
-	
-});
+		
+	};
 
+	start = function() {
+    	chartHolder = $('#allChartHolder');
+    	//chartHolder = $('body');
+    	userTemplate = $('#user-template')[0].outerHTML;
+    	chartHolder.html('');	
+		start_window();	
+};
 
-/*
-
-function analyze(){
-   var f = new FileReader();
-
-   f.onloadend = function(){
-       console.log("success");
-   }
-   f.readAsText("cities.txt");
-}
-
-*/
+$(document).ready(){
+	start();	
+};
+	/*
+		return {
+		start: start
+	};
+	*/
