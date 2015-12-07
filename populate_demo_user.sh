@@ -26,7 +26,7 @@ do
     rm -rf video*
     python ../../user_gui_demo.py ../../development.ini > /dev/null &
     cd ".."
-    sleep .
+    sleep(3)
 done
 
 cd ".."

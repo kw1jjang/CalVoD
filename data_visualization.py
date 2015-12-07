@@ -39,8 +39,8 @@ def get_user_logs_as_json():
 		f.close()
 		data_list.append(user_data_jsoned)
 	
-	user_data = data_list #for testing purposes
-	#user_data = remove_old_users(data_list)
+	#user_data = data_list #for static testing purposes when only wanting to run the tracker
+	user_data = remove_old_users(data_list)
 	return user_data
 
 def rearrange_data_for_caches(user_data):

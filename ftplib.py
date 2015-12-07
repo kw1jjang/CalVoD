@@ -39,6 +39,7 @@ python ftplib.py -d localhost -l -p -l
 import os
 import sys
 import time
+import pdb
 
 DEBUGGING_MSG = False
 
@@ -254,7 +255,9 @@ class FTP:
         if self.debugging > 1: print '*put urgent*', self.sanitize(line)
         self.sock.sendall(line, MSG_OOB)
         resp = self.getmultiline()
-        if resp[:3] not in ('426', '225', '226'):
+        pdb.set_trace()
+        if resp[:3] not in ('426', '225', '226', '200'):
+            pdb.set_trace()
             raise error_proto, resp
 
     def sendcmd(self, cmd):
