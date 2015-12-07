@@ -4,8 +4,8 @@
 var apiUrl = '';
 var chartHolder;
 var userTemplate;
-var currentUsers = [];
-var oldUsers = [];
+var currentCaches = [];
+var oldCaches = [];
 var chartDict = {};
 
 	var makeGetRequest = function(url, onSuccess, onFailure) {
@@ -36,26 +36,20 @@ var chartDict = {};
 		var chart = chartDict[id];
 		chart.options.data = [];
 		var series = {};
-		series.type = 'column';
-		series.name = 'Chunks Downloaded per Cache';
-		series.showInLegend = false;
-		chart.options.data = [];
-		var series = {};
-		series.type = 'column';
-		series.name = 'Chunks Downloaded per Cache';
-		series.showInLegend = false;
+		series.type = 'pie';
+		series.startAngle = -20;
+		series.showInLegend = true;
 		series.dataPoints = [];
-       
-		var i = 0;
-        for(i = 0; i < data.length; i++){
-            var cache_data_for_user = data[i]['data'];
-			//series.dataPoints.push({label: cache_data_for_user['full_address'], y: cache_data_for_user['number_of_chunks']});
-        	series.dataPoints.push({y: cache_data_for_user['number_of_chunks']});
+        //var caches = {};
         
-		};
+        var i = 0;
+        for(i = 0; i < data['cache']['contents'].length; i++){
+			//data['cache']['contents'][i] is the data sent to the ith user
+            var user_data_for_cache = data['cache']['contents'][i]['data'];
+			series.dataPoints.push({y: user_data_for_cache['bytes_sent']});
+        };
 		chart.options.data.push(series);
-        chart.render();
-		
+        chart.render();	
 	};
 
 	var render_user = function(data,id){
@@ -66,22 +60,23 @@ var chartDict = {};
         
         var chart = new CanvasJS.Chart(id);
 		chartDict[id] = chart;
+		chart.options.toolTip = {enabled: false};
         chart.options.axisY = { prefix: "Chunks Sent "};
-        chart.options.title = { text: id };
+		chart.options.title = { text: 'Cache ' + id };
         chart.options.data = [];
 		var series = {};
-		series.type = 'column';
-		series.name = 'Chunks Downloaded per Cache';
+		series.type = 'pie';
+		series.startAngle = -20;
 		series.showInLegend = true;
 		series.dataPoints = [];
-       
-		var i = 0;
-        for(i = 0; i < data.length; i++){
-            var cache_data_for_user = data[i]['data'];
-			//series.dataPoints.push({label: cache_data_for_user['full_address'], y: cache_data_for_user['number_of_chunks']});
-        	series.dataPoints.push({legendText: cache_data_for_user['full_address'], y: cache_data_for_user['number_of_chunks']});
+        //var caches = {};
         
-		};
+        var i = 0;
+        for(i = 0; i < data['cache']['contents'].length; i++){
+			//data['cache']['contents'][i] is the data sent to the ith user
+            var user_data_for_cache = data['cache']['contents'][i]['data'];
+			series.dataPoints.push({y: user_data_for_cache['bytes_sent']});
+        };
 		chart.options.data.push(series);
         chart.render();
     };
@@ -97,24 +92,24 @@ var chartDict = {};
 			console.log(data)
             //chartHolder.html('');
             var i = 0;
-			oldUsers = currentUsers;
-			currentUsers = [];
+			oldCaches = currentCaches;
+			currentCaches = [];
 			
 			//For each of the current users, either update their graph or render a new graph
 			for(i = 0; i < data.length; i++){
-				currentUsers.push(data[i][0]['data']['user_name']);
+				currentCaches.push(data[i]['cache']['full_address']);
 			};
 			
 			for(i = 0; i < data.length; i++){
-				var old_user = oldUsers[i];
-				if((currentUsers.indexOf(old_user) == -1) && (old_user != null)){
+				var old_user = oldCaches[i];
+				if((currentCaches.indexOf(old_user) == -1) && (old_user != null)){
 					delete_user(old_user);	
 				};
 			};
 			
             for(i = 0; i < data.length; i++){
-				var u_name = currentUsers[i];
-				if(oldUsers.indexOf(u_name) == -1){
+				var u_name = currentCaches[i];
+				if(oldCaches.indexOf(u_name) == -1){
             		render_user(data[i],u_name);
 				}else{
 					update_user(data[i],u_name);	
@@ -126,10 +121,10 @@ var chartDict = {};
             console.error(data);
             console.log('there was an error');
 		};
-		makeGetRequest('/req/GET_CACHE_DATA', onSuccess, onFailure);
+		makeGetRequest('/req/GET_CACHE_DATA2', onSuccess, onFailure);
 		
 		window.setInterval(function(){
-		makeGetRequest('/req/GET_CACHE_DATA', onSuccess, onFailure);	
+		makeGetRequest('/req/GET_CACHE_DATA2', onSuccess, onFailure);	
 	}, 10000);	
 	};
 
@@ -146,8 +141,3 @@ var chartDict = {};
 $(document).ready(function() {
 	start();	
 });
-	/*
-		return {
-		start: start
-	};
-	*/
