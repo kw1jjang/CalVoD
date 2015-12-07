@@ -4,7 +4,7 @@
 var apiUrl = '';
 var chartHolder;
 var userTemplate;
-	makeGetRequest = function(url, onSuccess, onFailure) {
+	var makeGetRequest = function(url, onSuccess, onFailure) {
 		$.ajax({
 			type: 'GET',
 			url: apiUrl + url,
@@ -15,7 +15,7 @@ var userTemplate;
 		});
 	};
 
-	makePostRequest = function(url, data, onSuccess, onFailure) {
+	var makePostRequest = function(url, data, onSuccess, onFailure) {
 		$.ajax({
 			type: 'POST',
 			url: apiUrl + url,
@@ -27,7 +27,7 @@ var userTemplate;
 		});
 	};
 	
-	render_users = function(data,id){
+	var render_users = function(data,id){
         
         var newElem = $(userTemplate);
         newElem.removeAttr('id');
@@ -59,9 +59,7 @@ var userTemplate;
         
         
     };
-	
-	start_window = function() {
-	
+	var start_window = function() {
 		window.setInterval(function(){
 		h = new Date();
 		//series1.dataPoints[0].y = h.getSeconds();
@@ -83,11 +81,14 @@ var userTemplate;
 		};
 			
 		makeGetRequest('/req/GET_CACHE_DATA', onSuccess, onFailure);	
-	}, 10000);
-		
+	}, 10000);	
 	};
 
-	start = function() {
+
+
+
+
+	var start = function() {
     	chartHolder = $('#allChartHolder');
     	//chartHolder = $('body');
     	userTemplate = $('#user-template')[0].outerHTML;
@@ -95,9 +96,9 @@ var userTemplate;
 		start_window();	
 };
 
-$(document).ready(){
+$(document).ready(function() {
 	start();	
-};
+});
 	/*
 		return {
 		start: start
