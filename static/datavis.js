@@ -66,20 +66,21 @@ var chartDict = {};
         
         var chart = new CanvasJS.Chart(id);
 		chartDict[id] = chart;
-        chart.options.axisY = { prefix: "Chunks Sent "};
+        chart.options.axisY = { title: "Chunks Received"};
+		chart.options.axisX = { title: "Caches"};
         chart.options.title = { text: id };
         chart.options.data = [];
 		var series = {};
 		series.type = 'column';
 		series.name = 'Chunks Downloaded per Cache';
-		series.showInLegend = true;
+		series.showInLegend = false;
 		series.dataPoints = [];
        
 		var i = 0;
         for(i = 0; i < data.length; i++){
             var cache_data_for_user = data[i]['data'];
 			//series.dataPoints.push({label: cache_data_for_user['full_address'], y: cache_data_for_user['number_of_chunks']});
-        	series.dataPoints.push({legendText: cache_data_for_user['full_address'], y: cache_data_for_user['number_of_chunks']});
+        	series.dataPoints.push({x: i, legendText: cache_data_for_user['full_address'], y: cache_data_for_user['number_of_chunks']});
         
 		};
 		chart.options.data.push(series);
@@ -93,7 +94,6 @@ var chartDict = {};
 
 	var start_window = function() {	
 		var onSuccess = function(data){
-			//Return dictionary of {professor: prof_name, rating_1: value, rating_2: value, etc}
 			console.log(data)
             //chartHolder.html('');
             var i = 0;
