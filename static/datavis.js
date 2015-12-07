@@ -4,6 +4,8 @@
 var apiUrl = '';
 var chartHolder;
 var userTemplate;
+var currentUsers = [];
+
 	var makeGetRequest = function(url, onSuccess, onFailure) {
 		$.ajax({
 			type: 'GET',
@@ -60,10 +62,7 @@ var userTemplate;
         
     };
 	var start_window = function() {
-		window.setInterval(function(){
-		h = new Date();
-		//series1.dataPoints[0].y = h.getSeconds();
-		//chart.render();	
+		
 		var onSuccess = function(data){
 			//Return dictionary of {professor: prof_name, rating_1: value, rating_2: value, etc}
 			console.log(data)
@@ -79,20 +78,24 @@ var userTemplate;
             console.error(data);
             console.log('there was an error');
 		};
+		
+		makeGetRequest('/req/GET_CACHE_DATA', onSuccess, onFailure);
+		
+		window.setInterval(function(){
+		//series1.dataPoints[0].y = h.getSeconds();
+		//chart.render();	
 			
 		makeGetRequest('/req/GET_CACHE_DATA', onSuccess, onFailure);	
 	}, 10000);	
 	};
 
-
-
-
-
 	var start = function() {
     	chartHolder = $('#allChartHolder');
     	//chartHolder = $('body');
     	userTemplate = $('#user-template')[0].outerHTML;
-    	chartHolder.html('');	
+    	chartHolder.html('');
+		
+		
 		start_window();	
 };
 
