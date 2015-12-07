@@ -39,18 +39,13 @@ var chartDict = {};
 		series.type = 'column';
 		series.name = 'Chunks Downloaded per Cache';
 		series.showInLegend = false;
-		chart.options.data = [];
-		var series = {};
-		series.type = 'column';
-		series.name = 'Chunks Downloaded per Cache';
-		series.showInLegend = false;
 		series.dataPoints = [];
        
 		var i = 0;
         for(i = 0; i < data.length; i++){
             var cache_data_for_user = data[i]['data'];
 			//series.dataPoints.push({label: cache_data_for_user['full_address'], y: cache_data_for_user['number_of_chunks']});
-        	series.dataPoints.push({y: cache_data_for_user['number_of_chunks']});
+        	series.dataPoints.push({x: i, legendText: cache_data_for_user['full_address'], y: cache_data_for_user['number_of_chunks']});
         
 		};
 		chart.options.data.push(series);
