@@ -38,7 +38,7 @@ var chartDict = {};
 		var series = {};
 		series.type = 'pie';
 		series.startAngle = -20;
-		series.showInLegend = true;
+		series.showInLegend = false;
 		series.dataPoints = [];
         //var caches = {};
         
@@ -46,7 +46,7 @@ var chartDict = {};
         for(i = 0; i < data['cache']['contents'].length; i++){
 			//data['cache']['contents'][i] is the data sent to the ith user
             var user_data_for_cache = data['cache']['contents'][i]['data'];
-			series.dataPoints.push({y: user_data_for_cache['bytes_sent']});
+			series.dataPoints.push({name: user_data_for_cache['user_name'], y: user_data_for_cache['bytes_sent']});
         };
 		chart.options.data.push(series);
         chart.render();	
@@ -61,14 +61,14 @@ var chartDict = {};
         
         var chart = new CanvasJS.Chart(id);
 		chartDict[id] = chart;
-		chart.options.toolTip = {enabled: false};
+		chart.options.toolTip = {enabled: true};
         chart.options.axisY = { prefix: "Chunks Sent "};
 		chart.options.title = { text: 'Cache ' + id };
         chart.options.data = [];
 		var series = {};
 		series.type = 'pie';
 		series.startAngle = -20;
-		series.showInLegend = true;
+		series.showInLegend = false;
 		series.dataPoints = [];
         //var caches = {};
         
@@ -76,7 +76,7 @@ var chartDict = {};
         for(i = 0; i < data['cache']['contents'].length; i++){
 			//data['cache']['contents'][i] is the data sent to the ith user
             var user_data_for_cache = data['cache']['contents'][i]['data'];
-			series.dataPoints.push({y: user_data_for_cache['bytes_sent']});
+			series.dataPoints.push({name: user_data_for_cache['user_name'], y: user_data_for_cache['bytes_sent']});
         };
 		chart.options.data.push(series);
         chart.render();
