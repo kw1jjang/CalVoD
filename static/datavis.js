@@ -102,14 +102,14 @@ var chartDict = {};
 				currentUsers.push(data[i][0]['data']['user_name']);
 			};
 			
-			for(i = 0; i < data.length; i++){
+			for(i = 0; i < oldUsers.length; i++){
 				var old_user = oldUsers[i];
 				if((currentUsers.indexOf(old_user) == -1) && (old_user != null)){
 					delete_user(old_user);	
 				};
 			};
 			
-            for(i = 0; i < data.length; i++){
+            for(i = 0; i < currentUsers.length; i++){
 				var u_name = currentUsers[i];
 				if(oldUsers.indexOf(u_name) == -1){
             		render_user(data[i],u_name);

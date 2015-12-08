@@ -102,14 +102,14 @@ var chartDict = {};
 				currentCaches.push(data[i]['cache']['full_address']);
 			};
 			
-			for(i = 0; i < data.length; i++){
+			for(i = 0; i < oldCaches.length; i++){
 				var old_user = oldCaches[i];
 				if((currentCaches.indexOf(old_user) == -1) && (old_user != null)){
 					delete_user(old_user);	
 				};
 			};
 			
-            for(i = 0; i < data.length; i++){
+            for(i = 0; i < currentCaches.length; i++){
 				var u_name = currentCaches[i];
 				if(oldCaches.indexOf(u_name) == -1){
             		render_user(data[i],u_name);
