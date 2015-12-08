@@ -659,6 +659,8 @@ class MovieLister(ftpserver.BufferedIteratorProducer):
 
 def main():
     if len(sys.argv) == 3: #address port
+        if(sys.argv[1] == 'public'):
+            sys.argv[1] = urllib2.urlopen('http://ip.42.pl/raw').read()
         server_address[0] = sys.argv[1]
         server_address[1] = sys.argv[2]
     if len(sys.argv) == 2: #port
