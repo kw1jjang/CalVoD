@@ -498,7 +498,7 @@ def main():
         if 'ryan-test-3' in movies:
             movies.remove('ryan-test-3')
         video_name = random.choice(movies)
-        rand_sleep = randint(1,100)
+        rand_sleep = randint(10,300)
         print "sleeping for %i" % rand_sleep
         sleep(rand_sleep)
 
