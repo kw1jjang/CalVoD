@@ -196,10 +196,12 @@ class FTP:
                     print "[ftplib.py] [Errno 35] Resource temporarily unavailable. Retrying."
                     time.sleep(0)
                     continue
-                if str(ex).startswith('timeout'):
+                #if str(ex).startswith('timeout'):
+                if str(ex).startswith('timed out'):
                     print "[ftplib.py] Timeout, continuing"
                     continue
                 print "[ftplib.py] socket error ex =", ex
+                pdb.set_trace()
                 raise ex
         if self.debugging > 1:
             print '*get*', self.sanitize(line)
@@ -243,6 +245,7 @@ class FTP:
         """Expect a response beginning with '2'."""
         resp = self.getresp()
         if resp[:1] != '2':
+            pdb.set_trace()
             raise error_reply, resp
         return resp
 
@@ -255,8 +258,9 @@ class FTP:
         if self.debugging > 1: print '*put urgent*', self.sanitize(line)
         self.sock.sendall(line, MSG_OOB)
         resp = self.getmultiline()
-        pdb.set_trace()
-        if resp[:3] not in ('426', '225', '226', '200'):
+        if resp[:3] == ('200'):
+            print('\n\n\n GOT A NOOP RESPONSE INSIDE ABORT \n\n\n')
+        if resp[:3] not in ('426', '225', '226', '200'): #BE CAREFUL ABOUT THE 200 HERE
             pdb.set_trace()
             raise error_proto, resp
 

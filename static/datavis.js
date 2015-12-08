@@ -54,6 +54,7 @@ var chartDict = {};
 	};
 
 	var render_user = function(data,id){
+		console.log('adding user ' + id);
         var newElem = $(userTemplate);
         newElem.removeAttr('id');
         newElem.attr('id', id);
@@ -82,6 +83,7 @@ var chartDict = {};
         chart.render();
     };
 	var delete_user = function(id){
+		console.log('removing user ' + id);
 			delete chartDict[id];
 			$('#' + id).remove();
 			

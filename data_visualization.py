@@ -19,7 +19,7 @@ def remove_old_users(user_data_jsoned):
 		#returns difference in seconds
 		tdelta = datetime.strptime(current_time, FMT) - datetime.strptime(old_time, FMT)
 		
-		if(tdelta.seconds < 60):
+		if(tdelta.seconds < 13):
 			new_json_list.append(user_data)
 	
 	return new_json_list

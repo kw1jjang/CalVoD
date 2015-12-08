@@ -495,7 +495,7 @@ def main():
         os.popen('rm -rf *')
         #movie_list = ['Godfather','TheLordOfTheRings','Titanic','TheShawshankRedemption','OceansEleven','StarWarsForceAwakens','HarryPotter7','Batman-v-Superman','Minions','Spectre007']
         #movie_list = []
-        if 'ryan-test' in movies:
+        if 'ryan-test-3' in movies:
             movies.remove('ryan-test-3')
         video_name = random.choice(movies)
         rand_sleep = randint(1,100)

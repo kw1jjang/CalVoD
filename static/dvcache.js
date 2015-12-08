@@ -32,7 +32,7 @@ var chartDict = {};
 	};
 	
 	var update_user = function(data,id){
-		console.log('updating user ' + id);
+		console.log('updating cache ' + id);
 		var chart = chartDict[id];
 		chart.options.data = [];
 		var series = {};
@@ -53,6 +53,7 @@ var chartDict = {};
 	};
 
 	var render_user = function(data,id){
+		console.log('adding cache ' + id);
         var newElem = $(userTemplate);
         newElem.removeAttr('id');
         newElem.attr('id', id);
@@ -81,6 +82,7 @@ var chartDict = {};
         chart.render();
     };
 	var delete_user = function(id){
+		console.log('removing cache ' + id);
 			delete chartDict[id];
 			$('#' + id).remove();
 			
