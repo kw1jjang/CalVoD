@@ -339,6 +339,8 @@ if __name__ == "__main__":
         sys.argv[1] = server_address + ':' + server_port
     if(len(sys.argv) == 3):
         #helper.change_tracker_address(sys.argv[2],sys.argv[1])
+        if(sys.argv[1] == 'public'):
+            sys.argv[1] = urllib2.urlopen('http://ip.42.pl/raw').read()
         server_port = sys.argv[2]
         server_address = sys.argv[1]
         if(web.net.validip6addr(server_address)):
