@@ -740,6 +740,8 @@ def main():
             print '[cache.py] cache_id not found'    
             sys.exit()
     elif len(sys.argv) == 3:
+        if(sys.argv[2] == 'public':
+           sys.argv[2] = urllib2.urlopen('http://ip.42.pl/raw').read()
         config = [sys.argv[1], sys.argv[2], str(60000+int(sys.argv[1])), sys.argv[2], 15000000]
     else:
         #print '[cache.py] cache.py needs an argument "cache_id"'
