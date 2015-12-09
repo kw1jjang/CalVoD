@@ -143,7 +143,7 @@ class P2PUser():
         self.info_thread.flag = True
         self.info_thread.start()
 
-        for frame_number in xrange(start_frame, num_frames + 1):
+        for frame_number in range(start_frame, num_frames + 1):
             sys.stdout.flush()
             effective_rates = [0]*len(self.clients)
             assigned_chunks = [0]*len(self.clients)
