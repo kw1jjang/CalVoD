@@ -42,7 +42,7 @@ def create_cache_json(raw_cache_string, chunk_byte_size, user_name):
     cache_dict = {}
     cache_d = {}
     (cache_data, cache_address) = raw_cache_string.split('&')
-    (ip_address_string, port_string) = cache_address.split(':')
+    (ip_address_string, port_string) = cache_address.split('@')
     video_name_string = cache_data.split('file-')[1]
     video_name_string = video_name_string.split('.')
     raw_chunks = video_name_string[2]
@@ -52,7 +52,7 @@ def create_cache_json(raw_cache_string, chunk_byte_size, user_name):
         #That way we know not to do anything for this cache
         return cache_dict
     else:
-        cache_d['full_address'] = cache_address
+        cache_d['full_address'] = ip_address_string + ':' + port_string
         cache_d['ip_address'] = ip_address_string
         cache_d['port'] = port_string
         cache_d['video_name'] = video_name_string
