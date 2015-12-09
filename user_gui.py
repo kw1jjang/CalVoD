@@ -209,7 +209,7 @@ class P2PUser():
             # request assigned chunks
             for i in range(len(self.clients)):
                 client = self.clients[i]
-                client_ip_address = client.address[0] + ':' + str(client.address[1])
+                client_ip_address = client.address[0] + '@' + str(client.address[1])
                 print '[user.py] Server_request 2 = "' , assigned_chunks[i] , '"'
                 client_request_string = '%'.join(assigned_chunks[i]) + '&1'
                 print "[user.py] [Client " + str(i) + "] flag_deficit: ", flag_deficit, \
