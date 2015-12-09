@@ -84,7 +84,7 @@ var chartDict = {};
 	var delete_user = function(id){
 		console.log('removing cache ' + id);
 			delete chartDict[id];
-			$('#' + id).remove();
+			document.getElementById(id).remove();
 			
 		};
 
