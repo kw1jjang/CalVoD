@@ -46,7 +46,8 @@ class StreamFTP(threading.Thread, FTP, object):
         host_ip_address = host[0]
         host_port_num = host[1]
         self.host_address = (host_ip_address, host_port_num)
-        FTP.connect(self, host_ip_address, host_port_num, 3)
+        #FTP.connect(self, host_ip_address, host_port_num, 3)
+        FTP.connect(self, host_ip_address, host_port_num, 6)
         #FTP.__init__(self, host, user, passwd, acct, timeout)
         threading.Thread.__init__(self)
 
