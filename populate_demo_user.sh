@@ -1,7 +1,7 @@
 # for testing purpose, run just one cache
 # testing the behavior when the cache is gone
 
-./kill_users.sh
+#./kill_users.sh
 #python remove_user.py
 mkdir -p users
 
