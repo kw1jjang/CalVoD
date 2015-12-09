@@ -16,7 +16,7 @@ if [ ! -z "$option" ] ; then
 fi
 
 mkdir -p caches
-rm -rf caches/*
+#rm -rf caches/*
 cd "caches"
 for (( i = num1; i <= num2; i++ ))
 do
