@@ -499,7 +499,11 @@ def main():
         print '[user.py] Starting to watch video %s' % video_name
         sys.stdout.flush()
         test_user = P2PUser(tracker_address, video_name, user_name)
-        test_user.download(video_name, 1)
+        try:
+            test_user.download(video_name, 1)
+        except:
+            print('\n\n\n\n USER WILL DC NOW \n\n\n\n')
+            continue
         test_user.disconnect(tracker_address, video_name, user_name)
         print '[user.py] Download of video %s finished.' % video_name
         sys.stdout.flush()
