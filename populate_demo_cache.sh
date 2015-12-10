@@ -28,6 +28,6 @@ do
     rm -rf video*
     python ../../cache.py $i > /dev/null &
     cd ..
-    sleep 5
+    sleep 1
 done
 cd ".."
