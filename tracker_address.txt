@@ -1,1 +1,1 @@
-http://[2607:f140:400:a009:41b8:37f8:e5d4:7b8e]:8080/req/
+http://localhost:8080/req/
