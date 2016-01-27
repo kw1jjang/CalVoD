@@ -16,7 +16,7 @@ import pdb #remove all pdb.set_trace() to make it run continuously
 
 # Debugging MSG
 DEBUGGING_MSG = False
-DEBUG_RYAN = True
+DEBUG_RYAN = False
 # Algorithm DEBUGGING
 POSITIVE_CONSTRAINT = True
 
@@ -82,6 +82,10 @@ class Cache(object):
         self.packet_size = 2504
         server_ip_address = get_server_address(tracker_address)
         self.server_client = ThreadClient(self, server_ip_address, self.packet_size)
+        inst_SENDPORT = 'SENDPORT '
+        if DEBUG_RYAN:
+            pdb.set_trace()
+            self.server_client.put_instruction(inst_SENDPORT + cache_config[2] + ' ' + cache_config[3])
         self.server_client.set_respond_RETR(True)
 
         self.cache_id = cache_id = int(cache_config[0])
@@ -657,6 +661,8 @@ class CacheHandler(StreamHandler):
             producer = self.chunkproducer(files, self._current_type)
             self.push_dtp_data(producer, isproducer=True, file=None, cmd="RETR")
             return
+        
+    
 
     def on_connect(self):
         print '[cache.py] CONNECTION is ESTABLISHED!!'

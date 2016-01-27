@@ -13,9 +13,11 @@ from time import gmtime, strftime
 import commands
 import json
 import urllib2
+import pdb
 
 # Debugging MSG
 DEBUGGING_MSG = True
+DEBUG_RYAN = False
 # Cache Configuration
 # server_address = ("0.0.0.0", 61000)
 server_address = ["localhost", 8082] #this value is no longer used but is kept anyways.
@@ -24,6 +26,7 @@ server_address = ["localhost", 8082] #this value is no longer used but is kept a
 tracker_address = load_tracker_address()
 path = "."
 movie_config_file = '../config/video_info.csv'
+server_to_cache_port = {}
 
 def log_load(log_type, load):
     # Open log files
@@ -195,6 +198,8 @@ proto_cmds['RETO'] = dict(perm='l', auth=True, arg=True,
                   help='Syntax: RETO <SP> file-name (retrieve a file).')
 proto_cmds['CACHEDATA'] = dict(perm=None, auth=True, arg=True,
                                help='Syntax: CACHEDATA (string)')
+proto_cmds['SENDPORT'] = dict(perm=None, auth=True, arg=True,
+                              help='Syntax: SENDPORT (portnum)' )
 
 
 class StreamHandler(ftpserver.FTPHandler):
@@ -251,13 +256,18 @@ class StreamHandler(ftpserver.FTPHandler):
 
     def on_disconnect(self):
         print "### to-fix ###"
+        if DEBUG_RYAN:
+            pdb.set_trace()
         print self.remote_ip
         print self.remote_port
+        (cache_port, cache_ip) = server_to_cache_port[self.remote_port]
+        print 'DISCONNECTING CACHE ' +  cache_ip, cache_port
+        deregister_to_tracker_as_cache(tracker_address, cache_ip, int(cache_port))
+        
         # if "127.0.0.1" in self.remote_ip:
         #     deregister_to_tracker_as_cache(tracker_address, 'localhost', 60001)
         # else:
         #     deregister_to_tracker_as_cache(tracker_address, 'localhost', 60001) #self.remote_ip, 60001)
-
     @staticmethod
     def set_movies_path(path):
         StreamHandler.movies_path = path
@@ -374,6 +384,8 @@ class StreamHandler(ftpserver.FTPHandler):
         producer = ftpserver.FileProducer(fd, self._current_type)
         self.push_dtp_data(producer, isproducer=True, file=fd, cmd="RETR")
 
+        
+        
     def get_chunk_files(self, path, chunks=None):
         """For the specified path, open up all files for reading. and return
         an array of file objects opened for read."""
@@ -429,7 +441,7 @@ class StreamHandler(ftpserver.FTPHandler):
         """Send the chunks receieved by each cache from the user. Take this information and later send to tracker.
         For now, it is just written into a file.
         """
-        print 'WE ARE INSIDE OF FTPCACHEDATA THANK GOD!'
+        #print 'WE ARE INSIDE OF FTPCACHEDATA THANK GOD!'
         (line, chunksize_username_metadata) = line.split('?')
         (chunk_size, user_name) = chunksize_username_metadata.split('_')
         raw_cache_list = line.split('_')
@@ -456,6 +468,19 @@ class StreamHandler(ftpserver.FTPHandler):
         
         #self.push_dtp_data(line, isproducer=False, cmd='CDAT')
         self.respond("200 success.")
+        
+    def ftp_SENDPORT(self, cache_port_cache_ip):
+        """Create a dict of cacheportnum:connected_to_server port num.
+        This is so that when a cache is disconnected, the server knows which cache to remove from the
+        tracker based on what socket the cache was connected to on the server"""
+        (cache_port, cache_ip) = cache_port_cache_ip.split(' ')
+        server_to_cache_port[self.remote_port] = (cache_port, cache_ip)
+        print cache_port, cache_ip
+        print self.remote_ip
+        print self.remote_port
+        
+        self.respond("200 port recieved.")
+        
         
         
     def ftp_CNKS(self, line):
