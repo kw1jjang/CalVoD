@@ -260,9 +260,10 @@ class StreamHandler(ftpserver.FTPHandler):
             pdb.set_trace()
         print self.remote_ip
         print self.remote_port
-        (cache_port, cache_ip) = server_to_cache_port[self.remote_port]
-        print 'DISCONNECTING CACHE ' +  cache_ip, cache_port
-        deregister_to_tracker_as_cache(tracker_address, cache_ip, int(cache_port))
+        if self.remote_port in server_to_cache_port:
+            [cache_port, cache_ip, cache_or_user] = server_to_cache_port[self.remote_port]
+            print 'DISCONNECTING CACHE ' +  cache_ip, cache_port
+            deregister_to_tracker_as_cache(tracker_address, cache_ip, int(cache_port))
         
         # if "127.0.0.1" in self.remote_ip:
         #     deregister_to_tracker_as_cache(tracker_address, 'localhost', 60001)
@@ -473,8 +474,8 @@ class StreamHandler(ftpserver.FTPHandler):
         """Create a dict of cacheportnum:connected_to_server port num.
         This is so that when a cache is disconnected, the server knows which cache to remove from the
         tracker based on what socket the cache was connected to on the server"""
-        (cache_port, cache_ip) = cache_port_cache_ip.split(' ')
-        server_to_cache_port[self.remote_port] = (cache_port, cache_ip)
+        [cache_port, cache_ip, cache_or_user] = cache_port_cache_ip.split(' ')
+        server_to_cache_port[self.remote_port] = [cache_port, cache_ip, cache_or_user]
         print cache_port, cache_ip
         print self.remote_ip
         print self.remote_port

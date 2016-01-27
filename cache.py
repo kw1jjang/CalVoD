@@ -85,7 +85,7 @@ class Cache(object):
         inst_SENDPORT = 'SENDPORT '
         if DEBUG_RYAN:
             pdb.set_trace()
-            self.server_client.put_instruction(inst_SENDPORT + cache_config[2] + ' ' + cache_config[3])
+        self.server_client.put_instruction(inst_SENDPORT + cache_config[2] + ' ' + cache_config[3] +' cache')
         self.server_client.set_respond_RETR(True)
 
         self.cache_id = cache_id = int(cache_config[0])
