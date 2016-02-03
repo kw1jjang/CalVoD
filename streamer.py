@@ -181,7 +181,12 @@ class StreamFTP(threading.Thread, FTP, object):
                 except socket.error:
                     logging.exception("Connection closed.  Related info: " + str(sys.exc_info()[0]))
                     break
+                except EOFError:
+                    print 'Broken Pipe Detected, will close later'
+                    resp = self.voidcmd(cmd)
+                    continue
                 except:
+                    #pdb.set_trace()
                     logging.exception("cmd = " + cmd + ", Unexpected error in conn to " + str(self.host_address) + ":" + str(sys.exc_info()[0]))
                     break
 
