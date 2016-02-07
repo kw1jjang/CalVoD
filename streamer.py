@@ -21,6 +21,7 @@ except ImportError:
     import socket
 from socket import _GLOBAL_DEFAULT_TIMEOUT
 
+
 class StreamFTP(threading.Thread, FTP, object):
     class MyException(Exception):
         def _get_message(self):
@@ -133,6 +134,7 @@ class StreamFTP(threading.Thread, FTP, object):
         arbitrarily, so this while loop needs to catch those exceptions.
         The queue contains strings of FTP instructions.
         """
+        
         self.login('','')
         self.set_pasv(True) # Trying Passive mode
         while 1:
@@ -183,8 +185,12 @@ class StreamFTP(threading.Thread, FTP, object):
                     break
                 except EOFError:
                     print 'Broken Pipe Detected, will close later'
-                    resp = self.voidcmd(cmd)
-                    continue
+                    #resp = self.voidcmd(cmd)
+                    #pdb.set_trace()
+                    #self.quit()
+                    #resp = self.abort()
+                    #pdb.set_trace()
+                    break
                 except:
                     #pdb.set_trace()
                     logging.exception("cmd = " + cmd + ", Unexpected error in conn to " + str(self.host_address) + ":" + str(sys.exc_info()[0]))

@@ -15,6 +15,7 @@ import threading
 import string
 from infoThread import infoThread
 import ConfigParser
+from signal import signal, SIGPIPE, SIG_DFL, SIG_IGN
 
 import pdb #to run without stopping, uncomment all pdb.set_trace() that appear
 
@@ -265,9 +266,14 @@ class P2PUser():
             # immediately stop cache downloads.
             for client in self.clients:
                 try:
+                    #pdb.set_trace()
                     client.client.abort()
-                except:
+                except: #I think should be EOFError
+                    #e = sys.exc_info()[0]
+                    #pdb.set_trace()
+                    print sys.exc_info()[0]
                     print "[user.py] Cache connections suddenly aborted. Stopping all download."
+                    self.clients.remove(client)
                     return
             print "[user.py] Cache connections aborted for frame %d" % (frame_number)
 
@@ -406,7 +412,7 @@ class P2PUser():
             client.put_instruction('QUIT')
         self.server_client.put_instruction('QUIT')
         print "[user.py] Closed all connections."
-
+        pdb.set_trace()
         my_ip = user_name
         my_port = 0
         my_video_name = video_name
@@ -472,8 +478,14 @@ def zipfCDF(n, zipf_param=1):
         c[i] = (i, c[i-1][1] + b[i-1])
     return c
 
+def broken_pipe_handler(signum, frame):
+    print 'signal handler called with signal', signum
+    print 'ASDFASDFASDFASDFASDFASDFASFASDFASDFASDFASDFASDFASDFASDFASDF'
+
 def main():
     mu = 1
+    signal(SIGPIPE,broken_pipe_handler)
+    #signal(SIGPIPE,SIG_IGN)
     # Create unique user ID
 
     print '[user.py]', tracker_address
