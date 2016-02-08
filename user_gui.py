@@ -20,6 +20,10 @@ from signal import signal, alarm, SIGPIPE, SIG_DFL, SIG_IGN, SIGALRM
 import pdb #to run without stopping, uncomment all pdb.set_trace() that appear
 
 DEBUG_RYAN = False
+global_user_name = 'temp'
+global_port = 0
+global_video_name = 'temp'
+global_frame_number = 1
 
 class P2PUser():
     def __init__(self, tracker_address, video_name, user_name):
@@ -86,6 +90,7 @@ class P2PUser():
 
 
     def download(self, video_name, start_frame):
+        global global_frame_number
         print '[user.py] P2Puser starts downloading'
         connected_caches = []
         self.not_connected_caches = not_connected_caches = []
@@ -114,7 +119,7 @@ class P2PUser():
         for i in range(self.num_of_caches, len(cache_ip_addr)): #Is it not entering this statement here?
             if DEBUG_RYAN:
                 pdb.set_trace()
-            each_client = ThreadClient(self, cache_ip_addr[i], self.packet_size, i)
+            each_client = ThreadClient(self, cacherun_user_ip_addr[i], self.packet_size, i)
             each_client.put_instruction('ID %s' % self.user_name)
             not_connected_caches.append(each_client)
             print '[user.py] ', i, 'th connection is RESERVED: ' , cache_ip_addr[i]
@@ -149,6 +154,7 @@ class P2PUser():
         self.info_thread.start()
 
         for frame_number in range(start_frame, num_frames + 1):
+            global_frame_number = frame_number - 1
             sys.stdout.flush()
             effective_rates = [0]*len(self.clients)
             assigned_chunks = [0]*len(self.clients)
@@ -423,8 +429,9 @@ class P2PUser():
         deregister_to_tracker_as_user(tracker_address, my_ip, my_port, video_name) #tracker_address, user_name, 0, video_name
         #deregister_to_tracker_as_cache(tracker_address) #for debug - chen
         self.info_thread.flag = False
+        alarm(1) #wait 1 second before running alarm
         self.info_thread.join()
-
+        alarm(0)
         print "[user.py] BYE"
         sys.stdout.flush()
 
@@ -485,25 +492,43 @@ def zipfCDF(n, zipf_param=1):
 def broken_pipe_handler(signum, frame):
     print 'signal handler called with signal', signum
     print 'ASDFASDFASDFASDFASDFASDFASFASDFASDFASDFASDFASDFASDFASDFASDF'
-    
-def start_user():
-    print 'start'
-    
 
+def alert_handler(signum, frame):
+    #pdb.set_trace()
+    deregister_to_tracker_as_user(tracker_address, global_user_name, global_port, global_video_name)
+    true_run_user()
+    
+    
+def true_run_user():
+    print '[user.py] Starting to watch video %s' % global_video_name
+    sys.stdout.flush()
+    test_user = P2PUser(tracker_address, global_video_name, global_user_name)
+    test_user.download(global_video_name, global_frame_number)
+    #try:
+        #test_user.download(video_name, global_frame_number)
+    #except:
+    #    print('\n\n\n\n USER WILL DC NOW \n\n\n\n')
+    #    continue
+    test_user.disconnect(tracker_address, global_video_name, global_user_name)
+    global global_frame_number
+    global_frame_number = 1
+    print '[user.py] Download of video %s finished.' % global_video_name
+    sys.stdout.flush()
+    
 def main():
     mu = 1
-    signal(SIGPIPE,broken_pipe_handler)
+    #signal(SIGPIPE,broken_pipe_handler)
+    signal(SIGALRM, alert_handler)
     #signal(SIGPIPE,SIG_IGN)
     # Create unique user ID
-
     print '[user.py]', tracker_address
     # Discover movies.
     movie_LUT = retrieve_MovieLUT_from_tracker(tracker_address)
-
+    global global_user_name
+    global global_video_name
     movies = movie_LUT.movies_LUT.keys()
     runtime_ct = 0
     popularity_change = False
-
     while True:
         print 'List of available videos in the system'
         for each in movies:
@@ -516,17 +541,10 @@ def main():
 
         user_id = ''.join(random.choice(string.ascii_uppercase + string.digits) for x in range(6))
         user_name = 'user-' + user_id
-        print '[user.py] Starting to watch video %s' % video_name
-        sys.stdout.flush()
-        test_user = P2PUser(tracker_address, video_name, user_name)
-        try:
-            test_user.download(video_name, 1)
-        except:
-            print('\n\n\n\n USER WILL DC NOW \n\n\n\n')
-            continue
-        test_user.disconnect(tracker_address, video_name, user_name)
-        print '[user.py] Download of video %s finished.' % video_name
-        sys.stdout.flush()
+        global_user_name = user_name
+        global_video_name = video_name
+        true_run_user()
+    
 
 if __name__ == "__main__":
     # Load configurations

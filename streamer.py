@@ -20,6 +20,7 @@ try:
 except ImportError:
     import socket
 from socket import _GLOBAL_DEFAULT_TIMEOUT
+from signal import alarm
 
 
 class StreamFTP(threading.Thread, FTP, object):
@@ -184,7 +185,9 @@ class StreamFTP(threading.Thread, FTP, object):
                     logging.exception("Connection closed.  Related info: " + str(sys.exc_info()[0]))
                     break
                 except EOFError:
-                    print 'Broken Pipe Detected, will close later'
+                    print 'Broken Pipe Detected, thread is dead'
+                    alarm(1)
+                    
                     #resp = self.voidcmd(cmd)
                     #pdb.set_trace()
                     #self.quit()
