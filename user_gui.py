@@ -15,7 +15,7 @@ import threading
 import string
 from infoThread import infoThread
 import ConfigParser
-from signal import signal, SIGPIPE, SIG_DFL, SIG_IGN
+from signal import signal, alarm, SIGPIPE, SIG_DFL, SIG_IGN, SIGALRM
 
 import pdb #to run without stopping, uncomment all pdb.set_trace() that appear
 
@@ -89,6 +89,10 @@ class P2PUser():
         print '[user.py] P2Puser starts downloading'
         connected_caches = []
         self.not_connected_caches = not_connected_caches = []
+        inst_SENDPORT = 'SENDPORT '
+        if DEBUG_RYAN:
+            pdb.set_trace()                                #str(self.my_port) self.my_ip video_name user
+        self.server_client.put_instruction(inst_SENDPORT + str(self.my_port) + ' ' + self.my_ip + ' ' + video_name + ' user')
         # Connect to the caches
         cache_ip_addr = retrieve_caches_address_from_tracker(self.tracker_address, 100, self.user_name)
         #cache_ip_addr[0][0] = '[' + cache_ip_addr[0][0] + ']'
@@ -412,11 +416,11 @@ class P2PUser():
             client.put_instruction('QUIT')
         self.server_client.put_instruction('QUIT')
         print "[user.py] Closed all connections."
-        pdb.set_trace()
+        #pdb.set_trace()
         my_ip = user_name
         my_port = 0
         my_video_name = video_name
-        deregister_to_tracker_as_user(tracker_address, my_ip, my_port, video_name)
+        deregister_to_tracker_as_user(tracker_address, my_ip, my_port, video_name) #tracker_address, user_name, 0, video_name
         #deregister_to_tracker_as_cache(tracker_address) #for debug - chen
         self.info_thread.flag = False
         self.info_thread.join()
@@ -481,6 +485,10 @@ def zipfCDF(n, zipf_param=1):
 def broken_pipe_handler(signum, frame):
     print 'signal handler called with signal', signum
     print 'ASDFASDFASDFASDFASDFASDFASFASDFASDFASDFASDFASDFASDFASDFASDF'
+    
+def start_user():
+    print 'start'
+    
 
 def main():
     mu = 1

@@ -261,9 +261,13 @@ class StreamHandler(ftpserver.FTPHandler):
         print self.remote_ip
         print self.remote_port
         if self.remote_port in server_to_cache_port:
-            [cache_port, cache_ip, cache_or_user] = server_to_cache_port[self.remote_port]
-            print 'DISCONNECTING CACHE ' +  cache_ip, cache_port
-            deregister_to_tracker_as_cache(tracker_address, cache_ip, int(cache_port))
+            [cache_port, cache_ip, video_name, cache_or_user] = server_to_cache_port[self.remote_port]
+            if cache_or_user == 'cache':
+                print 'DISCONNECTING CACHE ' +  cache_ip, cache_port
+                deregister_to_tracker_as_cache(tracker_address, cache_ip, int(cache_port))
+            if cache_or_user == 'user':
+                print 'DISCONNECTING USER ' + cache_ip, cache_port
+                deregister_to_tracker_as_user(tracker_address, cache_ip, int(cache_port), video_name)
         
         # if "127.0.0.1" in self.remote_ip:
         #     deregister_to_tracker_as_cache(tracker_address, 'localhost', 60001)
@@ -474,8 +478,13 @@ class StreamHandler(ftpserver.FTPHandler):
         """Create a dict of cacheportnum:connected_to_server port num.
         This is so that when a cache is disconnected, the server knows which cache to remove from the
         tracker based on what socket the cache was connected to on the server"""
-        [cache_port, cache_ip, cache_or_user] = cache_port_cache_ip.split(' ')
-        server_to_cache_port[self.remote_port] = [cache_port, cache_ip, cache_or_user]
+        metadata = cache_port_cache_ip.split(' ')
+        if len(metadata) == 3:
+            [cache_port, cache_ip, cache_or_user] = metadata
+            server_to_cache_port[self.remote_port] = [cache_port, cache_ip, 'blank', cache_or_user]
+        if len(metadata) == 4:
+            [cache_port, cache_ip, user_video_name, cache_or_user] = metadata
+            server_to_cache_port[self.remote_port] = [cache_port, cache_ip, user_video_name,  cache_or_user]
         print cache_port, cache_ip
         print self.remote_ip
         print self.remote_port
