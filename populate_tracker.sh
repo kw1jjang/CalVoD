@@ -1,15 +1,14 @@
-
-
 mkdir -p log
 mkdir -p server
+mkdir -p server/user_log
 rm -rf log/*
 rm -f server/*.txt
 echo ""
 echo "cleared logs"
 
 rm -rf caches/* users/*
-mkdir caches/cache001
-mkdir users/user001
+mkdir -p caches/cache001
+mkdir -p users/user001
 
 echo "cleared ./caches directory"
 echo "cleared ./useres directory"
