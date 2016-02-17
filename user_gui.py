@@ -1,7 +1,8 @@
 from streamer import *
-from time import sleep
+import time
 from helper import *
 import os
+import shutil
 import re
 from threadclient import ThreadClient
 from ftplib import error_perm
@@ -522,7 +523,17 @@ def main():
     #signal(SIGPIPE,SIG_IGN)
     # Create unique user ID
     print '[user.py]', tracker_address
-    # Discover movies.
+
+    # clean up old movies
+    path = os.getcwd()
+    for i in os.listdir(os.getcwd()):
+        full_path = path + '/' + i;
+        if int(time.time()) - int(os.stat(full_path).st_mtime) > 60:
+            shutil.rmtree(full_path, ignore_errors=True)
+    print 'Old files cleaned!'
+    print ''
+
+    #get movile list
     movie_LUT = retrieve_MovieLUT_from_tracker(tracker_address)
     global global_user_name
     global global_video_name
