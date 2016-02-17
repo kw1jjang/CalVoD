@@ -748,25 +748,30 @@ def main():
             sys.exit()
     elif len(sys.argv) == 3:
         if(sys.argv[2] == 'public'):
-            #sys.argv[2] = urllib2.urlopen('http://ip.42.pl/raw').read()
             sys.argv[2] = urllib2.urlopen('http://icanhazip.com').read().strip('\n')
         config = [sys.argv[1], sys.argv[2], str(60000+int(sys.argv[1])), sys.argv[2], 15000000]
     else:
-        #print '[cache.py] cache.py needs an argument "cache_id"'
     #   sys.exit()
         print 'Please enter x, where cache port = 60000 + x '
         base_port = raw_input()
         cache_id = base_port
-        base_port = 60000 + int(base_port)
-        base_port = str(base_port)
-        print 'Please enter either an ip address or localhost' #later we need to have it automatically get the user's ip
+        base_port = str(60000 + int(base_port))
+        cache_public_address = urllib2.urlopen('http://icanhazip.com').read().strip('\n')
+        print 'Enter the cache\'s ip address (press enter to let system determine the address automatically)' #later we need to have it automatically get the user's ip
         ip_address_input = raw_input()
-        print 'Please enter public address (for local purposes, just type in localhost)'
+        if len(ip_address_input) == 0:
+            ip_address_input = cache_public_address
+        print 'Enter the cache\'s ip address again (press enter to let system determine the address automatically)'
         public_address_input = raw_input()
-        print 'Enter cache size. 15000000 is default (6 zeros)'
+        if len(public_address_input) == 0:
+            public_address_input = cache_public_address
+        print 'Enter cache size (press enter to use default size 15000000)'
         cache_size_input = raw_input()
-        print 'Make sure that the correct tracker address is stored in tracker_address.txt. Enter any key to continue'
-        wait_for_user_input = raw_input()
+        if len(cache_size_input) == 0:
+            cache_size_input = 15000000
+        print 'Make sure that the correct tracker address is stored in tracker_address.txt'
+        print 'Enter any key to continue'
+        raw_input()
         config = [cache_id, ip_address_input, base_port, public_address_input, cache_size_input]
         print config
     #resource.setrlimit(resource.RLIMIT_NOFILE, (5000,-1))

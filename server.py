@@ -721,20 +721,21 @@ def main():
     handler.passive_ports = range(61000, 65535)
 
     # Set public address.
-    # public_address = '54.235.225.132' #Kang EC2
     # temp_str = commands.getstatusoutput('../config/ip_public.sh')
     # public_address = temp_str[-1].split('\n')[-1]
     # public_address = '0.0.0.0'
     # print public_address
     #public_address = 'localhost' uncomment this if you want to force the server to run on localhost
-    public_address = server_address[0] #and comment out this line (regarding above comment)
+    #public_address = server_address[0] #and comment out this line (regarding above comment)
     #text above sets the public address
     
-    handler.masquerade_address = public_address
+    handler.masquerade_address = server_address[0]
+    
+    # Register server to tracker
+    public_address = server_address[0]
+    #public_address = urllib2.urlopen('http://icanhazip.com').read().strip('\n') #for AWS
     req_str = 'REGISTER_SERVER&' + public_address + '_' + str(server_address[1])
 
-    # Register server to tracker
-    # req_str = 'REGISTER_SERVER&' + server_address[0] + '_' + str(server_address[1])
     print tracker_address + req_str
     ret_str = urllib2.urlopen(tracker_address + req_str).read()
     print ret_str
