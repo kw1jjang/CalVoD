@@ -10,5 +10,5 @@ echo "Initiating single cache..."
 mkdir -p cache001
 cd "cache001"
 rm -rf video*
-python ../../cache.py 1
+python ../../cache.py 1 public
 cd "../.."

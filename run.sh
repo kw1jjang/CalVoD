@@ -10,5 +10,5 @@ echo ""
 # rm -r caches/cache001/* users/user001/* rm -r log/*
 
 #./kill_all.sh
-#./populate_tracker.sh
-#./populate_server.sh
+./populate_tracker.sh
+./populate_server.sh
