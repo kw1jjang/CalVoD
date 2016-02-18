@@ -121,7 +121,7 @@ class P2PUser():
         for i in range(self.num_of_caches, len(cache_ip_addr)): #Is it not entering this statement here?
             if DEBUG_RYAN:
                 pdb.set_trace()
-            each_client = ThreadClient(self, cacherun_user_ip_addr[i], self.packet_size, i)
+            each_client = ThreadClient(self, cache_ip_addr[i], self.packet_size, i)
             each_client.put_instruction('ID %s' % self.user_name)
             not_connected_caches.append(each_client)
             print '[user.py] ', i, 'th connection is RESERVED: ' , cache_ip_addr[i]
