@@ -746,6 +746,7 @@ def main():
         if config == None:                           # This is kept here for backwards compatibality
             print '[cache.py] cache_id not found'    
             sys.exit()
+        #config[3] = urllib2.urlopen('http://icanhazip.com').read().strip('\n') #for AWS
     elif len(sys.argv) == 3:
         if(sys.argv[2] == 'public'):
             sys.argv[2] = urllib2.urlopen('http://icanhazip.com').read().strip('\n')
@@ -773,8 +774,8 @@ def main():
         print 'Enter any key to continue'
         raw_input()
         config = [cache_id, ip_address_input, base_port, public_address_input, cache_size_input]
-        print config
     #resource.setrlimit(resource.RLIMIT_NOFILE, (5000,-1))
+    print '[config] ' + str(config)
     cache = Cache(config)
     cache.start_cache()
 
