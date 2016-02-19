@@ -9,13 +9,13 @@ if [ "$1" == "c1" ]
 then
   echo ""
   echo "running c1"
-  ssh -i ~/.ssh/NVirginakey.pem ec2-user@54.86.226.249
+  ssh -i ~/.ssh/NVirginakey.pem ec2-user@52.22.160.180
 
 elif [ "$1" == "c2" ]
 then
   echo ""
   echo "running c2"
-  ssh -i ~/.ssh/NVirginakey.pem ec2-user@54.152.49.226
+  ssh -i ~/.ssh/NVirginakey.pem ec2-user@52.7.236.218
 
 elif [ "$1" == "c3" ]
 then
@@ -33,7 +33,7 @@ elif [ "$1" == "a1" ]
 then
   echo ""
   echo "running a1"
-  ssh -i ~/.ssh/sanj.pem ec2-user@54.153.100.146
+  ssh -i ~/.ssh/sanj.pem ec2-user@52.9.120.86
 
 else
   echo ""
