@@ -13,6 +13,7 @@ from time import gmtime, strftime
 import commands
 import json
 import urllib2
+import urllib
 import pdb
 
 # Debugging MSG
@@ -456,6 +457,11 @@ class StreamHandler(ftpserver.FTPHandler):
             if cache_dict != {}:
                 cache_dicts.append(cache_dict)
         if len(cache_dicts) != 0:
+            #take cache_dicts, convert to dict
+            #my_dict = ({ 'cache_data', cache_dicts})
+            #urllib.urlencode(my_dict)
+            #make function in helper.py that sends the post to the tracker url
+            
             f = open('user_log/' + user_name + '.txt','w')
             f.write(json.dumps(cache_dicts))
             f.close()

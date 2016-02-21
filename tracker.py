@@ -180,7 +180,8 @@ class request:
                             'CACHE_DATA_VIS',
                             'CACHE_TO_USER_DATA',
                             'GET_CACHE_DATA',
-                            'GET_CACHE_DATA2']
+                            'GET_CACHE_DATA2',
+                            'POST_CACHE_DATA']
         req_type = request_str.split('&')[0]
         if len(request_str.split('&')) > 1:
             req_arg = request_str.split('&')[1]
@@ -188,7 +189,11 @@ class request:
             req_arg = 0
         req_valid = req_type in valid_req_strings
         return req_valid, req_type, req_arg
-
+    
+    def POST(self, request_str):
+        req_valid, req_type, req_arg = self.parse_request(request_str)
+        data = web.data()
+    
     def GET(self, request_str):
         req_valid, req_type, req_arg = self.parse_request(request_str)
         if req_valid == False:
