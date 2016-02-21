@@ -208,6 +208,16 @@ def update_server_load(tracker_address, video_name, num_of_chks_from_server):
     print '[helper.py] ret_str ', ret_str
     return ret_str
 
+def send_cache_data_to_tracker(tracker_address, data):
+    #data is expected to be returned from json.dumps
+    req_str = 'POST_CACHE_DATA'
+    url = tracker_address + req_str
+    req = urllib2.Request(url, data, {'Content-Type': 'application/json'})
+    ret_str = urllib2.urlopen(req).read()
+    print '[helper.py] ret_str ', ret_str
+    return ret_str
+    
+
 def chunk_delete_all_in_frame_dir(folder_name):
     try:
         filelist = os.listdir(folder_name)

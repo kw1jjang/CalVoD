@@ -192,7 +192,9 @@ class request:
     
     def POST(self, request_str):
         req_valid, req_type, req_arg = self.parse_request(request_str)
-        data = web.data()
+        if req_type == 'POST_CACHE_DATA':
+            data = web.data()
+            print data
     
     def GET(self, request_str):
         req_valid, req_type, req_arg = self.parse_request(request_str)

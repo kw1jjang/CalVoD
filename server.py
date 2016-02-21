@@ -457,13 +457,17 @@ class StreamHandler(ftpserver.FTPHandler):
             if cache_dict != {}:
                 cache_dicts.append(cache_dict)
         if len(cache_dicts) != 0:
-            #take cache_dicts, convert to dict
+            #take cache_dicts, convert to dict so that it can be encoded
+            dumped_dicts = json.dumps(cache_dicts)
+            send_cache_data_to_tracker(tracker_address, dumped_dicts)
             #my_dict = ({ 'cache_data', cache_dicts})
             #urllib.urlencode(my_dict)
-            #make function in helper.py that sends the post to the tracker url
+            #make function in helper.py that sends the post to the tracker url as JSON
+            
             
             f = open('user_log/' + user_name + '.txt','w')
-            f.write(json.dumps(cache_dicts))
+            #f.write(json.dumps(cache_dicts))
+            f.write(dumped_dicts)
             f.close()
             #cache_dicts_length = len(cache_dicts)
             #f.write('[')
