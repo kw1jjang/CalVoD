@@ -711,10 +711,10 @@ def main():
         server_address[0] = sys.argv[1]
         server_address[1] = sys.argv[2]
     if len(sys.argv) == 2: #port
-        server_address[0] = 'localhost'
+        server_address[0] = '0.0.0.0'
         server_address[1] = sys.argv[1]
     if len(sys.argv) == 1: #no argument
-        server_address[0] = 'localhost'
+        server_address[0] = '0.0.0.0'
         server_address[1] = 8081
     print server_address
     """Parameters:
@@ -742,7 +742,7 @@ def main():
     handler.masquerade_address = server_address[0]
     
     # Register server to tracker
-    public_address = server_address[0]
+    public_address = server_address[0] #for localhost
     #public_address = urllib2.urlopen('http://icanhazip.com').read().strip('\n') #for AWS
     req_str = 'REGISTER_SERVER&' + public_address + '_' + str(server_address[1])
 

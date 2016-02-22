@@ -743,16 +743,16 @@ def get_server_address(tracker_address):
 def main():
     if len(sys.argv) == 2:
         config = load_cache_config(int(sys.argv[1])) # Look up configuration of the given cache ID
+        config[]
         if config == None:                           # This is kept here for backwards compatibality
-            print '[cache.py] cache_id not found'    
+            print '[cache.py] cache_id not found'
             sys.exit()
-        #config[3] = urllib2.urlopen('http://icanhazip.com').read().strip('\n') #for AWS
     elif len(sys.argv) == 3:
         if(sys.argv[2] == 'public'):
             sys.argv[2] = urllib2.urlopen('http://icanhazip.com').read().strip('\n')
-        config = [sys.argv[1], sys.argv[2], str(60000+int(sys.argv[1])), sys.argv[2], 15000000]
+        config = [sys.argv[1], '0.0.0.0', str(60000+int(sys.argv[1])), sys.argv[2], 15000000]
     else:
-    #   sys.exit()
+        #sys.exit()
         print 'Please enter x, where cache port = 60000 + x '
         base_port = raw_input()
         cache_id = base_port
