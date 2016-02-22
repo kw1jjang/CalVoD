@@ -332,16 +332,14 @@ if __name__ == "__main__":
     print(len(sys.argv))
     print('above was the length')
     if(len(sys.argv) == 1):
-        helper.change_tracker_address('localhost','8080')
+        helper.change_tracker_address('0.0.0.0','8080')
     if(len(sys.argv) == 2):
-        helper.change_tracker_address('localhost',sys.argv[1])
         server_port = sys.argv[1]
         server_address = '0.0.0.0'
+        helper.change_tracker_address(server_address, server_port)
         sys.argv[1] = server_address + ':' + server_port
     if(len(sys.argv) == 3):
-        #helper.change_tracker_address(sys.argv[2],sys.argv[1])
         if(sys.argv[1] == 'public'):
-            #sys.argv[1] = urllib2.urlopen('http://ip.42.pl/raw').read()
             sys.argv[1] = urllib2.urlopen('http://icanhazip.com').read().strip('\n')
         server_port = sys.argv[2]
         server_address = sys.argv[1]
