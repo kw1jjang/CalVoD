@@ -7,7 +7,7 @@ from time import gmtime, strftime
 import data_visualization as dv
 import json
 import urllib2
-
+import pdb
 urls = (
     '/', 'overview',
     '/test', 'test',
@@ -194,6 +194,23 @@ class request:
         req_valid, req_type, req_arg = self.parse_request(request_str)
         if req_type == 'POST_CACHE_DATA':
             data = web.data()
+            data = json.loads(data) #data holds a list of all the caches, and the metadata about what they sent
+            for cache_metadata in data:
+                cache_dict = cache_metadata['data']
+                full_address = cache_dict['full_address']
+                ip_address = cache_dict['ip_address']
+                port = int(cache_dict['port'])
+                bytes_uploaded = int(cache_dict['bytes_downloaded'])
+                #pdb.set_trace()
+                #TODO check what account is associated with this cache
+                #check if this account (before accounts added, if this cache) is in the db
+                if db_manager.get_account_from_points_table(full_address) == []:
+                    #account was not in points table. Once accounts are added, it should always be in there.
+                    db_manager.add_account_to_points_table(full_address)
+                    db_manager.update_points_for_account(full_address, bytes_uploaded)
+                else:
+                    db_manager.update_points_for_account(full_address, bytes_uploaded)
+            #pdb.set_trace()
             print data
     
     def GET(self, request_str):

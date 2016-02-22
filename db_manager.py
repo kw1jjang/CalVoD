@@ -117,6 +117,20 @@ def get_num_of_users():
     results = db.query("SELECT count(*) AS ct FROM nodes WHERE type_of_node='user'")
     return results[0].ct
 
+# POINTS
+def add_account_to_points_table(user_name):
+    db.insert('points', user_name=user_name, bytes_uploaded = 0, points = 0)
+def remove_account_from_points_table(user_name):
+    db.delete('points',where="user_name=$user_name", vars=locals())
+def get_account_from_points_table(user_name):
+    return db.select('points',where="user_name=$user_name", vars=locals()).list()
+def update_points_for_account(user_name, bytes_uploaded):
+    query_result = db.select('points',where="user_name=$user_name", vars=locals()).list()
+    updated_bytes = query_result[0].bytes_uploaded + bytes_uploaded
+    db.update('points', where="user_name=$user_name", bytes_uploaded=updated_bytes, vars=locals())
+def remove_all_accounts_from_points_table():
+    db.delete('points', where="id>=0", vars=locals())
+
 # SERVER_LOAD
 def add_server_load(input_vname, input_n):
     db.insert('stat', vname=input_vname, n_of_chks=input_n)
