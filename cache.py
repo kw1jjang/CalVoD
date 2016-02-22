@@ -743,7 +743,6 @@ def get_server_address(tracker_address):
 def main():
     if len(sys.argv) == 2:
         config = load_cache_config(int(sys.argv[1])) # Look up configuration of the given cache ID
-        config[]
         if config == None:                           # This is kept here for backwards compatibality
             print '[cache.py] cache_id not found'
             sys.exit()

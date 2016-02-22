@@ -732,7 +732,7 @@ def main():
     handler.masquerade_address = server_address[0]
     
     # Register server to tracker
-    public_address = server_address[0] #for localhost
+    public_address = server_address[0] #for local
     #public_address = urllib2.urlopen('http://icanhazip.com').read().strip('\n') #for AWS
     req_str = 'REGISTER_SERVER&' + public_address + '_' + str(server_address[1])
 
