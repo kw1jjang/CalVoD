@@ -7,7 +7,7 @@ from time import gmtime, strftime
 import data_visualization as dv
 import json
 import urllib2
-
+import pdb
 urls = (
     '/', 'overview',
     '/test', 'test',
@@ -115,8 +115,10 @@ class overview:
     def GET(self):
         nodes_info = db_manager.get_all_nodes()
         videos_info = db_manager.get_all_videos()
+        points = db_manager.get_all_points()
         nodes_info2 = []
         videos_info2 = []
+        points2 = []
 
         n_nodes = [0, 0, 0] # Server / cache / user
 
@@ -144,14 +146,18 @@ class overview:
                 n_nodes[2] = n_nodes[2] + 1
         for each in videos_info:
             videos_info2.append([each.id, str(each.vname), each.n_of_frames, each.code_param_n, each.code_param_k, each.total_size, each.chunk_size, each.last_chunk_size])
-
+        for each in points:
+            points2.append([each.id, str(each.user_name), each.bytes_uploaded, each.points])
+            
         print '[tracker.py] nodes_info ', nodes_info2
         print '[tracker.py] n_nodes ', n_nodes
         print '[tracker.py] videos_info ', videos_info2
+        print '[tracker.py] points_info ', points2
 
         server_load = get_server_load()
+        #pdb.set_trace()
         average_server_load = [sum(server_load[0])/len(server_load[0]), sum(server_load[1])/len(server_load[1])]
-        return render.overview(nodes_info2, n_nodes, videos_info2, server_load, average_server_load)
+        return render.overview(nodes_info2, n_nodes, videos_info2, server_load, average_server_load, points2)
     
 #class index:
 #    def GET(self):
@@ -180,7 +186,8 @@ class request:
                             'CACHE_DATA_VIS',
                             'CACHE_TO_USER_DATA',
                             'GET_CACHE_DATA',
-                            'GET_CACHE_DATA2']
+                            'GET_CACHE_DATA2',
+                            'POST_CACHE_DATA']
         req_type = request_str.split('&')[0]
         if len(request_str.split('&')) > 1:
             req_arg = request_str.split('&')[1]
@@ -188,7 +195,30 @@ class request:
             req_arg = 0
         req_valid = req_type in valid_req_strings
         return req_valid, req_type, req_arg
-
+    
+    def POST(self, request_str):
+        req_valid, req_type, req_arg = self.parse_request(request_str)
+        if req_type == 'POST_CACHE_DATA':
+            data = web.data()
+            data = json.loads(data) #data holds a list of all the caches, and the metadata about what they sent
+            for cache_metadata in data:
+                cache_dict = cache_metadata['data']
+                full_address = cache_dict['full_address']
+                ip_address = cache_dict['ip_address']
+                port = int(cache_dict['port'])
+                bytes_uploaded = int(cache_dict['bytes_downloaded'])
+                #pdb.set_trace()
+                #TODO check what account is associated with this cache
+                #check if this account (before accounts added, if this cache) is in the db
+                if db_manager.get_account_from_points_table(full_address) == []:
+                    #account was not in points table. Once accounts are added, it should always be in there.
+                    db_manager.add_account_to_points_table(full_address)
+                    db_manager.update_points_for_account(full_address, bytes_uploaded)
+                else:
+                    db_manager.update_points_for_account(full_address, bytes_uploaded)
+            #pdb.set_trace()
+            print data
+    
     def GET(self, request_str):
         req_valid, req_type, req_arg = self.parse_request(request_str)
         if req_valid == False:
