@@ -19,12 +19,11 @@ def load_tracker_address():
     return tracker_address
 
 def change_tracker_address(address,port):
-    f = open('tracker_address.txt', 'w')
-    f.write('http://' + address + ':' + port + '/req/')
-    f.close()
-
     global tracker_address
     tracker_address = 'http://' + address + ':' + port + '/req/'
+    f = open('tracker_address.txt', 'w')
+    f.write(tracker_address)
+    f.close()
     print 'tracker address changed to: ' + tracker_address
     #these last 3 lines are only required for tracker.py to know the new tracker_address after.
     #also, tracker.py should be the only file running this function in the first place
