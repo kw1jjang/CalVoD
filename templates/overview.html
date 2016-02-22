@@ -1,4 +1,4 @@
-$def with (nodes_info, n_nodes, videos_info, server_load, server_load_avg)
+$def with (nodes_info, n_nodes, videos_info, server_load, server_load_avg, points)
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -99,6 +99,24 @@ title: 'Server Load',
             </tr>
         </table>
         </p>
+        
+<p><h3>Account Information</h3>
+<table border=1>
+    <tr>
+        <th>id</th>
+        <th>account_name</th>
+        <th>bytes_uploaded</th>
+        <th>points</th>
+    </tr>
+    $for each in points:
+    <tr>
+        $for p in each:
+        <td>$p</td>
+    </tr>
+</table>
+</p>
+        
+
     </body>
 </html>
 

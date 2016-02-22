@@ -130,6 +130,8 @@ def update_points_for_account(user_name, bytes_uploaded):
     db.update('points', where="user_name=$user_name", bytes_uploaded=updated_bytes, vars=locals())
 def remove_all_accounts_from_points_table():
     db.delete('points', where="id>=0", vars=locals())
+def get_all_points():
+    return db.select('points').list()
 
 # SERVER_LOAD
 def add_server_load(input_vname, input_n):
