@@ -43,6 +43,7 @@ caches/*
 log/*
 server/*
 users/*
+.swp
 
 # Dropbox
 .dropbox

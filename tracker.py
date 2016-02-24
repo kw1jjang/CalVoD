@@ -32,12 +32,8 @@ urls = (
 #inside of httpserver.py. This is what actually runs our stuff.
 
 
-
-
-
 render = web.template.render('templates/')
 user_population = {}
-
 
 def log_load():
     # Open log files
@@ -113,6 +109,7 @@ class test:
 
 class overview:
     def GET(self):
+        #TODO: display accounts, and associate points with accounts
         nodes_info = db_manager.get_all_nodes()
         videos_info = db_manager.get_all_videos()
         points = db_manager.get_all_points()

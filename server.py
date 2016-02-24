@@ -12,7 +12,6 @@ from helper import *
 from time import gmtime, strftime
 import commands
 import json
-import urllib2
 import urllib
 import pdb
 
