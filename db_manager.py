@@ -136,10 +136,10 @@ def get_all_points():
 # ACCOUNTS
 def add_account(user_name, password, email_address):
     db.insert('accounts', user_name=user_name, password=password, email_address=email_address)
-def remove_account(id):
-    db.delete('accounts', where='id=$id', vars=locals())
+def remove_account(user_name):
+    db.delete('accounts', where='user_name=$user_name', vars=locals())
 def get_account(user_name):
-    return db.select('accounts', where="user_name=$user_name", vars=locals().list)
+    return db.select('accounts', where="user_name=$user_name", vars=locals()).list()
 def clear_account():
     db.delete('accounts', where="id>=0", vars=locals())
 def get_all_accounts():
