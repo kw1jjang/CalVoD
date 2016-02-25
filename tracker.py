@@ -8,13 +8,18 @@ import data_visualization as dv
 import json
 import urllib2
 import pdb
+web.config.debug = False
 urls = (
     '/', 'overview',
     '/test', 'test',
     '/req/(.*)', 'request',
     '/registration', 'registration',
     '/login', 'login',
+    '/logout', 'logout',
 )
+app = web.application(urls,globals())
+session = web.session.Session(app, web.session.DiskStore('sessions'))
+
 #import site
 #site.getsitepackages() to find where your site packages are stored
 #all of app.run does the following: return wsgi.runwsgi(self.wsgifunc(*middleware))
@@ -111,57 +116,60 @@ class test:
 
 class overview:
     def GET(self):
-        #TODO: display accounts, and associate points with accounts
-        nodes_info = db_manager.get_all_nodes()
-        videos_info = db_manager.get_all_videos()
-        points = db_manager.get_all_points()
-        accounts = db_manager.get_all_accounts()
-        nodes_info2 = []
-        videos_info2 = []
-        account_list = []
-        points2 = []
+        if session.get('logged_in', True):
+            #TODO: display accounts, and associate points with accounts
+            nodes_info = db_manager.get_all_nodes()
+            videos_info = db_manager.get_all_videos()
+            points = db_manager.get_all_points()
+            accounts = db_manager.get_all_accounts()
+            nodes_info2 = []
+            videos_info2 = []
+            account_list = []
+            points2 = []
 
-        n_nodes = [0, 0, 0] # Server / cache / user
+            n_nodes = [0, 0, 0] # Server / cache / user
 
-        # Convert 'chunk indexes' to ints
-        for each in nodes_info:
-            each.stored_chunks = ast.literal_eval(str(each.stored_chunks))
-            if each.stored_chunks is not None:
-                if len(each.stored_chunks.keys()) == 0:
-                    continue
-                for key, val in each.stored_chunks.items():
-                    stored_chunk_str = str(val)
-                    stored_chunk_list = map(int, ast.literal_eval(stored_chunk_str))
-                    val = stored_chunk_list.sort()
-                    each.stored_chunks[key] = stored_chunk_list
+            # Convert 'chunk indexes' to ints
+            for each in nodes_info:
+                each.stored_chunks = ast.literal_eval(str(each.stored_chunks))
+                if each.stored_chunks is not None:
+                    if len(each.stored_chunks.keys()) == 0:
+                        continue
+                    for key, val in each.stored_chunks.items():
+                        stored_chunk_str = str(val)
+                        stored_chunk_list = map(int, ast.literal_eval(stored_chunk_str))
+                        val = stored_chunk_list.sort()
+                        each.stored_chunks[key] = stored_chunk_list
 
-        # Convert storages to lists
-        for each in nodes_info:
-            nodes_info2.append([each.id, str(each.type_of_node), str(each.ip), str(each.port), str(each.watching_video), each.stored_chunks])
-            #nodes_info2.append([each.id, str(each.type_of_node), str(each.ip), str(each.port), str(each.watching_video), ast.literal_eval(str(each.stored_chunks))])
-            if str(each.type_of_node) == 'server':
-                n_nodes[0] = n_nodes[0] + 1
-            elif str(each.type_of_node) == 'cache':
-                n_nodes[1] = n_nodes[1] + 1
-            elif str(each.type_of_node) == 'user':
-                n_nodes[2] = n_nodes[2] + 1
-        for each in videos_info:
-            videos_info2.append([each.id, str(each.vname), each.n_of_frames, each.code_param_n, each.code_param_k, each.total_size, each.chunk_size, each.last_chunk_size])
-        for each in points:
-            points2.append([each.id, str(each.user_name), each.bytes_uploaded, each.points])
-        for each in accounts:
-            account_list.append([each.id, str(each.user_name), str(each.password), str(each.email_address)])
-            
-        print '[tracker.py] nodes_info ', nodes_info2
-        print '[tracker.py] n_nodes ', n_nodes
-        print '[tracker.py] videos_info ', videos_info2
-        print '[tracker.py] points_info ', points2
-        print '[tracker.py] accounts', account_list
-        server_load = get_server_load()
-        #pdb.set_trace()
-        average_server_load = [sum(server_load[0])/len(server_load[0]), sum(server_load[1])/len(server_load[1])]
-        return render.overview(nodes_info2, n_nodes, videos_info2, server_load, average_server_load, points2, account_list)
-    
+            # Convert storages to lists
+            for each in nodes_info:
+                nodes_info2.append([each.id, str(each.type_of_node), str(each.ip), str(each.port), str(each.watching_video), each.stored_chunks])
+                #nodes_info2.append([each.id, str(each.type_of_node), str(each.ip), str(each.port), str(each.watching_video), ast.literal_eval(str(each.stored_chunks))])
+                if str(each.type_of_node) == 'server':
+                    n_nodes[0] = n_nodes[0] + 1
+                elif str(each.type_of_node) == 'cache':
+                    n_nodes[1] = n_nodes[1] + 1
+                elif str(each.type_of_node) == 'user':
+                    n_nodes[2] = n_nodes[2] + 1
+            for each in videos_info:
+                videos_info2.append([each.id, str(each.vname), each.n_of_frames, each.code_param_n, each.code_param_k, each.total_size, each.chunk_size, each.last_chunk_size])
+            for each in points:
+                points2.append([each.id, str(each.user_name), each.bytes_uploaded, each.points])
+            for each in accounts:
+                account_list.append([each.id, str(each.user_name), str(each.password), str(each.email_address)])
+                
+            print '[tracker.py] nodes_info ', nodes_info2
+            print '[tracker.py] n_nodes ', n_nodes
+            print '[tracker.py] videos_info ', videos_info2
+            print '[tracker.py] points_info ', points2
+            print '[tracker.py] accounts', account_list
+            server_load = get_server_load()
+            #pdb.set_trace()
+            average_server_load = [sum(server_load[0])/len(server_load[0]), sum(server_load[1])/len(server_load[1])]
+            return render.overview(nodes_info2, n_nodes, videos_info2, server_load, average_server_load, points2, account_list)
+        else:
+            raise web.seeother('/login')
+
 #class index:
 #    def GET(self):
 #        return render.index()
@@ -382,11 +390,22 @@ class login:
         user_name = data.inputUserName
         password = data.inputPassword
         if len(db_manager.get_account(user_name)) == 0:
-            return "user does not exist!"
+            session.logged_in = False
+            #return "user does not exist!"
+            raise web.seeother('/login')
         elif db_manager.get_account(user_name)[0].password == password:
+            session.logged_in = True
             raise web.seeother('/')
         elif db_manager.get_account(user_name)[0].password != password:
-            return "wrong username/password combination!"
+            session.logged_in = False
+            #return "wrong username/password combination!"
+            raise web.seeother('/login')
+
+
+class logout:
+    def GET(self):
+        session.logged_in = False
+        raise web.seeother('/login')
 
 if __name__ == "__main__":
     print(len(sys.argv))
@@ -408,7 +427,6 @@ if __name__ == "__main__":
         sys.argv[1] = server_address + ':' + server_port
         helper.change_tracker_address(server_address, server_port)
         print sys.argv[1]
-    app = web.application(urls,globals())
     app.run() #takes commandline input of ip_address:port. i.e. 0.0.0.0:8080 on sys.argv[1].
     #tracker.py takes an input of port ip_address. i.e.
     #tracker.py 8080 0.0.0.0 for localhost:8080

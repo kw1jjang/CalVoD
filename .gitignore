@@ -44,6 +44,7 @@ log/*
 server/*
 users/*
 .swp
+sessions/*
 
 # Dropbox
 .dropbox
