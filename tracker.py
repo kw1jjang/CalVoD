@@ -113,8 +113,10 @@ class overview:
         nodes_info = db_manager.get_all_nodes()
         videos_info = db_manager.get_all_videos()
         points = db_manager.get_all_points()
+        accounts = db_manager.get_all_accounts()
         nodes_info2 = []
         videos_info2 = []
+        account_list = []
         points2 = []
 
         n_nodes = [0, 0, 0] # Server / cache / user
@@ -145,16 +147,18 @@ class overview:
             videos_info2.append([each.id, str(each.vname), each.n_of_frames, each.code_param_n, each.code_param_k, each.total_size, each.chunk_size, each.last_chunk_size])
         for each in points:
             points2.append([each.id, str(each.user_name), each.bytes_uploaded, each.points])
+        for each in accounts:
+            account_list.append([each.id, str(each.user_name), str(each.password), str(each.email_address)])
             
         print '[tracker.py] nodes_info ', nodes_info2
         print '[tracker.py] n_nodes ', n_nodes
         print '[tracker.py] videos_info ', videos_info2
         print '[tracker.py] points_info ', points2
-
+        print '[tracker.py] accounts', account_list
         server_load = get_server_load()
         #pdb.set_trace()
         average_server_load = [sum(server_load[0])/len(server_load[0]), sum(server_load[1])/len(server_load[1])]
-        return render.overview(nodes_info2, n_nodes, videos_info2, server_load, average_server_load, points2)
+        return render.overview(nodes_info2, n_nodes, videos_info2, server_load, average_server_load, points2, account_list)
     
 #class index:
 #    def GET(self):

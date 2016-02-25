@@ -133,6 +133,18 @@ def remove_all_accounts_from_points_table():
 def get_all_points():
     return db.select('points').list()
 
+# ACCOUNTS
+def add_account(user_name, password, email_address):
+    db.insert('accounts', user_name=user_name, password=password, email_address=email_address)
+def remove_account(id):
+    db.delete('accounts', where='id=$id', vars=locals())
+def get_account(user_name):
+    return db.select('accounts', where="user_name=$user_name", vars=locals().list)
+def clear_account():
+    db.delete('accounts', where="id>=0", vars=locals())
+def get_all_accounts():
+    return db.select('accounts', order='id').list()
+
 # SERVER_LOAD
 def add_server_load(input_vname, input_n):
     db.insert('stat', vname=input_vname, n_of_chks=input_n)
