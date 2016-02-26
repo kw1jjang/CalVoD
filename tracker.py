@@ -18,7 +18,7 @@ urls = (
     '/logout', 'logout',
 )
 app = web.application(urls,globals())
-session = web.session.Session(app, web.session.DiskStore('sessions'))
+session = web.session.Session(app, web.session.DiskStore('sessions'), initializer={'login': False})
 
 #import site
 #site.getsitepackages() to find where your site packages are stored
@@ -116,7 +116,7 @@ class test:
 
 class overview:
     def GET(self):
-        if session.get('logged_in', True):
+        if session.get('login', False):
             #TODO: display accounts, and associate points with accounts
             nodes_info = db_manager.get_all_nodes()
             videos_info = db_manager.get_all_videos()
@@ -390,21 +390,21 @@ class login:
         user_name = data.inputUserName
         password = data.inputPassword
         if len(db_manager.get_account(user_name)) == 0:
-            session.logged_in = False
+            session.login = False
             #return "user does not exist!"
             raise web.seeother('/login')
         elif db_manager.get_account(user_name)[0].password == password:
-            session.logged_in = True
+            session.login = True
             raise web.seeother('/')
         elif db_manager.get_account(user_name)[0].password != password:
-            session.logged_in = False
+            session.login = False
             #return "wrong username/password combination!"
             raise web.seeother('/login')
 
 
 class logout:
     def GET(self):
-        session.logged_in = False
+        session.login = False
         raise web.seeother('/login')
 
 if __name__ == "__main__":
