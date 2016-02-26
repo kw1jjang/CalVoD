@@ -13,7 +13,7 @@ urls = (
     '/', 'overview',
     '/test', 'test',
     '/req/(.*)', 'request',
-    '/registration', 'registration',
+    '/signup', 'signup',
     '/login', 'login',
     '/logout', 'logout',
 )
@@ -367,9 +367,9 @@ class request:
                 return json.dumps(user_data)
                 #currently reading from file. must later have post request to store data into db
 
-class registration:
+class signup:
     def GET(self):
-        return render.registration()
+        return render.signup()
 
     def POST(self):
         data = web.input()
@@ -378,7 +378,7 @@ class registration:
         email_address = data.inputEmail
         if len(db_manager.get_account(user_name)) == 0:
             db_manager.add_account(user_name, password, email_address)
-            return "Account registered!\n\nuser name: %s\nemail address: %s" % (user_name, email_address)
+            return "Account registered!\n\nuser name: %s\nemail address: %s\npassword: %s" % (user_name, email_address, password)
         else:
             return "User name already exist! Login or register with another user name!"
 
