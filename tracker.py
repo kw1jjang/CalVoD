@@ -116,6 +116,7 @@ class test:
 
 class overview:
     def GET(self):
+        #pdb.set_trace()
         if session.get('login', False):
             #TODO: display accounts, and associate points with accounts
             nodes_info = db_manager.get_all_nodes()
@@ -372,7 +373,8 @@ class signup:
         return render.signup()
 
     def POST(self):
-        data = web.input()
+        data = web.input() #when not setting ('Content-Type', application/json')
+        #data = web.data() from urllib2 sending as json
         user_name = data.inputUserName
         password = data.inputPassword
         email_address = data.inputEmail
@@ -383,12 +385,29 @@ class signup:
             return "User name already exist! Login or register with another user name!"
 
 class login: 
-    def GET(self): 
+    #http://stackoverflow.com/questions/923296/keeping-a-session-in-python-while-making-http-requests
+    #http://docs.python-requests.org/en/latest/user/advanced/#session-objects
+    #import requests
+    #s = requests.Session()
+    #r = s.get('http://localhost:8080') will return login page
+    #r = s.post('http://localhost:8080/login', data='inputUserName=ryan&inputPassword=11111')
+    #s will save the logged in session
+    def GET(self):
+        #pdb.set_trace()
         return render.login()
     def POST(self):
-        data = web.input()
-        user_name = data.inputUserName
-        password = data.inputPassword
+        pdb.set_trace()
+        #if web.data() != {}:
+         #   pdb.set_trace()
+        #    data = web.data()
+        #    data = json.loads(data)
+        #    user_name = data['inputUserName']
+        #    password = data['inputPassword']
+            #This if statement must be before the web.input() statement.
+        if web.input() != {}:
+            data = web.input()
+            user_name = data.inputUserName
+            password = data.inputPassword
         if len(db_manager.get_account(user_name)) == 0:
             session.login = False
             #return "user does not exist!"
