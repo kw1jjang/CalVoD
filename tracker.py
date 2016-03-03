@@ -118,6 +118,7 @@ class overview:
     def GET(self):
         #pdb.set_trace()
         if session.get('login', False):
+            print 'SUCCESSFULLY DETECTS LOGIN'
             #TODO: display accounts, and associate points with accounts
             nodes_info = db_manager.get_all_nodes()
             videos_info = db_manager.get_all_videos()
@@ -243,44 +244,59 @@ class request:
                 db_manager.remove_all_videos()
                 db_manager.remove_all_nodes()
             elif req_type == 'GET_SERVER_ADDRESS':
-                res = db_manager.get_server()
-                return str(res[0].ip) + ' ' + str(res[0].port)
+                if session.get('login', False):
+                    res = db_manager.get_server()
+                    return str(res[0].ip) + ' ' + str(res[0].port)
+                else:
+                    raise web.seeother('/login')
             elif req_type == 'GET_SERVER_ADDRESS_FOR_CACHE':
-                print 'get_server_address_for_cache'
-                res = db_manager.get_server_for_cache()
-                return str(res[0].ip) + ' ' + str(res[0].port)
+                if session.get('login', False):
+                    print 'get_server_address_for_cache'
+                    res = db_manager.get_server_for_cache()
+                    return str(res[0].ip) + ' ' + str(res[0].port)
+                else:
+                    raise web.seeother('/login')
             elif req_type == 'GET_CACHES_ADDRESS':
-                # req = "user-hyunah-1 & 10"
-                arg_user_name = req_arg.split('_')[0]
-                arg_num_of_caches = req_arg.split('_')[1]
-                n_of_current_caches = db_manager.get_num_of_caches()
-                n_of_returned_caches = min(n_of_current_caches, int(arg_num_of_caches))
-                print '[tracker.py] n_of_returned_caches', n_of_returned_caches
-                caches = db_manager.get_many_caches(arg_user_name, n_of_returned_caches)
-                ret_str = ''
-                for cache in caches:
-                    ret_str = ret_str + str(cache.ip) + ' ' + str(cache.port) + '\n'
-                return ret_str
+                if session.get('login', False):
+                    # req = "user-hyunah-1 & 10"
+                    arg_user_name = req_arg.split('_')[0]
+                    arg_num_of_caches = req_arg.split('_')[1]
+                    n_of_current_caches = db_manager.get_num_of_caches()
+                    n_of_returned_caches = min(n_of_current_caches, int(arg_num_of_caches))
+                    print '[tracker.py] n_of_returned_caches', n_of_returned_caches
+                    caches = db_manager.get_many_caches(arg_user_name, n_of_returned_caches)
+                    ret_str = ''
+                    for cache in caches:
+                        ret_str = ret_str + str(cache.ip) + ' ' + str(cache.port) + '\n'
+                    return ret_str
+                else:
+                    raise web.seeother('/login')
             # NODE REGISTER
             elif req_type == 'REGISTER_USER':
-                # req_arg = "143.243.23.13_324"
-                arg_ip = req_arg.split('_')[0]
-                arg_port = req_arg.split('_')[1]
-                arg_watching_video = req_arg.split('_')[2]
-                db_manager.add_user(arg_ip, arg_port, arg_watching_video)
+                if session.get('login', False):
+                    # req_arg = "143.243.23.13_324"
+                    arg_ip = req_arg.split('_')[0]
+                    arg_port = req_arg.split('_')[1]
+                    arg_watching_video = req_arg.split('_')[2]
+                    db_manager.add_user(arg_ip, arg_port, arg_watching_video)
 
-                print '[tracker.py] Accessing...'
-                print '[tracker.py] user_pop', user_population
-                user_population[str(arg_watching_video)] += 1
-                log_load()
-
-                return 'User is registered'
+                    print '[tracker.py] Accessing...'
+                    print '[tracker.py] user_pop', user_population
+                    user_population[str(arg_watching_video)] += 1
+                    log_load()
+                    return 'User is registered'
+                else:
+                    raise web.seeother('/login')
             elif req_type == 'REGISTER_CACHE':
-                arg_ip = req_arg.split('_')[0]
-                arg_port = req_arg.split('_')[1]
-                db_manager.add_cache(arg_ip, arg_port)
-                return 'Cache is registered'
+                if session.get('login', False):
+                    arg_ip = req_arg.split('_')[0]
+                    arg_port = req_arg.split('_')[1]
+                    db_manager.add_cache(arg_ip, arg_port)
+                    return 'Cache is registered'
+                else:
+                    raise web.seeother('/login')
             elif req_type == 'REGISTER_SERVER':
+                #NOT FORCING LOGIN FOR SERVER BUT WE SHOULD HAVE AN ADMIN ACCOUNT THAT CAN
                 arg_ip = req_arg.split('_')[0]
                 arg_port = req_arg.split('_')[1]
                 # remove existing server & videos
@@ -396,7 +412,7 @@ class login:
         #pdb.set_trace()
         return render.login()
     def POST(self):
-        pdb.set_trace()
+        #pdb.set_trace()
         #if web.data() != {}:
          #   pdb.set_trace()
         #    data = web.data()

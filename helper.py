@@ -5,6 +5,7 @@ import commands
 import Queue
 import sys
 import math
+import requests
 
 DEBUGGING_MSG = True
 tracker_address = 'http://localhost:8080/req/'
@@ -215,8 +216,12 @@ def send_cache_data_to_tracker(tracker_address, data):
     ret_str = urllib2.urlopen(req).read()
     print '[helper.py] ret_str ', ret_str
     return ret_str
-    
 
+def log_in_to_tracker(session, tracker_address, username, password):
+    url = tracker_address.split('req/')[0] + 'login'
+    data = 'inputUserName='+username+'&inputPassword='+str(password)
+    session.post(url, data=data)
+    
 def chunk_delete_all_in_frame_dir(folder_name):
     try:
         filelist = os.listdir(folder_name)
@@ -227,7 +232,13 @@ def chunk_delete_all_in_frame_dir(folder_name):
                 os.unlink(file_path)
     except:
         pass
-
+    #http://stackoverflow.com/questions/923296/keeping-a-session-in-python-while-making-http-requests
+    #http://docs.python-requests.org/en/latest/user/advanced/#session-objects
+    #import requests
+    #s = requests.Session()
+    #r = s.get('http://localhost:8080') will return login page
+    #r = s.post('http://localhost:8080/login', data='inputUserName=ryan&inputPassword=11111')
+    #s will save the logged in session
 def chunk_exists_in_frame_dir(folder_name, chunk_index):
     # returns True if the chunk exists
     chunksNums = []
@@ -266,7 +277,7 @@ def chunk_files_in_frame_dir(folder_name):
         return chunksList
     except:
         return []
-
+    
 def parse_chunks(arg):
     """Returns file name, chunks, and frame number.
     File string format:
