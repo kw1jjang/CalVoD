@@ -18,7 +18,7 @@ urls = (
     '/logout', 'logout',
 )
 app = web.application(urls,globals())
-session = web.session.Session(app, web.session.DiskStore('sessions'), initializer={'login': False})
+session = web.session.Session(app, web.session.DiskStore('sessions'), initializer={'login': False,'user_name': None})
 
 #import site
 #site.getsitepackages() to find where your site packages are stored
@@ -118,6 +118,7 @@ class overview:
     def GET(self):
         #pdb.set_trace()
         if session.get('login', False):
+            #pdb.set_trace()
             print 'SUCCESSFULLY DETECTS LOGIN'
             #TODO: display accounts, and associate points with accounts
             nodes_info = db_manager.get_all_nodes()
@@ -289,6 +290,7 @@ class request:
                     raise web.seeother('/login')
             elif req_type == 'REGISTER_CACHE':
                 if session.get('login', False):
+                    #pdb.set_trace()
                     arg_ip = req_arg.split('_')[0]
                     arg_port = req_arg.split('_')[1]
                     db_manager.add_cache(arg_ip, arg_port)
@@ -433,6 +435,8 @@ class login:
             raise web.seeother('/login')
         elif db_manager.get_account(user_name)[0].password == password:
             session.login = True
+            session.user_name= user_name
+            
             raise web.seeother('/')
         elif db_manager.get_account(user_name)[0].password != password:
             session.login = False

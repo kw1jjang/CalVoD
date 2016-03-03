@@ -18,6 +18,8 @@ import string
 from infoThread import infoThread
 import ConfigParser
 from signal import signal, alarm, SIGPIPE, SIG_DFL, SIG_IGN, SIGALRM
+import requests #used for handling the cache session (associate this cache with a logged in account to tracker)
+
 
 import pdb #to run without stopping, uncomment all pdb.set_trace() that appear
 
@@ -26,9 +28,11 @@ global_user_name = 'temp'
 global_port = 0
 global_video_name = 'temp'
 global_frame_number = 1
+global_account_name = 'temp'
+global_password = 'temp'
 
 class P2PUser():
-    def __init__(self, tracker_address, video_name, user_name):
+    def __init__(self, tracker_address, video_name, user_name, session = None):
         """ Create a new P2PUser.  Set the packet size, instantiate the manager,
         and establish clients.  Currently, the clients are static but will
         become dynamic when the tracker is implemented.
@@ -37,7 +41,7 @@ class P2PUser():
         self.user_name = user_name
         self.my_ip = user_name
         self.my_port = 0
-        register_to_tracker_as_user(tracker_address, self.my_ip, self.my_port, video_name)
+        register_to_tracker_as_user(tracker_address, self.my_ip, self.my_port, video_name,session)
 
         # Connect to the server
         # Cache will get a response when each chunk is downloaded from the server.
@@ -45,7 +49,7 @@ class P2PUser():
         # downloads will be aborted after 8 seconds with no expectation.
         # After the cache download period, the files themselves will be checked
         # to see what remains to be downloaded from the server.
-        server_ip_address = retrieve_server_address_from_tracker(tracker_address)
+        server_ip_address = retrieve_server_address_from_tracker(tracker_address, session)
         self.server_client = ThreadClient(self, server_ip_address, self.packet_size)
         self.server_client.set_respond_RETR(True)
         self.tracker_address = tracker_address
@@ -91,7 +95,7 @@ class P2PUser():
             self.movies_LUT[movie_name] = (int(row[1]), int(row[2]), int(row[3]), int(row[4]), int(row[5]), int(row[6]))
 
 
-    def download(self, video_name, start_frame):
+    def download(self, video_name, start_frame, session=None):
         global global_frame_number
         print '[user.py] P2Puser starts downloading'
         connected_caches = []
@@ -101,7 +105,7 @@ class P2PUser():
             pdb.set_trace()                                #str(self.my_port) self.my_ip video_name user
         self.server_client.put_instruction(inst_SENDPORT + str(self.my_port) + ' ' + self.my_ip + ' ' + video_name + ' user')
         # Connect to the caches
-        cache_ip_addr = retrieve_caches_address_from_tracker(self.tracker_address, 100, self.user_name)
+        cache_ip_addr = retrieve_caches_address_from_tracker(self.tracker_address, 100, self.user_name, session = session)
         #cache_ip_addr[0][0] = '[' + cache_ip_addr[0][0] + ']'
         self.cache_ip_addr = cache_ip_addr
         self.num_of_caches = min(self.num_of_caches, len(cache_ip_addr))
@@ -504,8 +508,10 @@ def alert_handler(signum, frame):
 def true_run_user():
     print '[user.py] Starting to watch video %s' % global_video_name
     sys.stdout.flush()
-    test_user = P2PUser(tracker_address, global_video_name, global_user_name)
-    test_user.download(global_video_name, global_frame_number)
+    session = requests.Session()
+    log_in_to_tracker(session, tracker_address, global_account_name, global_password)
+    test_user = P2PUser(tracker_address, global_video_name, global_user_name, session)
+    test_user.download(global_video_name, global_frame_number, session)
     #try:
         #test_user.download(video_name, global_frame_number)
     #except:
@@ -538,6 +544,8 @@ def main():
     movie_LUT = retrieve_MovieLUT_from_tracker(tracker_address)
     global global_user_name
     global global_video_name
+    global global_account_name
+    global global_password
     movies = movie_LUT.movies_LUT.keys()
     runtime_ct = 0
     popularity_change = False
@@ -555,6 +563,8 @@ def main():
         user_name = 'user-' + user_id
         global_user_name = user_name
         global_video_name = video_name
+        global_account_name = 'ryan'
+        global_password = '11111'
         true_run_user()
     
 

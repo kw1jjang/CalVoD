@@ -82,7 +82,7 @@ class Cache(object):
 
         self.packet_size = 2504
         session = cache_config[5]
-        server_ip_address = get_server_address(tracker_address)
+        server_ip_address = get_server_address(tracker_address, session)
         self.server_client = ThreadClient(self, server_ip_address, self.packet_size)
         inst_SENDPORT = 'SENDPORT '
         if DEBUG_RYAN:
@@ -93,7 +93,7 @@ class Cache(object):
         self.cache_id = cache_id = int(cache_config[0])
         self.address = (cache_config[1], int(cache_config[2]))
         self.public_address = cache_config[3]
-        register_to_tracker_as_cache(tracker_address, self.public_address, self.address[1])
+        register_to_tracker_as_cache(tracker_address, self.public_address, self.address[1], session)
         stream_rate = int(cache_config[4])
 
         if True:
@@ -739,8 +739,8 @@ def load_cache_config(cache_id):
     # If not found
     return None
 
-def get_server_address(tracker_address):
-    return retrieve_server_address_from_tracker(tracker_address)
+def get_server_address(tracker_address, session=None):
+    return retrieve_server_address_from_tracker(tracker_address, session)
 
 def main():
     if len(sys.argv) == 2:
@@ -784,7 +784,7 @@ def main():
     username = 'ryan'
     password = '11111'
     session = requests.Session()
-    helper.log_in_to_tracker(session, tracker_address, username, password)
+    log_in_to_tracker(session, tracker_address, username, password)
     config.append(session)
     cache = Cache(config)
     cache.start_cache()

@@ -6,6 +6,7 @@ import Queue
 import sys
 import math
 import requests
+import pdb
 
 DEBUGGING_MSG = True
 tracker_address = 'http://localhost:8080/req/'
@@ -129,10 +130,13 @@ class MovieLUT():
         """Code parameter k for this video."""
         return self.gen_lookup(video_name, self.code_param_k_index)
 
-def retrieve_caches_address_from_tracker(tracker_address, num_of_caches, user_name):
+def retrieve_caches_address_from_tracker(tracker_address, num_of_caches, user_name, session=None):
     req_str = 'GET_CACHES_ADDRESS&' + str(user_name) + '_' + str(num_of_caches)
     print '[helper.py] req_str :' + req_str
-    ret_str = urllib2.urlopen(tracker_address + req_str).read()
+    if session != None:
+        ret_str = session.get(tracker_address + req_str).text
+    else:        
+        ret_str = urllib2.urlopen(tracker_address + req_str).read()
 
     res = [''] * num_of_caches
     ret_str_split = ret_str.split('\n')
@@ -147,9 +151,12 @@ def retrieve_caches_address_from_tracker(tracker_address, num_of_caches, user_na
         ct = ct + 1
     return None
 
-def retrieve_server_address_from_tracker(tracker_address):
+def retrieve_server_address_from_tracker(tracker_address, session=None):
     req_str = 'GET_SERVER_ADDRESS'
-    ret_str = urllib2.urlopen(tracker_address + req_str).read()
+    if session != None:
+        ret_str = session.get(tracker_address + req_str).text
+    else:
+        ret_str = urllib2.urlopen(tracker_address + req_str).read()
     ret_str_split = ret_str.split(' ')
     return (ret_str_split[0], int(ret_str_split[1]))
 
@@ -174,9 +181,12 @@ def retrieve_MovieLUT_from_tracker(tracker_address): # Retrieve it from the trac
         lut.movies_LUT[parsed_row[1]] = (int(parsed_row[2]), int(parsed_row[3]), int(parsed_row[4]), int(parsed_row[5]), int(parsed_row[6]), int(parsed_row[7]))
     return lut
 
-def register_to_tracker_as_cache(tracker_address, ip, port):
+def register_to_tracker_as_cache(tracker_address, ip, port,session=None):
     req_str = 'REGISTER_CACHE&' + str(ip) + '_' + str(port)
-    ret_str = urllib2.urlopen(tracker_address + req_str).read()
+    if session != None:
+        ret_str = session.get(tracker_address + req_str).text
+    else:
+        ret_str = urllib2.urlopen(tracker_address + req_str).read()
     return ret_str
 
 def deregister_to_tracker_as_cache(tracker_address, ip, port):
@@ -184,9 +194,12 @@ def deregister_to_tracker_as_cache(tracker_address, ip, port):
     ret_str = urllib2.urlopen(tracker_address + req_str).read()
     return ret_str
 
-def register_to_tracker_as_user(tracker_address, ip, port, watching_movie):
+def register_to_tracker_as_user(tracker_address, ip, port, watching_movie,session=None):
     req_str = 'REGISTER_USER&' + str(ip) + '_' + str(port) + '_' + str(watching_movie)
-    ret_str = urllib2.urlopen(tracker_address + req_str).read()
+    if session != None:
+        ret_str = session.get(tracker_address + req_str).text
+    else:
+        ret_str = urllib2.urlopen(tracker_address + req_str).read()
     return ret_str
 
 def deregister_to_tracker_as_user(tracker_address, ip, port, watching_movie):
