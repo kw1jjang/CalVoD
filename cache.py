@@ -11,6 +11,7 @@ import resource
 import sys
 from helper import *
 import urllib2
+import requests #used for handling the cache session (associate this cache with a logged in account to tracker)
 
 import pdb #remove all pdb.set_trace() to make it run continuously
 
@@ -80,6 +81,7 @@ class Cache(object):
         Obtain the queue of data from the FTP server."""
 
         self.packet_size = 2504
+        session = cache_config[5]
         server_ip_address = get_server_address(tracker_address)
         self.server_client = ThreadClient(self, server_ip_address, self.packet_size)
         inst_SENDPORT = 'SENDPORT '
@@ -750,6 +752,9 @@ def main():
         if(sys.argv[2] == 'public'):
             sys.argv[2] = urllib2.urlopen('http://icanhazip.com').read().strip('\n')
         config = [sys.argv[1], '0.0.0.0', str(60000+int(sys.argv[1])), sys.argv[2], 15000000]
+        #config = [sys.argv[1], sys.argv[2], str(60000+int(sys.argv[1])), sys.argv[2], 15000000]
+        #Originally it was the one on the bottem. I have it here f or reference in case the on on top
+        #Does not work for some reason.
     else:
         #sys.exit()
         print 'Please enter x, where cache port = 60000 + x '
@@ -774,7 +779,13 @@ def main():
         raw_input()
         config = [cache_id, ip_address_input, base_port, public_address_input, cache_size_input]
     #resource.setrlimit(resource.RLIMIT_NOFILE, (5000,-1))
+    
     print '[config] ' + str(config)
+    username = 'ryan'
+    password = '11111'
+    session = requests.Session()
+    helper.log_in_to_tracker(session, tracker_address, username, password)
+    config.append(session)
     cache = Cache(config)
     cache.start_cache()
 

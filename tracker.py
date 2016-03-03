@@ -296,13 +296,14 @@ class request:
                 else:
                     raise web.seeother('/login')
             elif req_type == 'REGISTER_SERVER':
-                #NOT FORCING LOGIN FOR SERVER BUT WE SHOULD HAVE AN ADMIN ACCOUNT THAT CAN
+                #CURRENTLY NO SERVER ACCOUNT BUT WE SHOULD HAVE ONE
                 arg_ip = req_arg.split('_')[0]
                 arg_port = req_arg.split('_')[1]
                 # remove existing server & videos
                 db_manager.add_server(arg_ip, arg_port)
                 return 'Server is registered'
             elif req_type == 'REGISTER_SERVER_FOR_CACHE':
+                #CURRENTLY NO SERVER ACCOUNT BUT WE SHOULD HAVE ONE
                 arg_ip = req_arg.split('_')[0]
                 arg_port = req_arg.split('_')[1]
                 # remove existing server & videos
@@ -310,6 +311,7 @@ class request:
                 return 'Server is registered'
             # VIDEO REGISTER
             elif req_type == 'REGISTER_VIDEO':
+                #CURRENTLY NO SERVER ACCOUNT BUT WE SHOULD HAVE ONE
                 print 'add video'
                 split_arg = req_arg.split('_')
                 arg_vname = split_arg[0]
@@ -328,6 +330,7 @@ class request:
 
                 return 'Video is registered'
             elif req_type == 'GET_ALL_VIDEOS':
+                #users can still get all videos
                 videos = db_manager.get_all_videos()
                 ret_str = ''
                 for video in videos:
