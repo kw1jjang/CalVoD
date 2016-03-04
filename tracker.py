@@ -16,6 +16,7 @@ urls = (
     '/signup', 'signup',
     '/login', 'login',
     '/logout', 'logout',
+    '/user_overview', 'overview',
 )
 app = web.application(urls,globals())
 session = web.session.Session(app, web.session.DiskStore('sessions'), initializer={'login': False,'user_name': None})

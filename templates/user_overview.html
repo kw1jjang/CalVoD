@@ -15,25 +15,6 @@ $def with (nodes_info, n_nodes, videos_info, server_load, server_load_avg, point
     <link href="static/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <!-- Custom styles for this template -->
     <link href="static/bootstrap/css/dashboard.css" rel="stylesheet">
-
-    <META HTTP-EQUIV="refresh" CONTENT="5">
-    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-    <script type="text/javascript">
-        google.load("visualization", "1", {packages:["corechart"]});
-        google.setOnLoadCallback(drawChart);
-        function drawChart() {
-            var data = google.visualization.arrayToDataTable([
-                ['Time', 'Server load for users', 'Server load for caches'],
-                $for i in range(len(server_load[0])-1):
-                    ['$i', $server_load[0][i], $server_load[1][i] ],
-                ['$(len(server_load[0])-1)', $server_load[0][len(server_load[0])-1], $server_load[1][len(server_load[0])-1]]]);
-            var options = {
-                title: 'Server Load', hAxis: {title: 'Time (sec)',  titleTextStyle: {color: 'red'}}
-            };
-            var chart = new google.visualization.AreaChart(document.getElementById('chart_div'));
-            chart.draw(data, options);
-        }
-        </script>
   </head>
 
   <body>
