@@ -133,6 +133,18 @@ def remove_all_accounts_from_points_table():
 def get_all_points():
     return db.select('points').list()
 
+#ACCOUNT_CACHE
+def add_cache_to_account_cache(user_name,ip, port):
+    db.insert('account_cache',user_name=user_name, ip=ip, port=port)
+def remove_cache_from_account_cache(user_name, ip, port):
+    db.delete('account_cache', where="user_name=$user_name AND ip=$ip AND port=$port", vars=locals())
+def get_caches_for_account(user_name):
+    return db.select('account_cache', where="user_name=$user_name", order='id', vars=locals()).list()
+def get_account_from_cache(ip, port):
+    return db.select('account_cache', where="ip=$ip AND port=$port", vars=locals()).list()
+def remove_all_caches_from_account_cache():
+    db.delete('account_cache', where="id>=0", vars=locals())
+
 # ACCOUNTS
 def add_account(user_name, password, email_address):
     db.insert('accounts', user_name=user_name, password=password, email_address=email_address)

@@ -178,7 +178,7 @@ class overview:
             raise web.seeother('/login')
 
 class user_overview:
-   def GET(self):
+    def GET(self):
         if session.get('login', False):
             return render.user_overview(session.user_name)
         else:
@@ -300,6 +300,9 @@ class request:
                     arg_ip = req_arg.split('_')[0]
                     arg_port = req_arg.split('_')[1]
                     db_manager.add_cache(arg_ip, arg_port)
+                    pdb.set_trace()
+                    un = session.user_name
+                    db_manager.add_cache_to_account_cache(un, arg_ip, arg_port)
                     return 'Cache is registered'
                 else:
                     raise web.seeother('/login')
@@ -364,6 +367,8 @@ class request:
                 arg_ip = req_arg.split('_')[0]
                 arg_port = req_arg.split('_')[1]
                 db_manager.remove_cache(arg_ip, arg_port)
+                un = session.user_name
+                db_manager.remove_cache_from_account_cache(un, arg_ip, arg_port)
                 return 'Cache is removed'
             elif req_type == 'UPDATE_CHUNKS_FOR_CACHE':
                 arg_ip = req_arg.split('_')[0]
