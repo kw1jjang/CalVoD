@@ -236,12 +236,14 @@ class request:
                 #pdb.set_trace()
                 #TODO check what account is associated with this cache
                 #check if this account (before accounts added, if this cache) is in the db
-                if db_manager.get_account_from_points_table(full_address) == []:
+                account_name = db_manager.get_account_from_cache(ip_address,str(port))
+                account_name = account_name[0].user_name
+                if db_manager.get_account_from_points_table(account_name) == []:
                     #account was not in points table. Once accounts are added, it should always be in there.
-                    db_manager.add_account_to_points_table(full_address)
-                    db_manager.update_points_for_account(full_address, bytes_uploaded)
+                    db_manager.add_account_to_points_table(account_name)
+                    db_manager.update_points_for_account(account_name, bytes_uploaded)
                 else:
-                    db_manager.update_points_for_account(full_address, bytes_uploaded)
+                    db_manager.update_points_for_account(account_name, bytes_uploaded)
             #pdb.set_trace()
             print data
     
@@ -307,7 +309,6 @@ class request:
                     arg_ip = req_arg.split('_')[0]
                     arg_port = req_arg.split('_')[1]
                     db_manager.add_cache(arg_ip, arg_port)
-                    pdb.set_trace()
                     un = session.user_name
                     db_manager.add_cache_to_account_cache(un, arg_ip, arg_port)
                     return 'Cache is registered'
@@ -374,8 +375,11 @@ class request:
                 arg_ip = req_arg.split('_')[0]
                 arg_port = req_arg.split('_')[1]
                 db_manager.remove_cache(arg_ip, arg_port)
+                #pdb.set_trace()
                 un = session.user_name
-                db_manager.remove_cache_from_account_cache(un, arg_ip, arg_port)
+                #Right now not using username as input, because the server can remove any user it wants.
+                #Need to have server logged in as admin for its extra priverlages
+                db_manager.remove_cache_from_account_cache(ip=arg_ip, port=arg_port)
                 return 'Cache is removed'
             elif req_type == 'UPDATE_CHUNKS_FOR_CACHE':
                 arg_ip = req_arg.split('_')[0]
