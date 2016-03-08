@@ -127,10 +127,12 @@ class overview:
                 videos_info = db_manager.get_all_videos()
                 points = db_manager.get_all_points()
                 accounts = db_manager.get_all_accounts()
+                account_caches = db_manager.get_all_account_cache()
                 nodes_info2 = []
                 videos_info2 = []
                 account_list = []
                 points2 = []
+                account_cache2 = []
 
                 n_nodes = [0, 0, 0] # Server / cache / user
 
@@ -162,16 +164,20 @@ class overview:
                     points2.append([each.id, str(each.user_name), each.bytes_uploaded, each.points])
                 for each in accounts:
                     account_list.append([each.id, str(each.user_name), str(each.password), str(each.email_address)])
+                for each in account_caches:
+                    account_cache2.append([each.id, str(each.user_name), str(each.ip), str(each.port)])
+                    
                     
                 print '[tracker.py] nodes_info ', nodes_info2
                 print '[tracker.py] n_nodes ', n_nodes
                 print '[tracker.py] videos_info ', videos_info2
                 print '[tracker.py] points_info ', points2
                 print '[tracker.py] accounts', account_list
+                print '[tracker.py] account_cache', account_cache2
                 server_load = get_server_load()
                 #pdb.set_trace()
                 average_server_load = [sum(server_load[0])/len(server_load[0]), sum(server_load[1])/len(server_load[1])]
-                return render.overview(nodes_info2, n_nodes, videos_info2, server_load, average_server_load, points2, account_list)
+                return render.overview(nodes_info2, n_nodes, videos_info2, server_load, average_server_load, points2, account_list, account_cache2)
             else: #normal user
                 return render.user_overview(session.user_name)
         else:
@@ -250,6 +256,7 @@ class request:
                 db_manager.remove_server_for_cache()
                 db_manager.remove_all_videos()
                 db_manager.remove_all_nodes()
+                db_manager.remove_all_caches_from_account_cache()
             elif req_type == 'GET_SERVER_ADDRESS':
                 if session.get('login', False):
                     res = db_manager.get_server()

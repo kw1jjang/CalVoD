@@ -144,6 +144,8 @@ def get_account_from_cache(ip, port):
     return db.select('account_cache', where="ip=$ip AND port=$port", vars=locals()).list()
 def remove_all_caches_from_account_cache():
     db.delete('account_cache', where="id>=0", vars=locals())
+def get_all_account_cache():
+    return db.select('account_cache', order='id').list()
 
 # ACCOUNTS
 def add_account(user_name, password, email_address):

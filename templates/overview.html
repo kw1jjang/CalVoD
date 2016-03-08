@@ -1,4 +1,4 @@
-$def with (nodes_info, n_nodes, videos_info, server_load, server_load_avg, points, accounts)
+$def with (nodes_info, n_nodes, videos_info, server_load, server_load_avg, points, accounts, account_cache)
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -175,6 +175,26 @@ $def with (nodes_info, n_nodes, videos_info, server_load, server_load_avg, point
                   </tbody>
                 </table>
             </div>
+          <h1 class="page-header">Accounts Running Caches</h1>
+          <div class="table-responsive">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>id</th>
+                  <th>user</th>
+                  <th>ip</th>
+                  <th>port</th>
+                </tr>
+              </thead>
+              <tbody>
+                $for account_c in account_cache:
+                <tr>
+                  $for ac in account_c:
+                  <td>$ac</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
 
 
