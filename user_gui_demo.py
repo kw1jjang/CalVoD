@@ -1,7 +1,9 @@
 from streamer import *
 from time import sleep
+import time
 from helper import *
 import os
+import shutil
 import re
 from threadclient import ThreadClient
 from ftplib import error_perm
@@ -16,14 +18,22 @@ import threading
 import string
 from infoThread import infoThread
 import ConfigParser
-from time import sleep
+from signal import signal, alarm, SIGPIPE, SIG_DFL, SIG_IGN, SIGALRM
+import requests #used for handling the cache session (associate this cache with a logged in account to tracker)
+
 
 import pdb #to run without stopping, uncomment all pdb.set_trace() that appear
 
 DEBUG_RYAN = False
+global_user_name = 'temp'
+global_port = 0
+global_video_name = 'temp'
+global_frame_number = 1
+global_account_name = 'temp'
+global_password = 'temp'
 
 class P2PUser():
-    def __init__(self, tracker_address, video_name, user_name):
+    def __init__(self, tracker_address, video_name, user_name, session = None):
         """ Create a new P2PUser.  Set the packet size, instantiate the manager,
         and establish clients.  Currently, the clients are static but will
         become dynamic when the tracker is implemented.
@@ -32,7 +42,7 @@ class P2PUser():
         self.user_name = user_name
         self.my_ip = user_name
         self.my_port = 0
-        register_to_tracker_as_user(tracker_address, self.my_ip, self.my_port, video_name)
+        register_to_tracker_as_user(tracker_address, self.my_ip, self.my_port, video_name,session)
 
         # Connect to the server
         # Cache will get a response when each chunk is downloaded from the server.
@@ -40,7 +50,7 @@ class P2PUser():
         # downloads will be aborted after 8 seconds with no expectation.
         # After the cache download period, the files themselves will be checked
         # to see what remains to be downloaded from the server.
-        server_ip_address = retrieve_server_address_from_tracker(tracker_address)
+        server_ip_address = retrieve_server_address_from_tracker(tracker_address, session)
         self.server_client = ThreadClient(self, server_ip_address, self.packet_size)
         self.server_client.set_respond_RETR(True)
         self.tracker_address = tracker_address
@@ -86,12 +96,17 @@ class P2PUser():
             self.movies_LUT[movie_name] = (int(row[1]), int(row[2]), int(row[3]), int(row[4]), int(row[5]), int(row[6]))
 
 
-    def download(self, video_name, start_frame):
+    def download(self, video_name, start_frame, session=None):
+        global global_frame_number
         print '[user.py] P2Puser starts downloading'
         connected_caches = []
         self.not_connected_caches = not_connected_caches = []
+        inst_SENDPORT = 'SENDPORT '
+        if DEBUG_RYAN:
+            pdb.set_trace()                                #str(self.my_port) self.my_ip video_name user
+        self.server_client.put_instruction(inst_SENDPORT + str(self.my_port) + ' ' + self.my_ip + ' ' + video_name + ' user')
         # Connect to the caches
-        cache_ip_addr = retrieve_caches_address_from_tracker(self.tracker_address, 100, self.user_name)
+        cache_ip_addr = retrieve_caches_address_from_tracker(self.tracker_address, 100, self.user_name, session = session)
         #cache_ip_addr[0][0] = '[' + cache_ip_addr[0][0] + ']'
         self.cache_ip_addr = cache_ip_addr
         self.num_of_caches = min(self.num_of_caches, len(cache_ip_addr))
@@ -146,6 +161,7 @@ class P2PUser():
         self.info_thread.start()
 
         for frame_number in range(start_frame, num_frames + 1):
+            global_frame_number = frame_number - 1
             sys.stdout.flush()
             effective_rates = [0]*len(self.clients)
             assigned_chunks = [0]*len(self.clients)
@@ -267,9 +283,14 @@ class P2PUser():
             # immediately stop cache downloads.
             for client in self.clients:
                 try:
+                    #pdb.set_trace()
                     client.client.abort()
-                except:
+                except: #I think should be EOFError
+                    #e = sys.exc_info()[0]
+                    #pdb.set_trace()
+                    print sys.exc_info()[0]
                     print "[user.py] Cache connections suddenly aborted. Stopping all download."
+                    self.clients.remove(client)
                     return
             print "[user.py] Cache connections aborted for frame %d" % (frame_number)
 
@@ -408,15 +429,16 @@ class P2PUser():
             client.put_instruction('QUIT')
         self.server_client.put_instruction('QUIT')
         print "[user.py] Closed all connections."
-
+        #pdb.set_trace()
         my_ip = user_name
         my_port = 0
         my_video_name = video_name
-        deregister_to_tracker_as_user(tracker_address, my_ip, my_port, video_name)
+        deregister_to_tracker_as_user(tracker_address, my_ip, my_port, video_name) #tracker_address, user_name, 0, video_name
         #deregister_to_tracker_as_cache(tracker_address) #for debug - chen
         self.info_thread.flag = False
+        alarm(1) #wait 1 second before running alarm
         self.info_thread.join()
-
+        alarm(0)
         print "[user.py] BYE"
         sys.stdout.flush()
 
@@ -474,49 +496,83 @@ def zipfCDF(n, zipf_param=1):
         c[i] = (i, c[i-1][1] + b[i-1])
     return c
 
+def broken_pipe_handler(signum, frame):
+    print 'signal handler called with signal', signum
+    print 'ASDFASDFASDFASDFASDFASDFASFASDFASDFASDFASDFASDFASDFASDFASDF'
 
+def alert_handler(signum, frame):
+    #pdb.set_trace()
+    deregister_to_tracker_as_user(tracker_address, global_user_name, global_port, global_video_name)
+    true_run_user()
+    
+    
+def true_run_user():
+    print '[user.py] Starting to watch video %s' % global_video_name
+    sys.stdout.flush()
+    session = requests.Session()
+    log_in_to_tracker(session, tracker_address, global_account_name, global_password)
+    test_user = P2PUser(tracker_address, global_video_name, global_user_name, session)
+    test_user.download(global_video_name, global_frame_number, session)
+    #try:
+        #test_user.download(video_name, global_frame_number)
+    #except:
+    #    print('\n\n\n\n USER WILL DC NOW \n\n\n\n')
+    #    continue
+    test_user.disconnect(tracker_address, global_video_name, global_user_name)
+    global global_frame_number
+    global_frame_number = 1
+    print '[user.py] Download of video %s finished.' % global_video_name
+    sys.stdout.flush()
+    
 def main():
     mu = 1
+    #signal(SIGPIPE,broken_pipe_handler)
+    signal(SIGALRM, alert_handler)
+    #signal(SIGPIPE,SIG_IGN)
     # Create unique user ID
-
     print '[user.py]', tracker_address
-    # Discover movies.
-    movie_LUT = retrieve_MovieLUT_from_tracker(tracker_address)
 
+    # clean up old movies
+    path = os.getcwd()
+    for i in os.listdir(os.getcwd()):
+        full_path = path + '/' + i;
+        if int(time.time()) - int(os.stat(full_path).st_mtime) > 60:
+            shutil.rmtree(full_path, ignore_errors=True)
+    print 'Old files cleaned!'
+    print ''
+
+    #get movile list
+    movie_LUT = retrieve_MovieLUT_from_tracker(tracker_address)
+    global global_user_name
+    global global_video_name
+    global global_account_name
+    global global_password
     movies = movie_LUT.movies_LUT.keys()
     runtime_ct = 0
     popularity_change = False
-
     while True:
         print 'List of available videos in the system'
         for each in movies:
             print '-', each
-
-        os.popen('rm -rf *')
-        #movie_list = ['Godfather','TheLordOfTheRings','Titanic','TheShawshankRedemption','OceansEleven','StarWarsForceAwakens','HarryPotter7','Batman-v-Superman','Minions','Spectre007']
-        #movie_list = []
-        if 'ryan-test-3' in movies:
-            movies.remove('ryan-test-3')
-        if 'starwars' in movies:
-            movies.remove('starwars')
         video_name = random.choice(movies)
-        rand_sleep = randint(10,300)
+        rand_sleep = randint(1,5)
         print "sleeping for %i" % rand_sleep
         sleep(rand_sleep)
 
+        # while True:
+        #     input_str = raw_input('Please choose a video:')
+        #     if input_str in movies:
+        #         video_name = input_str
+        #         break
+
         user_id = ''.join(random.choice(string.ascii_uppercase + string.digits) for x in range(6))
         user_name = 'user-' + user_id
-        print '[user.py] Starting to watch video %s' % video_name
-        sys.stdout.flush()
-        test_user = P2PUser(tracker_address, video_name, user_name)
-        try:
-            test_user.download(video_name, 1)
-        except:
-            print('\n\n\n\n USER WILL DC NOW \n\n\n\n')
-            continue
-        test_user.disconnect(tracker_address, video_name, user_name)
-        print '[user.py] Download of video %s finished.' % video_name
-        sys.stdout.flush()
+        global_user_name = user_name
+        global_video_name = video_name
+        global_account_name = 'ryan'
+        global_password = '11111'
+        true_run_user()
+    
 
 if __name__ == "__main__":
     # Load configurations
