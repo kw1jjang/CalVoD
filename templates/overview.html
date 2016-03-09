@@ -18,6 +18,7 @@ $def with (nodes_info, n_nodes, videos_info, server_load, server_load_avg, point
 
     <META HTTP-EQUIV="refresh" CONTENT="5">
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
     <script type="text/javascript">
         google.load("visualization", "1", {packages:["corechart"]});
         google.setOnLoadCallback(drawChart);
@@ -33,7 +34,7 @@ $def with (nodes_info, n_nodes, videos_info, server_load, server_load_avg, point
             var chart = new google.visualization.AreaChart(document.getElementById('chart_div'));
             chart.draw(data, options);
         }
-        </script>
+    </script>
   </head>
 
   <body>
@@ -51,10 +52,10 @@ $def with (nodes_info, n_nodes, videos_info, server_load, server_load_avg, point
         </div>
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav navbar-right">
-            <li><a href="#">Dashboard</a></li>
+            <li><a href="./">Dashboard</a></li>
             <li><a href="#">Settings</a></li>
-            <li><a href="#">Profile</a></li>
             <li><a href="#">Help</a></li>
+            <li><a href="./logout">Logout</a></li>
           </ul>
         </div>
       </div>
@@ -62,14 +63,14 @@ $def with (nodes_info, n_nodes, videos_info, server_load, server_load_avg, point
 
     <div class="container-fluid">
         <div class="col-sm-3 col-md-2 sidebar">
-          <ul class="nav nav-sidebar tabs">
+          <ul class="nav nav-sidebar tabs" id="myTab">
             <li class="active"><a href="#tab1" data-toggle="tab">Load Overview</a></li>
             <li><a href="#tab2" data-toggle="tab">Node Info</a></li>
             <li><a href="#tab3" data-toggle="tab">Video Info</a></li>
             <li><a href="#tab4" data-toggle="tab">Account & Point</a></li>
           </ul>
         </div>
-    </div>    
+    </div>
         
     <div class="tab-content col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
         <div class="tab-pane active text-style" id="tab1">
@@ -175,28 +176,28 @@ $def with (nodes_info, n_nodes, videos_info, server_load, server_load_avg, point
                   </tbody>
                 </table>
             </div>
-          <h1 class="page-header">Accounts Running Caches</h1>
-          <div class="table-responsive">
-            <table class="table table-striped">
-              <thead>
-                <tr>
-                  <th>id</th>
-                  <th>user</th>
-                  <th>ip</th>
-                  <th>port</th>
-                </tr>
-              </thead>
-              <tbody>
-                $for account_c in account_cache:
-                <tr>
-                  $for ac in account_c:
-                  <td>$ac</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
 
+            <h1 class="page-header">Accounts Running Caches</h1>
+            <div class="table-responsive">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th>id</th>
+                    <th>user</th>
+                    <th>ip</th>
+                    <th>port</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  $for account_c in account_cache:
+                  <tr>
+                    $for ac in account_c:
+                    <td>$ac</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
 
     </div>
 
