@@ -12,3 +12,4 @@ echo ""
 #./kill_all.sh
 ./populate_tracker.sh
 ./populate_server.sh
+
