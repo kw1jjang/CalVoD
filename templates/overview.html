@@ -18,7 +18,6 @@ $def with (nodes_info, n_nodes, videos_info, server_load, server_load_avg, point
 
     <META HTTP-EQUIV="refresh" CONTENT="5">
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
     <script type="text/javascript">
         google.load("visualization", "1", {packages:["corechart"]});
         google.setOnLoadCallback(drawChart);
@@ -35,6 +34,21 @@ $def with (nodes_info, n_nodes, videos_info, server_load, server_load_avg, point
             chart.draw(data, options);
         }
     </script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery.min.js"><\/script>')</script>
+    <script src="static/bootstrap/js/bootstrap.min.js"></script>
+
+		<script type="text/javascript">
+		jQuery(document).ready(function(){
+		    jQuery('a[data-toggle="tab"]').on('show.bs.tab', function(e) {
+		        localStorage.setItem('activeTab', jQuery(e.target).attr('href'));
+		    });
+		    var activeTab = localStorage.getItem('activeTab');
+		    if(activeTab){
+		        jQuery('#myTab a[href="' + activeTab + '"]').tab('show');
+		    }
+		});
+		</script>
   </head>
 
   <body>
@@ -60,21 +74,20 @@ $def with (nodes_info, n_nodes, videos_info, server_load, server_load_avg, point
         </div>
       </div>
     </nav>
-
-    <div class="container-fluid">
-        <div class="col-sm-3 col-md-2 sidebar">
+		
+		<div id="tabs">
+    	<div class="container-fluid col-sm-3 col-md-2 sidebar">
           <ul class="nav nav-sidebar tabs" id="myTab">
             <li class="active"><a href="#tab1" data-toggle="tab">Load Overview</a></li>
             <li><a href="#tab2" data-toggle="tab">Node Info</a></li>
             <li><a href="#tab3" data-toggle="tab">Video Info</a></li>
             <li><a href="#tab4" data-toggle="tab">Account & Point</a></li>
           </ul>
-        </div>
     </div>
         
-    <div class="tab-content col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+    	<div class="tab-content col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
         <div class="tab-pane active text-style" id="tab1">
-            <h1 class="page-header">Load Overview</h1>
+            <h1 class="page-header">Load Overview (currently not reloading automatically)</h1>
             <div id="chart_div"style="height: 400px;"></div>    
             <h3 class="">Average server load for users = $server_load_avg[0] Mbps</h2>
             <h3 class="">Average server load for caches = $server_load_avg[1] Mbps</h2>
@@ -199,15 +212,13 @@ $def with (nodes_info, n_nodes, videos_info, server_load, server_load_avg, point
               </table>
             </div>
           </div>
-
-    </div>
-
-
+    		</div>
+		</div>
+		</div>
+		
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-    <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery.min.js"><\/script>')</script>
-    <script src="static/bootstrap/js/bootstrap.min.js"></script>
+
   </body>
 </html>
