@@ -151,7 +151,6 @@ class overview:
                 # Convert storages to lists
                 for each in nodes_info:
                     nodes_info2.append([each.id, str(each.type_of_node), str(each.ip), str(each.port), str(each.watching_video), each.stored_chunks])
-                    #nodes_info2.append([each.id, str(each.type_of_node), str(each.ip), str(each.port), str(each.watching_video), ast.literal_eval(str(each.stored_chunks))])
                     if str(each.type_of_node) == 'server':
                         n_nodes[0] = n_nodes[0] + 1
                     elif str(each.type_of_node) == 'cache':
@@ -423,8 +422,12 @@ class signup:
         email_address = data.inputEmail
         if len(db_manager.get_account(user_name)) == 0:
             db_manager.add_account(user_name, password, email_address)
-            return "Account registered!\n\nuser name: %s\nemail address: %s\npassword: %s" % (user_name, email_address, password)
+            session.login = True
+            session.user_name= user_name
+            raise web.seeother('/user_overview')
         else:
+            #raise web.seeother('/signup')
+            session.login = False
             return "User name already exist! Login or register with another user name!"
 
 class login: 
