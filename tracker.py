@@ -17,6 +17,7 @@ urls = (
     '/login', 'login',
     '/logout', 'logout',
     '/user_overview', 'overview',
+    '/help', 'help',
 )
 app = web.application(urls,globals())
 session = web.session.Session(app, web.session.DiskStore('sessions'), initializer={'login': False,'user_name': None})
@@ -119,21 +120,20 @@ class overview:
     def GET(self):
         #pdb.set_trace()
         if session.get('login', False):
+            print 'SUCCESSFULLY DETECTS LOGIN'
+            nodes_info = db_manager.get_all_nodes()
+            videos_info = db_manager.get_all_videos()
+            points = db_manager.get_all_points()
+            accounts = db_manager.get_all_accounts()
+            account_caches = db_manager.get_all_account_cache()
+            nodes_info2 = []
+            videos_info2 = []
+            points2 = []
+            accounts2 = []
+            account_cache2 = []
+
             if session.user_name == 'admin': #admin
                 #pdb.set_trace()
-                print 'SUCCESSFULLY DETECTS LOGIN'
-                #TODO: display accounts, and associate points with accounts
-                nodes_info = db_manager.get_all_nodes()
-                videos_info = db_manager.get_all_videos()
-                points = db_manager.get_all_points()
-                accounts = db_manager.get_all_accounts()
-                account_caches = db_manager.get_all_account_cache()
-                nodes_info2 = []
-                videos_info2 = []
-                account_list = []
-                points2 = []
-                account_cache2 = []
-
                 n_nodes = [0, 0, 0] # Server / cache / user
 
                 # Convert 'chunk indexes' to ints
@@ -162,7 +162,7 @@ class overview:
                 for each in points:
                     points2.append([each.id, str(each.user_name), each.bytes_uploaded, each.points])
                 for each in accounts:
-                    account_list.append([each.id, str(each.user_name), str(each.password), str(each.email_address)])
+                    accounts2.append([each.id, str(each.user_name), str(each.password), str(each.email_address)])
                 for each in account_caches:
                     account_cache2.append([each.id, str(each.user_name), str(each.ip), str(each.port)])
                     
@@ -171,21 +171,51 @@ class overview:
                 print '[tracker.py] n_nodes ', n_nodes
                 print '[tracker.py] videos_info ', videos_info2
                 print '[tracker.py] points_info ', points2
-                print '[tracker.py] accounts', account_list
+                print '[tracker.py] accounts', accounts2
                 print '[tracker.py] account_cache', account_cache2
                 server_load = get_server_load()
                 #pdb.set_trace()
                 average_server_load = [sum(server_load[0])/len(server_load[0]), sum(server_load[1])/len(server_load[1])]
-                return render.overview(nodes_info2, n_nodes, videos_info2, server_load, average_server_load, points2, account_list, account_cache2)
+                return render.overview(nodes_info2, n_nodes, videos_info2, server_load, average_server_load, points2, accounts2, account_cache2)
             else: #normal user
-                return render.user_overview(session.user_name)
+                num_cache = 0
+                for each in points:
+                    if each.user_name == session.user_name:
+                        points2 = [each.id, str(each.user_name), each.bytes_uploaded, each.points]
+                for each in accounts:
+                    if each.user_name == session.user_name:
+                        accounts2 = [each.id, str(each.user_name), str(each.password), str(each.email_address)]
+                for each in account_caches:
+                    if each.user_name == session.user_name:
+                        num_cache = num_cache + 1
+                        account_cache2.append([each.id, str(each.user_name), str(each.ip), str(each.port)])
+                return render.user_overview(session.user_name, points2, accounts2, account_cache2, num_cache)
         else:
             raise web.seeother('/login')
 
 class user_overview:
     def GET(self):
         if session.get('login', False):
-            return render.user_overview(session.user_name)
+            nodes_info = db_manager.get_all_nodes()
+            points = db_manager.get_all_points()
+            accounts = db_manager.get_all_accounts()
+            account_caches = db_manager.get_all_account_cache()
+            nodes_info2 = []
+            points2 = []
+            accounts2 = []
+            account_cache2 = []
+            num_cache = 0
+            for each in points:
+                if each.user_name == session.user_name:
+                    points2 = [each.id, str(each.user_name), each.bytes_uploaded, each.points]
+            for each in accounts:
+                if each.user_name == session.user_name:
+                    accounts2 = [each.id, str(each.user_name), str(each.password), str(each.email_address)]
+            for each in account_caches:
+                if each.user_name == session.user_name:
+                    num_cache = num_cache + 1
+                    account_cache2.append([each.id, str(each.user_name), str(each.ip), str(each.port)])
+            return render.user_overview(session.user_name, points2, accounts2, account_cache2, num_cache)
         else:
             raise web.seeother('/login')
     
@@ -471,11 +501,18 @@ class login:
             #return "wrong username/password combination!"
             raise web.seeother('/login')
 
-
 class logout:
     def GET(self):
         session.login = False
         raise web.seeother('/login')
+
+class help:
+    def GET(self):
+        if session.get('login', False):
+            return render.help()
+        else:
+            raise web.seeother('/login')
+
 
 if __name__ == "__main__":
     print(len(sys.argv))

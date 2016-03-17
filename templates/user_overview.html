@@ -1,4 +1,4 @@
-$def with (user_name)
+$def with (user_name, points, account, account_cache, num_cache)
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -33,7 +33,7 @@ $def with (user_name)
           <ul class="nav navbar-nav navbar-right">
             <li><a href="./user_overview">Dashboard</a></li>
             <li><a href="#">Settings</a></li>
-            <li><a href="#">Help</a></li>
+            <li><a href="./help">Help</a></li>
             <li><a href="./logout">Logout</a></li>
           </ul>
         </div>
@@ -43,7 +43,7 @@ $def with (user_name)
     <div class="jumbotron">
       <div class="container">
         <h2>Hello $user_name!</h2>
-          <p>Some Description Text, latest news, updates</p>
+          <p>user id: $account[0], email: $account[3], password: $account[2]</p>
       </div>
     </div>
 
@@ -56,17 +56,123 @@ $def with (user_name)
           <p>Moive watch history, usage stat of mast user and cache</p>
           <p><a class="btn btn-primary" href="#" role="button">manage &raquo;</a></p>
         </div>
+
         <div class="col-md-4">
           <h2>System Status</h2>
-          <p>Currently running user and cache, and their corresponding data, speed, etc</p>
+          <p>you are running $num_cache caches</p>
+          <div class="table-responsive">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>id</th>
+                  <th>user_name</th>
+                  <th>ip</th>
+                  <th>port</th>
+                </tr>
+              </thead>
+                <tbody>
+                  $for cache in account_cache:
+                  <tr>
+                      $for c in cache:
+                      <td>$c</td>
+                  </tr>
+                </tbody>
+            </table>
+          </div>
           <p><a class="btn btn-primary" href="#" role="button">manage &raquo;</a></p>
-       </div>
+        </div>
+        
         <div class="col-md-4">
           <h2>Points Earned</h2>
-          <p>Points user has earned, speed mode, and instruction to adjust cache settings</p>
+          <div class="table-responsive">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th>id</th>
+                    <th>user_name</th>
+                    <th>bytes_uploaded</th>
+                    <th>points</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    $for p in points:
+                    <td>$p</td>
+                  </tr>
+                </tbody>
+              </table>
+          </div>
           <p><a class="btn btn-primary" href="#" role="button">manage &raquo;</a></p>
         </div>
       </div>
+
+
+        <br><br>
+        <h1> My movie list</h1>
+        <div class="row">
+          <div class="col-lg-2 col-sm-3 col-xs-4">
+              <a href="#">
+                   <img src="http://placehold.it/200x200" class="thumbnail img-responsive">
+              </a>
+          </div>
+           <div class="col-lg-2 col-sm-3 col-xs-4">
+              <a href="#">
+                   <img src="http://placehold.it/200x200" class="thumbnail img-responsive">
+              </a>
+          </div>
+           <div class="col-lg-2 col-sm-3 col-xs-4">
+              <a href="#">
+                   <img src="http://placehold.it/200x200" class="thumbnail img-responsive">
+              </a>
+          </div>
+           <div class="col-lg-2 col-sm-3 col-xs-4">
+              <a href="#">
+                   <img src="http://placehold.it/200x200" class="thumbnail img-responsive">
+              </a>
+          </div>
+           <div class="col-lg-2 col-sm-3 col-xs-4">
+              <a href="#">
+                   <img src="http://placehold.it/200x200" class="thumbnail img-responsive">
+              </a>
+          </div>
+           <div class="col-lg-2 col-sm-3 col-xs-4">
+              <a href="#">
+                   <img src="http://placehold.it/200x200" class="thumbnail img-responsive">
+              </a>
+          </div>
+           <div class="col-lg-2 col-sm-3 col-xs-4">
+              <a href="#">
+                   <img src="http://placehold.it/200x200" class="thumbnail img-responsive">
+              </a>
+          </div>
+           <div class="col-lg-2 col-sm-3 col-xs-4">
+              <a href="#">
+                   <img src="http://placehold.it/200x200" class="thumbnail img-responsive">
+              </a>
+          </div>
+          <div class="col-lg-2 col-sm-3 col-xs-4">
+              <a href="#">
+                   <img src="http://placehold.it/200x200" class="thumbnail img-responsive">
+              </a>
+          </div>
+          <div class="col-lg-2 col-sm-3 col-xs-4">
+              <a href="#">
+                   <img src="http://placehold.it/200x200" class="thumbnail img-responsive">
+              </a>
+          </div>
+          <div class="col-lg-2 col-sm-3 col-xs-4">
+              <a href="#">
+                   <img src="http://placehold.it/200x200" class="thumbnail img-responsive">
+              </a>
+          </div>
+          <div class="col-lg-2 col-sm-3 col-xs-4">
+              <a href="#">
+                   <img src="http://placehold.it/200x200" class="thumbnail img-responsive">
+              </a>
+          </div>
+        </div>
+
+    </div>
 
     <!-- Bootstrap core JavaScript
     ================================================== -->
