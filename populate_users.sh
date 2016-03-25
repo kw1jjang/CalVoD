@@ -1,3 +1,5 @@
+echo "this file runs user_gui_demo.py"
+
 num_of_users=5
 if [ ! -z "$1" ] ; then
     num_of_users=$1

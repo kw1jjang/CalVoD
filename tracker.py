@@ -268,7 +268,6 @@ class request:
                 account_name = db_manager.get_account_from_cache(ip_address,str(port))
                 account_name = account_name[0].user_name
                 if db_manager.get_account_from_points_table(account_name) == []:
-                    #account was not in points table. Once accounts are added, it should always be in there.
                     db_manager.add_account_to_points_table(account_name)
                     db_manager.update_points_for_account(account_name, bytes_uploaded)
                 else:
