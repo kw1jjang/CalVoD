@@ -164,7 +164,7 @@ class overview:
                 for each in accounts:
                     accounts2.append([each.id, str(each.user_name), str(each.password), str(each.email_address)])
                 for each in account_caches:
-                    account_cache2.append([each.id, str(each.user_name), str(each.ip), str(each.port)])
+                    account_cache2.append([each.id, str(each.user_name), str(each.ip), str(each.port), str(each.bytes_uploaded)])
                     
                     
                 print '[tracker.py] nodes_info ', nodes_info2
@@ -259,19 +259,20 @@ class request:
             for cache_metadata in data:
                 cache_dict = cache_metadata['data']
                 full_address = cache_dict['full_address']
-                ip_address = cache_dict['ip_address']
-                port = int(cache_dict['port'])
+                ip = cache_dict['ip_address']
+                port = cache_dict['port']
                 bytes_uploaded = int(cache_dict['bytes_downloaded'])
                 #pdb.set_trace()
-                #TODO check what account is associated with this cache
-                #check if this account (before accounts added, if this cache) is in the db
-                account_name = db_manager.get_account_from_cache(ip_address,str(port))
+                account_name = db_manager.get_account_from_cache(ip, port)
                 account_name = account_name[0].user_name
+
                 if db_manager.get_account_from_points_table(account_name) == []:
                     db_manager.add_account_to_points_table(account_name)
                     db_manager.update_points_for_account(account_name, bytes_uploaded)
+                    db_manager.update_bytes_for_cache(account_name, ip, port, bytes_uploaded)
                 else:
                     db_manager.update_points_for_account(account_name, bytes_uploaded)
+                    db_manager.update_bytes_for_cache(account_name, ip, port, bytes_uploaded)
             #pdb.set_trace()
             print data
     
@@ -338,7 +339,7 @@ class request:
                     arg_port = req_arg.split('_')[1]
                     db_manager.add_cache(arg_ip, arg_port)
                     un = session.user_name
-                    db_manager.add_cache_to_account_cache(un, arg_ip, arg_port)
+                    db_manager.add_cache_to_account_cache(un, arg_ip, arg_port, 0)
                     return 'Cache is registered'
                 else:
                     raise web.seeother('/login')

@@ -121,9 +121,9 @@ def get_num_of_users():
 def add_account_to_points_table(user_name):
     db.insert('points', user_name=user_name, bytes_uploaded = 0, points = 0)
 def remove_account_from_points_table(user_name):
-    db.delete('points',where="user_name=$user_name", vars=locals())
+    db.delete('points', where="user_name=$user_name", vars=locals())
 def get_account_from_points_table(user_name):
-    return db.select('points',where="user_name=$user_name", vars=locals()).list()
+    return db.select('points', where="user_name=$user_name", vars=locals()).list()
 def update_points_for_account(user_name, bytes_uploaded):
     query_result = db.select('points',where="user_name=$user_name", vars=locals()).list()
     updated_bytes = query_result[0].bytes_uploaded + bytes_uploaded
@@ -134,9 +134,9 @@ def get_all_points():
     return db.select('points').list()
 
 #ACCOUNT_CACHE
-def add_cache_to_account_cache(user_name,ip, port):
-    db.insert('account_cache',user_name=user_name, ip=ip, port=port)
-def remove_cache_from_account_cache(ip, port,user_name=None):
+def add_cache_to_account_cache(user_name, ip, port, bytes_uploaded):
+    db.insert('account_cache',user_name=user_name, ip=ip, port=port, bytes_uploaded=bytes_uploaded)
+def remove_cache_from_account_cache(ip, port, user_name=None):
     db.delete('account_cache', where="ip=$ip AND port=$port", vars=locals())
 def get_caches_for_account(user_name):
     return db.select('account_cache', where="user_name=$user_name", order='id', vars=locals()).list()
@@ -146,6 +146,10 @@ def remove_all_caches_from_account_cache():
     db.delete('account_cache', where="id>=0", vars=locals())
 def get_all_account_cache():
     return db.select('account_cache', order='id').list()
+def update_bytes_for_cache(user_name, ip, port, bytes_uploaded):
+    query_result = db.select('account_cache', where="user_name=$user_name AND ip=$ip AND port=$port", vars=locals()).list()
+    updated_bytes = query_result[0].bytes_uploaded + bytes_uploaded
+    db.update('account_cache', where="user_name=$user_name AND ip=$ip AND port=$port", bytes_uploaded=updated_bytes, vars=locals())
 
 # ACCOUNTS
 def add_account(user_name, password, email_address):

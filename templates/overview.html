@@ -53,7 +53,7 @@ $def with (nodes_info, n_nodes, videos_info, server_load, server_load_avg, point
 
   <body>
 
-    <nav class="navbar navbar-inverse navbar-fixed-top">
+    <nav class="navbar navbar-inverse navbar-fixed-top navbar-collapse collapse">
       <div class="container-fluid">
         <div class="navbar-header">
           <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
@@ -79,9 +79,10 @@ $def with (nodes_info, n_nodes, videos_info, server_load, server_load_avg, point
     	<div class="container-fluid col-sm-3 col-md-2 sidebar">
           <ul class="nav nav-sidebar tabs" id="myTab">
             <li class="active"><a href="#tab1" data-toggle="tab">Load Overview</a></li>
-            <li><a href="#tab2" data-toggle="tab">Node Info</a></li>
-            <li><a href="#tab3" data-toggle="tab">Video Info</a></li>
-            <li><a href="#tab4" data-toggle="tab">Account & Point</a></li>
+            <li><a href="#tab2" data-toggle="tab">Nodes</a></li>
+            <li><a href="#tab3" data-toggle="tab">Video List</a></li>
+            <li><a href="#tab4" data-toggle="tab">Accounts</a></li>
+            <li><a href="#tab5" data-toggle="tab">Points</a></li>
           </ul>
     </div>
         
@@ -149,27 +150,6 @@ $def with (nodes_info, n_nodes, videos_info, server_load, server_load_avg, point
         </div>
 
         <div class="tab-pane text-style" id="tab4">
-            <h1 class="page-header">Point Info</h1>
-            <div class="table-responsive">
-                <table class="table table-striped">
-                  <thead>
-                    <tr>
-                      <th>id</th>
-                      <th>user</th>
-                      <th>bytes_uploaded</th>
-                      <th>points</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    $for point in points:
-                    <tr>
-                        $for p in point:
-                        <td>$p</td>
-                    </tr>
-                  </tbody>
-                </table>
-            </div>
-
             <h1 class="page-header">Account Info</h1>
             <div class="table-responsive">
                 <table class="table table-striped">
@@ -190,16 +170,39 @@ $def with (nodes_info, n_nodes, videos_info, server_load, server_load_avg, point
                   </tbody>
                 </table>
             </div>
+        </div>
 
+        <div class="tab-pane text-style" id="tab5">
+            <h1 class="page-header">Point Info</h1>
+            <div class="table-responsive">
+                <table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th>id</th>
+                      <th>account_name</th>
+                      <th>total_bytes_uploaded</th>
+                      <th>points</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    $for point in points:
+                    <tr>
+                        $for p in point:
+                        <td>$p</td>
+                    </tr>
+                  </tbody>
+                </table>
+            </div>
             <h1 class="page-header">Accounts Running Caches</h1>
             <div class="table-responsive">
               <table class="table table-striped">
                 <thead>
                   <tr>
                     <th>id</th>
-                    <th>user</th>
+                    <th>account_name</th>
                     <th>ip</th>
                     <th>port</th>
+                    <th>bytes_uploaded</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -211,8 +214,8 @@ $def with (nodes_info, n_nodes, videos_info, server_load, server_load_avg, point
                 </tbody>
               </table>
             </div>
-          </div>
-    		</div>
+        </div>
+    	</div>
 		</div>
 		</div>
 		
