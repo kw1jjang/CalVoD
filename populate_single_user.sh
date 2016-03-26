@@ -7,7 +7,6 @@ rm -rf users/user001
 #rm -rf users/.user001
 
 cd "users"
-echo "Initiating single user..."
 mkdir -p user001
 cd "user001"
 # mkdir -p .user001

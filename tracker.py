@@ -242,7 +242,8 @@ class request:
                             'CACHE_TO_USER_DATA',
                             'GET_CACHE_DATA',
                             'GET_CACHE_DATA2',
-                            'POST_CACHE_DATA']
+                            'POST_CACHE_DATA',
+                            'VERIFY_ACCOUNT']
         req_type = request_str.split('&')[0]
         if len(request_str.split('&')) > 1:
             req_arg = request_str.split('&')[1]
@@ -253,7 +254,7 @@ class request:
     
     def POST(self, request_str):
         req_valid, req_type, req_arg = self.parse_request(request_str)
-        if req_type == 'POST_CACHE_DATA':
+        if req_type == '    ':
             data = web.data()
             data = json.loads(data) #data holds a list of all the caches, and the metadata about what they sent
             for cache_metadata in data:
@@ -398,7 +399,6 @@ class request:
 
                 user_population[str(arg_watching_video)] -= 1
                 log_load()
-
                 return 'User is removed'
             elif req_type == 'REMOVE_CACHE':
                 arg_ip = req_arg.split('_')[0]
@@ -439,6 +439,14 @@ class request:
                 user_data = dv.rearrange_data_for_caches(user_data)
                 return json.dumps(user_data)
                 #currently reading from file. must later have post request to store data into db
+
+            elif req_type == 'VERIFY_ACCOUNT':
+                username = req_arg.split('_')[0]
+                password = req_arg.split('_')[1]
+                if len(db_manager.verify_account(username, password)) == 0:
+                    return False
+                else:
+                    return True
 
 class signup:
     def GET(self):

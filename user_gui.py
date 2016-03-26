@@ -27,6 +27,7 @@ DEBUG_RYAN = False
 global_user_name = 'temp'
 global_port = 0
 global_video_name = 'temp'
+global global_frame_number
 global_frame_number = 1
 global_account_name = 'temp'
 global_password = 'temp'
@@ -518,8 +519,6 @@ def true_run_user():
     #    print('\n\n\n\n USER WILL DC NOW \n\n\n\n')
     #    continue
     test_user.disconnect(tracker_address, global_video_name, global_user_name)
-    global global_frame_number
-    global_frame_number = 1
     print '[user.py] Download of video %s finished.' % global_video_name
     sys.stdout.flush()
     
@@ -528,8 +527,6 @@ def main():
     #signal(SIGPIPE,broken_pipe_handler)
     signal(SIGALRM, alert_handler)
     #signal(SIGPIPE,SIG_IGN)
-    # Create unique user ID
-    print '[user.py]', tracker_address
 
     # clean up old movies
     path = os.getcwd()
@@ -538,7 +535,6 @@ def main():
         if int(time.time()) - int(os.stat(full_path).st_mtime) > 60:
             shutil.rmtree(full_path, ignore_errors=True)
     print 'Old files cleaned!'
-    print ''
 
     #get movile list
     movie_LUT = retrieve_MovieLUT_from_tracker(tracker_address)
@@ -589,7 +585,6 @@ if __name__ == "__main__":
     SERVER_DOWNLOAD_DURATION = config.getfloat('Global', 'SERVER_DOWNLOAD_DURATION');
     DECODE_WAIT_DURATION = config.getfloat('Global', 'DECODE_WAIT_DURATION');
     tracker_address = config.get('Global', 'tracker_address');
-    print tracker_address
     num_of_caches = config.getint('Global', 'num_of_caches');
 
     main()

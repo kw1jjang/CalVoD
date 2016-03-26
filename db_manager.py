@@ -162,6 +162,8 @@ def clear_account():
     db.delete('accounts', where="id>=0", vars=locals())
 def get_all_accounts():
     return db.select('accounts', order='id').list()
+def verify_account(user_name, password):
+    return db.select('accounts', where="user_name=$user_name AND password=$password", vars=locals()).list()
 
 # SERVER_LOAD
 def add_server_load(input_vname, input_n):
