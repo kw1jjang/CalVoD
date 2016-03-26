@@ -15,6 +15,10 @@ $def with (nodes_info, n_nodes, videos_info, server_load, server_load_avg, point
     <link href="static/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <!-- Custom styles for this template -->
     <link href="static/bootstrap/css/dashboard.css" rel="stylesheet">
+    <!-- Ryan's visualization code -->
+    <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/pure-min.css">
+    <script type="text/javascript" src="../static/scripts/canvasjs-1.7.0/canvasjs.min.js"></script>
+    <script type="text/javascript" src="../static/dvcache.js"></script>
 
     <META HTTP-EQUIV="refresh" CONTENT="5">
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
@@ -83,6 +87,7 @@ $def with (nodes_info, n_nodes, videos_info, server_load, server_load_avg, point
             <li><a href="#tab3" data-toggle="tab">Video List</a></li>
             <li><a href="#tab4" data-toggle="tab">Accounts</a></li>
             <li><a href="#tab5" data-toggle="tab">Points</a></li>
+            <li><a href="#tab6" data-toggle="tab">Visualization</a></li>
           </ul>
     </div>
         
@@ -215,6 +220,14 @@ $def with (nodes_info, n_nodes, videos_info, server_load, server_load_avg, point
               </table>
             </div>
         </div>
+
+        <div class="tab-pane text-style" id="tab6">
+          <h1 class="page-header">Data Visualization</h1>
+          <div id="allChartHolder" class="pure-g">
+            <div id="user-template" class="pure-u-1-5" style="height:300px;"></div>
+          </div>
+        </div>
+
     	</div>
 		</div>
 		</div>

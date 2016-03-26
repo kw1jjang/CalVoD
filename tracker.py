@@ -188,7 +188,7 @@ class overview:
                 for each in account_caches:
                     if each.user_name == session.user_name:
                         num_cache = num_cache + 1
-                        account_cache2.append([each.id, str(each.user_name), str(each.ip), str(each.port)])
+                        account_cache2.append([each.id, str(each.user_name), str(each.ip), str(each.port), str(each.bytes_uploaded)])
                 return render.user_overview(session.user_name, points2, accounts2, account_cache2, num_cache)
         else:
             raise web.seeother('/login')
@@ -214,7 +214,7 @@ class user_overview:
             for each in account_caches:
                 if each.user_name == session.user_name:
                     num_cache = num_cache + 1
-                    account_cache2.append([each.id, str(each.user_name), str(each.ip), str(each.port)])
+                    account_cache2.append([each.id, str(each.user_name), str(each.ip), str(each.port), str(each.bytes_uploaded)])
             return render.user_overview(session.user_name, points2, accounts2, account_cache2, num_cache)
         else:
             raise web.seeother('/login')
