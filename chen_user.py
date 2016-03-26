@@ -40,7 +40,7 @@ while True:
 
 cache_options = ['0', '3', '5', '10']
 num_caches = cache_options[int(selection) - 1]
-os.system('./populate_caches_local.sh ' + num_caches)
+os.system('./populate_caches_public_ui.sh ' + num_caches + ' ' + username + ' ' + password)
 
 #run user
 print '========================================='

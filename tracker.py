@@ -254,7 +254,7 @@ class request:
     
     def POST(self, request_str):
         req_valid, req_type, req_arg = self.parse_request(request_str)
-        if req_type == '    ':
+        if req_type == 'POST_CACHE_DATA':
             data = web.data()
             data = json.loads(data) #data holds a list of all the caches, and the metadata about what they sent
             for cache_metadata in data:

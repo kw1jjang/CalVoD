@@ -743,20 +743,35 @@ def get_server_address(tracker_address, session=None):
     return retrieve_server_address_from_tracker(tracker_address, session)
 
 def main():
-    if len(sys.argv) == 2:
+    #default username and password
+    username = 'alagu'
+    password = '11111'
+    
+    # python ../../cache.py 1
+    # python ../../cache.py 1 username password
+    if len(sys.argv) == 2 or len(sys.argv) == 4:
         config = load_cache_config(int(sys.argv[1])) # Look up configuration of the given cache ID
         if config == None:                           # This is kept here for backwards compatibality
             print '[cache.py] cache_id not found'
             sys.exit()
-    elif len(sys.argv) == 3:
+        if len(sys.argv) == 4:
+            username = sys.argv[2]
+            password = sys.argv[3]
+    
+    # python ../../cache.py 1 public
+    # python ../../cache.py 1 public username password
+    elif len(sys.argv) == 3 or len(sys.argv) == 5:
         if(sys.argv[2] == 'public'):
             sys.argv[2] = urllib2.urlopen('http://icanhazip.com').read().strip('\n')
         config = [sys.argv[1], '0.0.0.0', str(60000+int(sys.argv[1])), sys.argv[2], 15000000]
         #config = [sys.argv[1], sys.argv[2], str(60000+int(sys.argv[1])), sys.argv[2], 15000000]
-        #Originally it was the one on the bottem. I have it here f or reference in case the on on top
+        #Originally it was the one on the bottem. I have it here for reference in case the on on top
         #Does not work for some reason.
+        if len(sys.argv) == 5:
+            username = sys.argv[3]
+            password = sys.argv[4]
+    
     else:
-        #sys.exit()
         print 'Please enter x, where cache port = 60000 + x '
         base_port = raw_input()
         cache_id = base_port
@@ -780,12 +795,10 @@ def main():
         config = [cache_id, ip_address_input, base_port, public_address_input, cache_size_input]
     #resource.setrlimit(resource.RLIMIT_NOFILE, (5000,-1))
     
-    print '[config] ' + str(config)
-    username = 'alagu'
-    password = '11111'
     session = requests.Session()
     log_in_to_tracker(session, tracker_address, username, password)
     config.append(session)
+    print '[config] ' + str(config)
     cache = Cache(config)
     cache.start_cache()
 
