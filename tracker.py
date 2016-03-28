@@ -511,11 +511,11 @@ class logout:
 
 class help:
     def GET(self):
-        if session.get('login', False):
-            return render.help()
-        else:
-            raise web.seeother('/login')
-
+        return render.help()
+        # if session.get('login', False):
+        #     return render.help()
+        # else:
+        #     raise web.seeother('/login')
 
 if __name__ == "__main__":
     print(len(sys.argv))
