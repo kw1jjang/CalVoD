@@ -420,26 +420,21 @@ class request:
                 arg_vname = req_arg.split('_')[0]
                 arg_n_of_chks = req_arg.split('_')[1]
                 db_manager.add_server_load(arg_vname, arg_n_of_chks)
-                
             elif req_type == 'CACHE_DATA_VIS':
-                return render.index()
-            
+                return render.user_to_cache_data()
             elif req_type == 'CACHE_TO_USER_DATA':
                 return render.cache_to_user_data()
-            
             elif req_type =='GET_CACHE_DATA':
                 web.header('Content-Type', 'application/json')
                 user_data = dv.get_user_logs_as_json()
                 return json.dumps(user_data)
                 #currently reading from file. must later have post request to store data into db
-            
             elif req_type =='GET_CACHE_DATA2':
                 web.header('Content-Type', 'application/json')
                 user_data = dv.get_user_logs_as_json()
                 user_data = dv.rearrange_data_for_caches(user_data)
                 return json.dumps(user_data)
                 #currently reading from file. must later have post request to store data into db
-
             elif req_type == 'VERIFY_ACCOUNT':
                 username = req_arg.split('_')[0]
                 password = req_arg.split('_')[1]
