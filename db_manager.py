@@ -1,6 +1,7 @@
 import web
 import ast
 import csv
+import pdb
 
 # TOPOLOGY_CONFIG
 FIXED_TOPOLOGY = False
@@ -127,7 +128,11 @@ def get_account_from_points_table(user_name):
 def update_points_for_account(user_name, bytes_uploaded):
     query_result = db.select('points',where="user_name=$user_name", vars=locals()).list()
     updated_bytes = query_result[0].bytes_uploaded + bytes_uploaded
-    db.update('points', where="user_name=$user_name", bytes_uploaded=updated_bytes, vars=locals())
+    float_bytes = float(bytes_uploaded)
+    additional_points = float_bytes / 1000000000
+    updated_points = query_result[0].points + additional_points
+    #pdb.set_trace()
+    db.update('points', where="user_name=$user_name", bytes_uploaded=updated_bytes, points=updated_points, vars=locals())
 def remove_all_accounts_from_points_table():
     db.delete('points', where="id>=0", vars=locals())
 def get_all_points():
