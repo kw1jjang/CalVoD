@@ -120,7 +120,7 @@ def get_num_of_users():
 
 # POINTS
 def add_account_to_points_table(user_name):
-    db.insert('points', user_name=user_name, bytes_uploaded = 0, points = 0)
+    db.insert('points', user_name=user_name, bytes_uploaded = 0, points = 0, owned_videos='')
 def remove_account_from_points_table(user_name):
     db.delete('points', where="user_name=$user_name", vars=locals())
 def get_account_from_points_table(user_name):
@@ -133,6 +133,13 @@ def update_points_for_account(user_name, bytes_uploaded):
     updated_points = query_result[0].points + additional_points
     #pdb.set_trace()
     db.update('points', where="user_name=$user_name", bytes_uploaded=updated_bytes, points=updated_points, vars=locals())
+def update_owned_videos(user_name, video):
+    query_result = db.select('points',where="user_name=$user_name", vars=locals()).list()
+    owned_videos = query_result[0].owned_videos
+    points = query_result[0].points
+    owned_videos = owned_videos + '_' + video
+    db.update('points',where="user_name=$user_name", owned_videos=owned_videos, points=points, vars=locals())
+    
 def remove_all_accounts_from_points_table():
     db.delete('points', where="id>=0", vars=locals())
 def get_all_points():
