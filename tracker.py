@@ -227,6 +227,7 @@ class request:
                             'GET_SERVER_ADDRESS_FOR_CACHE',
                             'GET_CACHES_ADDRESS',
                             'GET_ALL_VIDEOS',
+                            'GET_OWNED_VIDEOS',
                             'UPDATE_CHUNKS_FOR_CACHE',
                             'REGISTER_SERVER',
                             'REGISTER_SERVER_FOR_CACHE',
@@ -378,6 +379,15 @@ class request:
                     print '[tracker.py] user_pop', user_population
 
                 return 'Video is registered'
+            elif req_type == 'GET_OWNED_VIDEOS':
+                if session.get('login', False):
+                    un = session.user_name
+                    owned_videos= db_manager.get_owned_videos(un)
+                    
+                    pdb.set_trace()
+                    return owned_videos
+                else:
+                    raise web.seeother('/login')    
             elif req_type == 'GET_ALL_VIDEOS':
                 #users can still get all videos
                 videos = db_manager.get_all_videos()

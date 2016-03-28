@@ -181,6 +181,11 @@ def retrieve_MovieLUT_from_tracker(tracker_address): # Retrieve it from the trac
         lut.movies_LUT[parsed_row[1]] = (int(parsed_row[2]), int(parsed_row[3]), int(parsed_row[4]), int(parsed_row[5]), int(parsed_row[6]), int(parsed_row[7]))
     return lut
 
+def get_owned_videos_from_tracker(tracker_address, session=None):
+    req_str = 'GET_OWNED_VIDEOS&'
+    ret_str = session.get(tracker_address + req_str).text
+    return ret_str
+
 def register_to_tracker_as_cache(tracker_address, ip, port,session=None):
     req_str = 'REGISTER_CACHE&' + str(ip) + '_' + str(port)
     if session != None:

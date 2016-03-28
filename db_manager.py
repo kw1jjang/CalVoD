@@ -133,6 +133,19 @@ def update_points_for_account(user_name, bytes_uploaded):
     updated_points = query_result[0].points + additional_points
     #pdb.set_trace()
     db.update('points', where="user_name=$user_name", bytes_uploaded=updated_bytes, points=updated_points, vars=locals())
+def get_owned_videos(user_name):
+    query_result = db.select('points',where="user_name=$user_name", vars=locals()).list()
+    video_list = query_result[0].owned_videos
+    ov = video_list.split('_')
+    if len(ov) == 1:
+        return ''
+    else:
+        del(ov[0])
+        return ov
+        
+        
+        
+    
 def update_owned_videos(user_name, video):
     query_result = db.select('points',where="user_name=$user_name", vars=locals()).list()
     owned_videos = query_result[0].owned_videos
