@@ -27,7 +27,8 @@ $def with (nodes_info, n_nodes, videos_info, server_load, server_load_avg, point
                     ['$i', $server_load[0][i], $server_load[1][i] ],
                 ['$(len(server_load[0])-1)', $server_load[0][len(server_load[0])-1], $server_load[1][len(server_load[0])-1]]]);
             var options = {
-                title: 'Server Load', hAxis: {title: 'Time (sec)',  titleTextStyle: {color: 'red'}}
+                width: 1120, height: 400,
+                title: 'Server Load', hAxis: {title: 'Time (sec)', titleTextStyle: {color: 'red'}}
             };
             var chart = new google.visualization.AreaChart(document.getElementById('chart_div'));
             chart.draw(data, options);
@@ -89,7 +90,7 @@ $def with (nodes_info, n_nodes, videos_info, server_load, server_load_avg, point
     	<div class="tab-content col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
         <div class="tab-pane active text-style" id="tab1">
             <h1 class="page-header">Load Overview</h1>
-            <div id="chart_div"style="height: 400px;"></div>    
+            <div id="chart_div"></div>    
             <h3 class="">Average server load for users = $server_load_avg[0] Mbps</h2>
             <h3 class="">Average server load for caches = $server_load_avg[1] Mbps</h2>
         </div>
