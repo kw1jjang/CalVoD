@@ -763,8 +763,8 @@ def main():
     elif len(sys.argv) == 3 or len(sys.argv) == 5:
         if(sys.argv[2] == 'public'):
             sys.argv[2] = urllib2.urlopen('http://icanhazip.com').read().strip('\n')
-        config = [sys.argv[1], '0.0.0.0', str(60000+int(sys.argv[1])), sys.argv[2], 15000000]
-        #config = [sys.argv[1], sys.argv[2], str(60000+int(sys.argv[1])), sys.argv[2], 15000000]
+        #config = [sys.argv[1], '0.0.0.0', str(60000+int(sys.argv[1])), sys.argv[2], 15000000]
+        config = [sys.argv[1], sys.argv[2], str(60000+int(sys.argv[1])), sys.argv[2], 15000000]
         #Originally it was the one on the bottem. I have it here for reference in case the on on top
         #Does not work for some reason.
         if len(sys.argv) == 5:

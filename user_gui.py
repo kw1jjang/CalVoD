@@ -511,6 +511,8 @@ def true_run_user():
     sys.stdout.flush()
     session = requests.Session()
     log_in_to_tracker(session, tracker_address, global_account_name, global_password)
+    pdb.set_trace()
+    my_videos = get_owned_videos_from_tracker(tracker_address, session)
     #Get the list of owned videos here
     #If requested video is not in the list, subtract 5 points
     #Otherwise just continue
