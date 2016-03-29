@@ -142,17 +142,17 @@ def get_owned_videos(user_name):
     else:
         del(ov[0])
         return ov
-        
-        
-        
-    
 def update_owned_videos(user_name, video):
     query_result = db.select('points',where="user_name=$user_name", vars=locals()).list()
     owned_videos = query_result[0].owned_videos
     points = query_result[0].points
-    owned_videos = owned_videos + '_' + video
-    db.update('points',where="user_name=$user_name", owned_videos=owned_videos, points=points, vars=locals())
-    
+    if points >= 5:
+        points = points - 5
+        owned_videos = owned_videos + '_' + video
+        db.update('points',where="user_name=$user_name", owned_videos=owned_videos, points=points, vars=locals())
+        return points
+    else:
+        return 'Not enough points'
 def remove_all_accounts_from_points_table():
     db.delete('points', where="id>=0", vars=locals())
 def get_all_points():

@@ -17,6 +17,7 @@ import threading
 import string
 from infoThread import infoThread
 import ConfigParser
+import json
 from signal import signal, alarm, SIGPIPE, SIG_DFL, SIG_IGN, SIGALRM
 import requests #used for handling the cache session (associate this cache with a logged in account to tracker)
 
@@ -42,8 +43,11 @@ class P2PUser():
         self.user_name = user_name
         self.my_ip = user_name
         self.my_port = 0
-        register_to_tracker_as_user(tracker_address, self.my_ip, self.my_port, video_name,session)
-
+        self.able_to_watch_video = 0
+        register_success = register_to_tracker_as_user(tracker_address, self.my_ip, self.my_port, video_name,session)
+        #if this returns "Not enough points" then that user does not have enough points to download that video
+        if register_success != 'Not enough points':
+            self.able_to_watch_video = 1
         # Connect to the server
         # Cache will get a response when each chunk is downloaded from the server.
         # Note that this flag should **NOT** be set for the caches, as the caches
@@ -511,21 +515,28 @@ def true_run_user():
     sys.stdout.flush()
     session = requests.Session()
     log_in_to_tracker(session, tracker_address, global_account_name, global_password)
-    pdb.set_trace()
-    my_videos = get_owned_videos_from_tracker(tracker_address, session)
+    #pdb.set_trace()
     #Get the list of owned videos here
-    #If requested video is not in the list, subtract 5 points
-    #Otherwise just continue
+    my_videos = get_owned_videos_from_tracker(tracker_address, session)
+    my_videos = json.loads(my_videos)
+    print 'Currently owned videos:'
+    print my_videos
+    #pdb.set_trace()
+    
+    
     test_user = P2PUser(tracker_address, global_video_name, global_user_name, session)
-    test_user.download(global_video_name, global_frame_number, session)
+    if test_user.able_to_watch_video:
+        test_user.download(global_video_name, global_frame_number, session)
     #try:
         #test_user.download(video_name, global_frame_number)
     #except:
     #    print('\n\n\n\n USER WILL DC NOW \n\n\n\n')
     #    continue
-    test_user.disconnect(tracker_address, global_video_name, global_user_name)
-    print '[user.py] Download of video %s finished.' % global_video_name
-    sys.stdout.flush()
+        test_user.disconnect(tracker_address, global_video_name, global_user_name)
+        print '[user.py] Download of video %s finished.' % global_video_name
+        sys.stdout.flush()
+    else:
+        print 'Not enough points to watch ' + global_video_name
     
 def main():
     mu = 1

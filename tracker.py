@@ -160,7 +160,7 @@ class overview:
                 for each in videos_info:
                     videos_info2.append([each.id, str(each.vname), each.n_of_frames, each.code_param_n, each.code_param_k, each.total_size, each.chunk_size, each.last_chunk_size])
                 for each in points:
-                    points2.append([each.id, str(each.user_name), each.bytes_uploaded, each.points])
+                    points2.append([each.id, str(each.user_name), each.bytes_uploaded, each.points, each.owned_videos])
                 for each in accounts:
                     accounts2.append([each.id, str(each.user_name), str(each.password), str(each.email_address)])
                 for each in account_caches:
@@ -321,10 +321,21 @@ class request:
             # NODE REGISTER
             elif req_type == 'REGISTER_USER':
                 if session.get('login', False):
+                    un = session.user_name
                     # req_arg = "143.243.23.13_324"
                     arg_ip = req_arg.split('_')[0]
                     arg_port = req_arg.split('_')[1]
                     arg_watching_video = req_arg.split('_')[2]
+                    #INSERT HERE
+                    
+                    #Get the list of owned videos here
+                    owned_videos= db_manager.get_owned_videos(un)
+                    if arg_watching_video not in owned_videos:
+                        #If requested video is not in the list, subtract 5 points
+                        res = db_manager.update_owned_videos(un, arg_watching_video)
+                        #If not enough points, return that says so
+                        if res == 'Not enough points':
+                            return 'Not enough points'           
                     db_manager.add_user(arg_ip, arg_port, arg_watching_video)
 
                     print '[tracker.py] Accessing...'
@@ -384,8 +395,9 @@ class request:
                     un = session.user_name
                     owned_videos= db_manager.get_owned_videos(un)
                     
-                    pdb.set_trace()
-                    return owned_videos
+                    #pdb.set_trace()
+                    web.header('Content-Type', 'application/json')
+                    return json.dumps(owned_videos)
                 else:
                     raise web.seeother('/login')    
             elif req_type == 'GET_ALL_VIDEOS':
