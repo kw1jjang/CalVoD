@@ -45,4 +45,4 @@ os.system('./populate_caches_local_ui.sh ' + num_caches + ' ' + username + ' ' +
 #run user
 print '========================================='
 print 'starting the user client...'
-os.system('./populate_single_user.sh')
+os.system('./populate_user_ui.sh ' + username + ' ' + password)

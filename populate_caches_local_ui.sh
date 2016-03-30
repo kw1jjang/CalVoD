@@ -1,7 +1,7 @@
-./kill_caches.sh
+#./kill_caches.sh
 
 num_of_caches=5
-username="alagu"
+username="chen"
 password="11111"
 
 if [ ! -z "$1" ] ; then
