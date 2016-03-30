@@ -81,7 +81,7 @@ class Cache(object):
     def __init__(self, cache_config):
         """Make the FTP server instance and the Cache Downloader instance.
         Obtain the queue of data from the FTP server."""
-
+        #config = [1, '0.0.0.0', str(60000+int(sys.argv[1])), sys.argv[2], 15000000, session, multiplier]
         self.packet_size = 2504
         session = cache_config[5]
         server_ip_address = get_server_address(tracker_address, session)
@@ -95,7 +95,7 @@ class Cache(object):
         self.cache_id = cache_id = int(cache_config[0])
         self.address = (cache_config[1], int(cache_config[2]))
         self.public_address = cache_config[3]
-        register_to_tracker_as_cache(tracker_address, self.public_address, self.address[1], session)
+        register_to_tracker_as_cache(tracker_address, self.public_address, self.address[1], cache_config[6], session)
         stream_rate = int(cache_config[4])
 
         if True:
@@ -127,8 +127,8 @@ class Cache(object):
             self.eps_mu = eps / pow(average_length, 2) / 10
             self.eps_k = eps
 
-        self.bandwidth_cap = BANDWIDTH_CAP # (Kbps)
-        self.storage_cap_in_MB = STORAGE_CAP_IN_MB # (MB)
+        self.bandwidth_cap = BANDWIDTH_CAP * cache_config[6] # (Kbps)
+        self.storage_cap_in_MB = STORAGE_CAP_IN_MB * cache_config[6] # (MB)
         self.storage_cap = self.storage_cap_in_MB * 1000 * 1000 # (Bytes)
 
         self.dual_la = 0 # dual variable for BW
@@ -748,28 +748,35 @@ def main():
     #default username and password
     username = 'ryan'
     password = '11111'
+    multiplier = 1
     
     # python ../../cache.py 1
-    # python ../../cache.py 1 username password
-    if len(sys.argv) == 2 or len(sys.argv) == 4:
+    # python ../../cache.py multiplier username password
+    if len(sys.argv) == 2:
         config = load_cache_config(int(sys.argv[1])) # Look up configuration of the given cache ID
         if config == None:                           # This is kept here for backwards compatibality
             print '[cache.py] cache_id not found'
             sys.exit()
-        if len(sys.argv) == 4:
-            username = sys.argv[2]
-            password = sys.argv[3]
+    elif len(sys.argv) == 4:
+        config = load_cache_config(1)
+        multiplier = float(sys.argv[1])
+        username = sys.argv[2]
+        password = sys.argv[3]
     
     # python ../../cache.py 1 public
-    # python ../../cache.py 1 public username password
-    elif len(sys.argv) == 3 or len(sys.argv) == 5:
+    # python ../../cache.py multiplier public username password
+    elif len(sys.argv) == 3:
         if(sys.argv[2] == 'public'):
             sys.argv[2] = urllib2.urlopen('http://icanhazip.com').read().strip('\n')
         #config = [sys.argv[1], '0.0.0.0', str(60000+int(sys.argv[1])), sys.argv[2], 15000000]
         config = [sys.argv[1], sys.argv[2], str(60000+int(sys.argv[1])), sys.argv[2], 15000000]
         #Originally it was the one on the bottem. I have it here for reference in case the on on top
         #Does not work for some reason.
-        if len(sys.argv) == 5:
+    elif len(sys.argv) == 5:
+            if(sys.argv[2] == 'public'):
+                sys.argv[2] = urllib2.urlopen('http://icanhazip.com').read().strip('\n')
+            config = [1, sys.argv[2], str(60000+int(sys.argv[1])), sys.argv[2], 15000000]
+            multiplier = float(sys.argv[1])
             username = sys.argv[3]
             password = sys.argv[4]
     
@@ -800,6 +807,7 @@ def main():
     session = requests.Session()
     log_in_to_tracker(session, tracker_address, username, password)
     config.append(session)
+    config.append(multiplier)
     print '[config] ' + str(config)
     cache = Cache(config)
     cache.start_cache()

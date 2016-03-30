@@ -164,7 +164,7 @@ class overview:
                 for each in accounts:
                     accounts2.append([each.id, str(each.user_name), str(each.password), str(each.email_address)])
                 for each in account_caches:
-                    account_cache2.append([each.id, str(each.user_name), str(each.ip), str(each.port), str(each.bytes_uploaded)])
+                    account_cache2.append([each.id, str(each.user_name), str(each.ip), str(each.port), str(each.bytes_uploaded), str(each.multiplier)])
                     
                     
                 print '[tracker.py] nodes_info ', nodes_info2
@@ -351,10 +351,11 @@ class request:
                     #pdb.set_trace()
                     arg_ip = req_arg.split('_')[0]
                     arg_port = req_arg.split('_')[1]
+                    multiplier = req_arg.split('_')[2]
                     #arg_config = req_arg.split('_')[2] TODO: cache size
                     db_manager.add_cache(arg_ip, arg_port)
                     un = session.user_name
-                    db_manager.add_cache_to_account_cache(un, arg_ip, arg_port, 0)
+                    db_manager.add_cache_to_account_cache(un, arg_ip, arg_port, multiplier)
                     return 'Cache is registered'
                 else:
                     raise web.seeother('/login')

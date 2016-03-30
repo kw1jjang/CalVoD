@@ -186,8 +186,8 @@ def get_owned_videos_from_tracker(tracker_address, session=None):
     ret_str = session.get(tracker_address + req_str).text
     return ret_str
 
-def register_to_tracker_as_cache(tracker_address, ip, port,session=None):
-    req_str = 'REGISTER_CACHE&' + str(ip) + '_' + str(port)
+def register_to_tracker_as_cache(tracker_address, ip, port, multiplier, session=None):
+    req_str = 'REGISTER_CACHE&' + str(ip) + '_' + str(port) + '_' + str(multiplier)
     if session != None:
         ret_str = session.get(tracker_address + req_str).text
     else:
