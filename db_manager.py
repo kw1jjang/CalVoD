@@ -120,7 +120,8 @@ def get_num_of_users():
 
 # POINTS
 def add_account_to_points_table(user_name):
-    db.insert('points', user_name=user_name, bytes_uploaded = 0, points = 0, owned_videos='')
+    #give 100 free points to each new account, for testing & incentive
+    db.insert('points', user_name=user_name, bytes_uploaded = 0, points = 100, owned_videos='')
 def remove_account_from_points_table(user_name):
     db.delete('points', where="user_name=$user_name", vars=locals())
 def get_account_from_points_table(user_name):
