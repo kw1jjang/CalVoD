@@ -350,6 +350,7 @@ class request:
                     #pdb.set_trace()
                     arg_ip = req_arg.split('_')[0]
                     arg_port = req_arg.split('_')[1]
+                    #arg_config = req_arg.split('_')[2] TODO: cache size
                     db_manager.add_cache(arg_ip, arg_port)
                     un = session.user_name
                     db_manager.add_cache_to_account_cache(un, arg_ip, arg_port, 0)
