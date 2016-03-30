@@ -266,6 +266,7 @@ class P2PUser():
             server_request = chunks_to_request(chosen_chunks, range(0, code_param_n), code_param_k - num_chunks_rx_predicted)
             num_of_chks_from_server = len(server_request)
             if num_of_chks_from_server == 0:
+                self.server_client.put_instruction(inst_CACHEDATA + cdrs)
                 self.server_client.put_instruction(inst_NOOP)
                 print '[user.py] Caches handling code_param_k chunks, so no request to server. Sending a NOOP'
             else:
