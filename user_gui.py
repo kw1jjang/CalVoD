@@ -583,12 +583,12 @@ if __name__ == "__main__":
     global global_video_name
     global global_account_name
     global global_password
+    user_id = ''.join(random.choice(string.ascii_uppercase + string.digits) for x in range(6))
     if(len(sys.argv) == 4): #username and pw provided
-        global_user_name = 'user-' + sys.argv[2]
+        global_user_name = 'user-' + sys.argv[2] + '-' + user_id
         global_account_name = sys.argv[2]
         global_password = sys.argv[3]
     else:
-        user_id = ''.join(random.choice(string.ascii_uppercase + string.digits) for x in range(6))
         global_user_name = 'user-' + user_id
         global_account_name = 'ryan'
         global_password = '11111'
