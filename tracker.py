@@ -269,6 +269,7 @@ class request:
                 account_name = account_name[0].user_name
 
                 if db_manager.get_account_from_points_table(account_name) == []:
+                    #will never get to this condition
                     db_manager.add_account_to_points_table(account_name)
                     db_manager.update_points_for_account(account_name, bytes_uploaded)
                     db_manager.update_bytes_for_cache(account_name, ip, port, bytes_uploaded)
@@ -478,6 +479,7 @@ class signup:
         email_address = data.inputEmail
         if len(db_manager.get_account(user_name)) == 0:
             db_manager.add_account(user_name, password, email_address)
+            db_manager.add_account_to_points_table(user_name)
             session.login = True
             session.user_name= user_name
             raise web.seeother('/user_overview')
