@@ -537,9 +537,32 @@ def true_run_user():
         sys.stdout.flush()
     else:
         print 'Not enough points to watch ' + global_video_name
+
+if __name__ == "__main__":
+    # Load configurations
+    config = ConfigParser.ConfigParser()
+    #config.read(sys.argv[1])
+    config.read('../../development.ini')
+
+    # General
+    DEBUGGING_MSG = config.getboolean('GUI', 'DEBUGGING_MSG')
+    VLC_PLAYER_USE = config.getboolean('GUI', 'VLC_PLAYER_USE')
+
+    # Topology
+    USER_TOPOLOGY_UPDATE = config.getboolean('Topology', 'USER_TOPOLOGY_UPDATE')
+    T_choke = config.getfloat('Topology', 'T_choke')
+    T_choke2 = config.getfloat('Topology', 'T_choke2')
+    eps_choke = config.getfloat('Topology', 'eps_choke')
+
+    # Global
+    CACHE_DOWNLOAD_DURATION = config.getfloat('Global', 'CACHE_DOWNLOAD_DURATION');
+    SERVER_DOWNLOAD_DURATION = config.getfloat('Global', 'SERVER_DOWNLOAD_DURATION');
+    DECODE_WAIT_DURATION = config.getfloat('Global', 'DECODE_WAIT_DURATION');
+    tracker_address = config.get('Global', 'tracker_address');
+    num_of_caches = config.getint('Global', 'num_of_caches');
+
+    #mu = 1
     
-def main():
-    mu = 1
     #signal(SIGPIPE,broken_pipe_handler)
     signal(SIGALRM, alert_handler)
     #signal(SIGPIPE,SIG_IGN)
@@ -575,32 +598,6 @@ def main():
         user_name = 'user-' + user_id
         global_user_name = user_name
         global_video_name = video_name
-        global_account_name = 'ryan'
+        global_account_name = 'chen'
         global_password = '11111'
         true_run_user()
-    
-
-if __name__ == "__main__":
-    # Load configurations
-    config = ConfigParser.ConfigParser()
-    #config.read(sys.argv[1])
-    config.read('../../development.ini')
-
-    # General
-    DEBUGGING_MSG = config.getboolean('GUI', 'DEBUGGING_MSG')
-    VLC_PLAYER_USE = config.getboolean('GUI', 'VLC_PLAYER_USE')
-
-    # Topology
-    USER_TOPOLOGY_UPDATE = config.getboolean('Topology', 'USER_TOPOLOGY_UPDATE')
-    T_choke = config.getfloat('Topology', 'T_choke')
-    T_choke2 = config.getfloat('Topology', 'T_choke2')
-    eps_choke = config.getfloat('Topology', 'eps_choke')
-
-    # Global
-    CACHE_DOWNLOAD_DURATION = config.getfloat('Global', 'CACHE_DOWNLOAD_DURATION');
-    SERVER_DOWNLOAD_DURATION = config.getfloat('Global', 'SERVER_DOWNLOAD_DURATION');
-    DECODE_WAIT_DURATION = config.getfloat('Global', 'DECODE_WAIT_DURATION');
-    tracker_address = config.get('Global', 'tracker_address');
-    num_of_caches = config.getint('Global', 'num_of_caches');
-
-    main()
