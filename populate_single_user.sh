@@ -12,5 +12,5 @@ cd "user001"
 # mkdir -p .user001
 # cd ".user001"
 rm -rf video*
-python ../../user_gui.py ../../development.ini
+python ../../user_gui.py ../../development.ini chen 11111
 cd "../.."

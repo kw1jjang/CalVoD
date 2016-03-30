@@ -562,7 +562,7 @@ if __name__ == "__main__":
     num_of_caches = config.getint('Global', 'num_of_caches');
 
     #mu = 1
-    
+
     #signal(SIGPIPE,broken_pipe_handler)
     signal(SIGALRM, alert_handler)
     #signal(SIGPIPE,SIG_IGN)
@@ -577,10 +577,21 @@ if __name__ == "__main__":
 
     #get movile list
     movie_LUT = retrieve_MovieLUT_from_tracker(tracker_address)
+
+    #configure global variables
     global global_user_name
     global global_video_name
     global global_account_name
     global global_password
+    if(len(sys.argv) == 4): #username and pw provided
+        global_user_name = 'user-' + sys.argv[2]
+        global_account_name = sys.argv[2]
+        global_password = sys.argv[3]
+    else:
+        user_id = ''.join(random.choice(string.ascii_uppercase + string.digits) for x in range(6))
+        global_user_name = 'user-' + user_id
+        global_account_name = 'ryan'
+        global_password = '11111'
     movies = movie_LUT.movies_LUT.keys()
     runtime_ct = 0
     popularity_change = False
@@ -593,11 +604,5 @@ if __name__ == "__main__":
             if input_str in movies:
                 video_name = input_str
                 break
-
-        user_id = ''.join(random.choice(string.ascii_uppercase + string.digits) for x in range(6))
-        user_name = 'user-' + user_id
-        global_user_name = user_name
         global_video_name = video_name
-        global_account_name = 'chen'
-        global_password = '11111'
         true_run_user()
