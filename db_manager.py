@@ -160,8 +160,8 @@ def get_all_points():
     return db.select('points').list()
 
 #ACCOUNT_CACHE
-def add_cache_to_account_cache(user_name, ip, port, bytes_uploaded):
-    db.insert('account_cache',user_name=user_name, ip=ip, port=port, bytes_uploaded=bytes_uploaded)
+def add_cache_to_account_cache(user_name, ip, port, multiplier):
+    db.insert('account_cache',user_name=user_name, ip=ip, port=port, bytes_uploaded=0, multiplier=multiplier)
 def remove_cache_from_account_cache(ip, port, user_name=None):
     db.delete('account_cache', where="ip=$ip AND port=$port", vars=locals())
 def get_caches_for_account(user_name):
