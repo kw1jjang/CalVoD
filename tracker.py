@@ -199,6 +199,7 @@ class overview:
             raise web.seeother('/login')
 
 class user_overview:
+    #to get movie poster: http://www.omdbapi.com/?t=inception
     def GET(self):
         if session.get('login', False):
             nodes_info = db_manager.get_all_nodes()
