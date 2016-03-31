@@ -10,7 +10,7 @@ import urllib2
 import pdb
 web.config.debug = False
 urls = (
-    '/', 'overview',
+    '/overview', 'overview',
     '/test', 'test',
     '/req/(.*)', 'request',
     '/signup', 'signup',
@@ -18,6 +18,7 @@ urls = (
     '/logout', 'logout',
     '/user_overview', 'overview',
     '/help', 'help',
+    '/', 'index',
 )
 app = web.application(urls,globals())
 session = web.session.Session(app, web.session.DiskStore('sessions'), initializer={'login': False,'user_name': None})
@@ -112,9 +113,13 @@ def get_server_load():
     except:
         return [[0], [0]]
 
-class test:
+class index:
     def GET(self):
-        return render.test(server_load_read())
+        if session.get('login', False):
+            raise web.seeother('/overview')
+        else:
+            return render.index()
+
 
 class overview:
     def GET(self):
