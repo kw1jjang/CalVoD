@@ -1,4 +1,4 @@
-$def with (user_name, points, account, account_cache, num_cache)
+$def with (user_name, points, account, account_cache, num_cache, num_user, node_info)
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -42,7 +42,7 @@ $def with (user_name, points, account, account_cache, num_cache)
     <div class="jumbotron">
       <div class="container">
         <div class="col-md-2">
-          <img class="img-circle" src="https://placeimg.com/160/160/animals" alt="Generic placeholder image" width="160" height="160">
+          <img class="img-circle" src="http://placeimg.com/160/160/animals" alt="Generic placeholder image" width="160" height="160">
         </div>
         <div class="col-md-10">
           <h2>Hello $user_name!</h2>
@@ -57,22 +57,53 @@ $def with (user_name, points, account, account_cache, num_cache)
 
       <div class="row">
         <div class="col-md-4">
-          <h2>Usage Summary&nbsp;&nbsp;<!-- <a class="btn btn-primary" href="#" role="button">manage &raquo;</a> --></h2>
-          <p>Moive watch history, usage stat of user and cache</p>
-        </div>
-
-        <div class="col-md-4">
-          <h2>System Status&nbsp;&nbsp;<!-- <a class="btn btn-primary" href="#" role="button">manage &raquo;</a> --></h2>
-          <p>you are running $num_cache caches</p>
+          <h2>VoD Leaderboard&nbsp;&nbsp;<!-- <a class="btn btn-primary" href="#" role="button">manage &raquo;</a> --></h2><hr>
           <div class="table-responsive">
             <table class="table table-striped">
               <thead>
                 <tr>
-                  <th>id</th>
                   <th>user_name</th>
+                  <th>movie_watched</th>
+                  <th>points</th>
+                </tr>
+              </thead>
+              <tbody>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <h2>System Status&nbsp;&nbsp;<!-- <a class="btn btn-primary" href="#" role="button">manage &raquo;</a> --></h2><hr>
+          <p>you are running $num_cache cache and $num_user user</p>
+          <div class="table-responsive">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>type</th>
+                  <th>user_name</th>
+                  <th>watching_video</th>
+                </tr>
+              </thead>
+                <tbody>
+                  $for node in node_info:
+                  <tr>
+                      $for n in node:
+                      <td>$n</td>
+                  </tr>
+                </tbody>
+            </table>
+          </div>
+
+          <div class="table-responsive">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>type</th>
                   <th>ip</th>
                   <th>port</th>
                   <th>bytes_uploaded</th>
+                  <th>multiplier</th>
                 </tr>
               </thead>
                 <tbody>
@@ -84,28 +115,14 @@ $def with (user_name, points, account, account_cache, num_cache)
                 </tbody>
             </table>
           </div>
+
         </div>
+
         
         <div class="col-md-4">
-          <h2>Points Earned&nbsp;&nbsp;<!-- <a class="btn btn-primary" href="#" role="button">manage &raquo;</a> --></h2>
-          <div class="table-responsive">
-              <table class="table table-striped">
-                <thead>
-                  <tr>
-                    <th>id</th>
-                    <th>user_name</th>
-                    <th>bytes_uploaded</th>
-                    <th>points</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    $for p in points:
-                    <td>$p</td>
-                  </tr>
-                </tbody>
-              </table>
-          </div>
+          <h2>Points Earned&nbsp;&nbsp;<!-- <a class="btn btn-primary" href="#" role="button">manage &raquo;</a> --></h2><hr>
+          <h1 style="color:green;text-align:center;font-family:Impact,Charcoal,sans-serif;">$points</h1>
+          <p>(For each 1 GB of data you shared, you are rewarded 1 point. 5 points will be subtracted each time you watch a new movie. No further points will be subtracted if you re-watch a movie)</p>
         </div>
       </div>
 

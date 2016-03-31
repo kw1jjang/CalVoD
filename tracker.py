@@ -16,7 +16,7 @@ urls = (
     '/signup', 'signup',
     '/login', 'login',
     '/logout', 'logout',
-    '/user_overview', 'overview',
+    '/user_overview', 'user_overview',
     '/help', 'help',
     '/', 'index',
 )
@@ -207,21 +207,27 @@ class user_overview:
             accounts = db_manager.get_all_accounts()
             account_caches = db_manager.get_all_account_cache()
             nodes_info2 = []
-            points2 = []
+            points2 = 0
             accounts2 = []
             account_cache2 = []
             num_cache = 0
+            num_user = 0
+            for each in nodes_info:
+                if each.type_of_node == "user":
+                    if each.ip.split('-')[1] == session.user_name:
+                        num_user = num_user + 1
+                        nodes_info2.append(["user", str(each.ip), str(each.watching_video)])
             for each in points:
                 if each.user_name == session.user_name:
-                    points2 = [each.id, str(each.user_name), each.bytes_uploaded, each.points]
+                    points2 = int(each.points)
             for each in accounts:
                 if each.user_name == session.user_name:
                     accounts2 = [each.id, str(each.user_name), str(each.password), str(each.email_address)]
             for each in account_caches:
                 if each.user_name == session.user_name:
                     num_cache = num_cache + 1
-                    account_cache2.append([each.id, str(each.user_name), str(each.ip), str(each.port), str(each.bytes_uploaded)])
-            return render.user_overview(session.user_name, points2, accounts2, account_cache2, num_cache)
+                    account_cache2.append(["cache", str(each.ip), str(each.port), str(each.bytes_uploaded), str(each.multiplier)])
+            return render.user_overview(session.user_name, points2, accounts2, account_cache2, num_cache, num_user, nodes_info2)
         else:
             raise web.seeother('/login')
     
