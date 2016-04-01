@@ -174,28 +174,6 @@ $def with (nodes_info, n_nodes, videos_info, server_load, server_load_avg, point
         </div>
 
         <div class="tab-pane text-style" id="tab5">
-            <h1 class="page-header">Point Info</h1>
-            <div class="table-responsive">
-                <table class="table table-striped">
-                  <thead>
-                    <tr>
-                      <th>id</th>
-                      <th>account_name</th>
-                      <th>total_bytes_uploaded</th>
-                      <th>points</th>
-                      <th>owned_videos</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    $for point in points:
-                    <tr>
-                        $for p in point:
-                        <td>$p</td>
-                    </tr>
-                  </tbody>
-                </table>
-            </div>
-            <br>
             <h1 class="page-header">Accounts Running Caches</h1>
             <div class="table-responsive">
               <table class="table table-striped">
@@ -217,6 +195,28 @@ $def with (nodes_info, n_nodes, videos_info, server_load, server_load_avg, point
                   </tr>
                 </tbody>
               </table>
+            </div>
+            <br>
+            <h1 class="page-header">Point Info</h1>
+            <div class="table-responsive">
+                <table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th>id</th>
+                      <th>account_name</th>
+                      <th>total_bytes_uploaded</th>
+                      <th>points</th>
+                      <th>owned_videos</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    $for point in points:
+                    <tr>
+                        $for p in point:
+                        <td>$p</td>
+                    </tr>
+                  </tbody>
+                </table>
             </div>
         </div>
 
