@@ -1,4 +1,4 @@
-$def with (user_name, points, account, account_cache, num_cache, num_user, node_info, rank)
+$def with (user_name, points, account, account_cache, num_cache, num_user, node_info, rank, n_nodes)
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -82,7 +82,8 @@ $def with (user_name, points, account, account_cache, num_cache, num_user, node_
 
         <div class="col-md-4">
           <h2>System Status&nbsp;&nbsp;<!-- <a class="btn btn-primary" href="#" role="button">manage &raquo;</a> --></h2><hr>
-          <p>you are running $num_cache cache and $num_user user</p>
+          <p>There are <span style="color:green;text-align:center;font-family:Impact,Charcoal,sans-serif;">$n_nodes[1]</span> caches and <span style="color:green;text-align:center;font-family:Impact,Charcoal,sans-serif;">$n_nodes[2]</span> users running in the system</p>
+          <p>You are running <span style="color:green;text-align:center;font-family:Impact,Charcoal,sans-serif;">$num_cache</span> cache and <span style="color:green;text-align:center;font-family:Impact,Charcoal,sans-serif;">$num_user</span> user (listed below)</p>
           <div class="table-responsive">
             <table class="table table-striped">
               <thead>

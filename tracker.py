@@ -16,7 +16,7 @@ urls = (
     '/signup', 'signup',
     '/login', 'login',
     '/logout', 'logout',
-    '/user_overview', 'user_overview',
+    '/user_overview', 'overview',
     '/help', 'help',
     '/', 'index',
 )
@@ -136,10 +136,9 @@ class overview:
             points2 = []
             accounts2 = []
             account_cache2 = []
-
+            n_nodes = [0, 0, 0] # Server / cache / user
             if session.user_name == 'admin': #admin
                 #pdb.set_trace()
-                n_nodes = [0, 0, 0] # Server / cache / user
 
                 # Convert 'chunk indexes' to ints
                 for each in nodes_info:
@@ -183,18 +182,37 @@ class overview:
                 average_server_load = [sum(server_load[0])/len(server_load[0]), sum(server_load[1])/len(server_load[1])]
                 return render.overview(nodes_info2, n_nodes, videos_info2, server_load, average_server_load, points2, accounts2, account_cache2)
             else: #normal user
+                rank = []
+                num_user = 0
+                num_movie = 0
                 num_cache = 0
+                for each in nodes_info:
+                    if str(each.type_of_node) == 'server':
+                        n_nodes[0] = n_nodes[0] + 1
+                    elif str(each.type_of_node) == 'cache':
+                        n_nodes[1] = n_nodes[1] + 1
+                    elif str(each.type_of_node) == 'user':
+                        n_nodes[2] = n_nodes[2] + 1
+                        if each.ip.split('-')[1] == session.user_name:
+                            num_user = num_user + 1
+                            nodes_info2.append(["user", str(each.ip), str(each.watching_video)])
                 for each in points:
                     if each.user_name == session.user_name:
-                        points2 = [each.id, str(each.user_name), each.bytes_uploaded, each.points]
+                        points2.append(int(each.points)) #points earned
+                        points2.append(len(each.owned_videos.split("_"))) #num of video watched
+                        points2.append(each.bytes_uploaded) #bytes uploaded
+                    if each.owned_videos != None:
+                        num_movie = len(each.owned_videos.split("_"))
+                    rank.append([each.user_name, num_movie, int(each.points)])
+                rank = sorted(rank, key=lambda user: user[2], reverse=True)[:5] #rank the users by points, get top 5
                 for each in accounts:
                     if each.user_name == session.user_name:
                         accounts2 = [each.id, str(each.user_name), str(each.password), str(each.email_address)]
                 for each in account_caches:
                     if each.user_name == session.user_name:
                         num_cache = num_cache + 1
-                        account_cache2.append([each.id, str(each.user_name), str(each.ip), str(each.port), str(each.bytes_uploaded)])
-                return render.user_overview(session.user_name, points2, accounts2, account_cache2, num_cache)
+                        account_cache2.append(["cache", str(each.ip), str(each.port), str(each.bytes_uploaded), str(each.multiplier)])
+                return render.user_overview(session.user_name, points2, accounts2, account_cache2, num_cache, num_user, nodes_info2, rank, n_nodes)
         else:
             raise web.seeother('/login')
 
@@ -214,8 +232,14 @@ class user_overview:
             num_cache = 0
             num_user = 0
             num_movie = 0
+            n_nodes = [0, 0, 0] # Server / cache / user
             for each in nodes_info:
-                if each.type_of_node == "user":
+                if str(each.type_of_node) == 'server':
+                    n_nodes[0] = n_nodes[0] + 1
+                elif str(each.type_of_node) == 'cache':
+                    n_nodes[1] = n_nodes[1] + 1
+                elif str(each.type_of_node) == 'user':
+                    n_nodes[2] = n_nodes[2] + 1
                     if each.ip.split('-')[1] == session.user_name:
                         num_user = num_user + 1
                         nodes_info2.append(["user", str(each.ip), str(each.watching_video)])
@@ -235,7 +259,7 @@ class user_overview:
                 if each.user_name == session.user_name:
                     num_cache = num_cache + 1
                     account_cache2.append(["cache", str(each.ip), str(each.port), str(each.bytes_uploaded), str(each.multiplier)])
-            return render.user_overview(session.user_name, points2, accounts2, account_cache2, num_cache, num_user, nodes_info2, rank)
+            return render.user_overview(session.user_name, points2, accounts2, account_cache2, num_cache, num_user, nodes_info2, rank, n_nodes)
         else:
             raise web.seeother('/login')
     
