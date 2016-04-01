@@ -1,4 +1,4 @@
-$def with (user_name, points, account, account_cache, num_cache, num_user, node_info)
+$def with (user_name, points, account, account_cache, num_cache, num_user, node_info, rank)
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -46,7 +46,7 @@ $def with (user_name, points, account, account_cache, num_cache, num_user, node_
         </div>
         <div class="col-md-10">
           <h2>Hello $user_name!</h2>
-          <p>In this dashboard you can 1) monitor your system status; 2) check incentive points earned; 3) review data usage and movie watching history & wish list;</p>
+          <p>In this dashboard you can 1) View VoD leaderboard; 2) check incentive points earned; 3) review data usage and movie watching history & wish list;</p>
         </div>
         </div>
       </div>
@@ -66,6 +66,13 @@ $def with (user_name, points, account, account_cache, num_cache, num_user, node_
                   <th>movie_watched</th>
                   <th>points</th>
                 </tr>
+                <tbody>
+                  $for user in rank:
+                  <tr>
+                    $for u in user:
+                    <td>$u</td>
+                  </tr>
+                </body>
               </thead>
               <tbody>
               </tbody>
@@ -121,7 +128,9 @@ $def with (user_name, points, account, account_cache, num_cache, num_user, node_
         
         <div class="col-md-4">
           <h2>Points Earned&nbsp;&nbsp;<!-- <a class="btn btn-primary" href="#" role="button">manage &raquo;</a> --></h2><hr>
-          <h1 style="color:green;text-align:center;font-family:Impact,Charcoal,sans-serif;">$points</h1>
+          <h1 style="color:green;text-align:center;font-family:Impact,Charcoal,sans-serif;">$points[0]</h1>
+          <p>You watched $points[1] movies, and uploaded $points[2] bytes</p>
+          <br>
           <p>(For each 1 GB of data you shared, you are rewarded 1 point. 5 points will be subtracted each time you watch a new movie. No further points will be subtracted if you re-watch a movie)</p>
         </div>
       </div>

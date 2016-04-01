@@ -207,11 +207,13 @@ class user_overview:
             accounts = db_manager.get_all_accounts()
             account_caches = db_manager.get_all_account_cache()
             nodes_info2 = []
-            points2 = 0
+            rank = []
+            points2 = []
             accounts2 = []
             account_cache2 = []
             num_cache = 0
             num_user = 0
+            num_movie = 0
             for each in nodes_info:
                 if each.type_of_node == "user":
                     if each.ip.split('-')[1] == session.user_name:
@@ -219,7 +221,13 @@ class user_overview:
                         nodes_info2.append(["user", str(each.ip), str(each.watching_video)])
             for each in points:
                 if each.user_name == session.user_name:
-                    points2 = int(each.points)
+                    points2.append(int(each.points)) #points earned
+                    points2.append(len(each.owned_videos.split("_"))) #num of video watched
+                    points2.append(each.bytes_uploaded) #bytes uploaded
+                if each.owned_videos != None:
+                    num_movie = len(each.owned_videos.split("_"))
+                rank.append([each.user_name, num_movie, int(each.points)])
+            rank = sorted(rank, key=lambda user: user[2], reverse=True)[:5] #rank the users by points, get top 5
             for each in accounts:
                 if each.user_name == session.user_name:
                     accounts2 = [each.id, str(each.user_name), str(each.password), str(each.email_address)]
@@ -227,7 +235,7 @@ class user_overview:
                 if each.user_name == session.user_name:
                     num_cache = num_cache + 1
                     account_cache2.append(["cache", str(each.ip), str(each.port), str(each.bytes_uploaded), str(each.multiplier)])
-            return render.user_overview(session.user_name, points2, accounts2, account_cache2, num_cache, num_user, nodes_info2)
+            return render.user_overview(session.user_name, points2, accounts2, account_cache2, num_cache, num_user, nodes_info2, rank)
         else:
             raise web.seeother('/login')
     
