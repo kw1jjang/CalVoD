@@ -9,7 +9,7 @@ fi
 mkdir -p users
 rm -rf users/*
 cd "users"
-for (( i = 1; i <= num_of_users; i++ ))
+for (( i = 6; i <= num_of_users; i++ ))
 do
     echo "Initiating user with id # $i ..."
     if [ ! -d "user"$i ]; then
