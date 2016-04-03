@@ -555,7 +555,7 @@ def main():
         for each in movies:
             print '-', each
         video_name = random.choice(movies)
-        rand_sleep = randint(1,5)
+        rand_sleep = randint(1,100)
         print "sleeping for %i" % rand_sleep
         sleep(rand_sleep)
 
@@ -569,7 +569,7 @@ def main():
         user_name = 'user-' + user_id
         global_user_name = user_name
         global_video_name = video_name
-        global_account_name = 'ryan'
+        global_account_name = 'chen'
         global_password = '11111'
         true_run_user()
     
