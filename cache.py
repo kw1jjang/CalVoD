@@ -765,18 +765,28 @@ def main():
     
     # python ../../cache.py 1 public
     # python ../../cache.py multiplier public username password
+    # THE ABOVE DOES NOT SPECIFY THE PORT. IT IS USING THE MULTIPLIER AS THE PORT WHICH IS WRONG.
+    #the correct way of doing should be:
+    #on elif len(6)
+    # ../../cache.py port_number multiplier public username password
     elif len(sys.argv) == 3:
         if(sys.argv[2] == 'public'):
             sys.argv[2] = urllib2.urlopen('http://icanhazip.com').read().strip('\n')
         #config = [sys.argv[1], '0.0.0.0', str(60000+int(sys.argv[1])), sys.argv[2], 15000000]
         config = [sys.argv[1], sys.argv[2], str(60000+int(sys.argv[1])), sys.argv[2], 15000000]
+        multiplier = float(1)
+        username = 'ryan'
+        password = '11111'
         #Originally it was the one on the bottem. I have it here for reference in case the on on top
         #Does not work for some reason.
     elif len(sys.argv) == 5:
+        #WAS ORIGINALLY MAKING THE PORT NUMBER THE MULTIPLIER WHICH IS WRONG. SETTING MULTIPLIER TO 1
             if(sys.argv[2] == 'public'):
                 sys.argv[2] = urllib2.urlopen('http://icanhazip.com').read().strip('\n')
             config = [1, sys.argv[2], str(60000+int(sys.argv[1])), sys.argv[2], 15000000]
+            #config = [sys.argv[1], sys.argv[2], str(60000+int(sys.argv[1])), sys.argv[2], 15000000]
             multiplier = float(sys.argv[1])
+            multiplier = float(1)
             username = sys.argv[3]
             password = sys.argv[4]
     
