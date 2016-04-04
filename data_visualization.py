@@ -29,7 +29,7 @@ def get_user_logs_as_json():
 	print 'path_name is ' + path_name
 	path_name = path_name + '/server/user_log/'
 	vl = os.listdir(path_name)
-	print vl
+	#print vl
 	data_list = []
 	for name in vl:
 		path = path_name + name
