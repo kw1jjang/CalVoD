@@ -28,7 +28,7 @@ $def with (nodes_info, n_nodes, videos_info, server_load, server_load_avg, point
                 ['$(len(server_load[0])-1)', $server_load[0][len(server_load[0])-1], $server_load[1][len(server_load[0])-1]]]);
             var options = {
                 width: 1120, height: 400,
-                title: 'Server Load', hAxis: {title: 'Time (sec)', titleTextStyle: {color: 'red'}}
+                title: 'Server Load (Mbps)', headxis: {title: 'Time (sec)', titleTextStyle: {color: 'red'}}
             };
             var chart = new google.visualization.AreaChart(document.getElementById('chart_div'));
             chart.draw(data, options);
