@@ -118,7 +118,26 @@ class index:
         if session.get('login', False):
             raise web.seeother('/overview')
         else:
-            return render.index()
+            nodes_info = db_manager.get_all_nodes()
+            videos_info = db_manager.get_all_videos()
+            points = db_manager.get_all_points()
+            accounts = db_manager.get_all_accounts()
+            n_nodes = [0, 0, 0]
+            num_accounts = 0
+            num_videos_watched = 0
+            # Convert storages to lists
+            for each in nodes_info:
+                if str(each.type_of_node) == 'server':
+                    n_nodes[0] = n_nodes[0] + 1
+                elif str(each.type_of_node) == 'cache':
+                    n_nodes[1] = n_nodes[1] + 1
+                elif str(each.type_of_node) == 'user':
+                    n_nodes[2] = n_nodes[2] + 1
+            num_accounts = len(accounts) - 1 # not counting admin
+            for each in points:
+                if each.owned_videos != None:
+                    num_videos_watched = num_videos_watched + (len(each.owned_videos.split("_")) - 1)
+            return render.index(n_nodes, num_accounts, num_videos_watched)
 
 
 class overview:
@@ -164,7 +183,7 @@ class overview:
                 for each in videos_info:
                     videos_info2.append([each.id, str(each.vname), each.n_of_frames, each.code_param_n, each.code_param_k, each.total_size, each.chunk_size, each.last_chunk_size])
                 for each in points:
-                    points2.append([each.id, str(each.user_name), int(each.bytes_uploaded/1000000), each.points, each.owned_videos])
+                    points2.append([each.id, str(each.user_name), round(each.bytes_uploaded/1000000, 3), each.points, each.owned_videos])
                 for each in accounts:
                     accounts2.append([each.id, str(each.user_name), str(each.password), str(each.email_address)])
                 for each in account_caches:
@@ -206,9 +225,10 @@ class overview:
                     if each.owned_videos != None:
                         num_movie = len(each.owned_videos.split("_"))-1
                     if each.user_name != 'admin':
-                        rank.append([each.user_name, num_movie, int(each.bytes_uploaded)])
+                        rank.append([each.user_name, num_movie, each.bytes_uploaded])
                 rank = sorted(rank, key=lambda user: user[2], reverse=True)[:5] #rank the users by points, get top 5
                 for each in rank:
+                    #each[2] = round(each[2]/1000000, 3)
                     each[2] = each[2]/1000000
                 for each in accounts:
                     if each.user_name == session.user_name:
@@ -261,13 +281,14 @@ class user_overview:
                     video_owned = each.owned_videos.split("_")
                     video_owned.pop(0)
                     points2.append(len(video_owned)) #num of video watched
-                    points2.append(each.bytes_uploaded/1000000) #bytes uploaded
+                    points2.append(each.bytes_uploaded/1000000) #Mbs uploaded
                 if each.owned_videos != None:
                     num_movie = len(each.owned_videos.split("_"))-1
                 if each.user_name != 'admin':
-                    rank.append([each.user_name, num_movie, int(each.bytes_uploaded)])
+                    rank.append([each.user_name, num_movie, each.bytes_uploaded])
             rank = sorted(rank, key=lambda user: user[2], reverse=True)[:5] #rank the users by points, get top 5
             for each in rank:
+                #each[2] = round(each[2]/1000000, 3)
                 each[2] = each[2]/1000000
             for each in accounts:
                 if each.user_name == session.user_name:

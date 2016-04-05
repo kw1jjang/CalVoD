@@ -1,3 +1,4 @@
+$def with (n_nodes, num_accounts, num_videos_watched)
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -67,8 +68,8 @@
             <div class="carousel-caption">
               <h1>The System</h1>
               <br>
-              <p>There are currently <span style="font-size: 250%;">X</span> servers, <span style="font-size: 250%;">Y</span> caches, and <span style="font-size: 250%;">Z</span> users running in the system</p>
-              <p><span style="font-size: 250%;">XX</span> accounts have been registered, and have watched <span style="font-size: 250%;">YY</span> movies in total</p>
+              <p>There are currently <span style="font-size: 250%;">$n_nodes[0]</span> server(s), <span style="font-size: 250%;">$n_nodes[1]</span> cache(s), and <span style="font-size: 250%;">$n_nodes[2]</span> user(s) running in the system</p>
+              <p><span style="font-size: 250%;">$num_accounts</span> accounts have been registered, and have watched <span style="font-size: 250%;">$num_videos_watched</span> movies in total</p>
               <p><a class="btn btn-lg btn-primary" href="./help" role="button">Learn more</a></p>
               <br>
             </div>
@@ -130,7 +131,8 @@
       </div>
 
       <hr class="featurette-divider">
-      <p class="lead">This is an UC Berkeley M.Eng. capstone project by Jiayuan Chen, Alagu Sanjana Haribhaskaran, and Ryan Kashi, adviced by Kangwook Lee (PhD) and Prof. Kannan Ramchandran</p>
+      <p class="lead">This is a UC Berkeley EECS Master of Engineering (M.Eng.) capstone project developed by Jiayuan Chen, Alagu Sanjana Haribhaskaran, and Ryan Kashi, adviced by Kangwook Lee (PhD) and Prof. Kannan Ramchandran</p>
+      <p class="lead">5/13/2016</p>
 
       <!-- /END THE FEATURETTES -->
 

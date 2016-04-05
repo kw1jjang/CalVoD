@@ -24,7 +24,7 @@ $def with (nodes_info, n_nodes, videos_info, server_load, server_load_avg, point
             var data = google.visualization.arrayToDataTable([
                 ['Time', 'Server load for users', 'Server load for caches'],
                 $for i in range(len(server_load[0])-1):
-                    ['$i', $server_load[0][i], $server_load[1][i] ],
+                    ['$i', $server_load[0][i], $server_load[1][i]],
                 ['$(len(server_load[0])-1)', $server_load[0][len(server_load[0])-1], $server_load[1][len(server_load[0])-1]]]);
             var options = {
                 width: 1120, height: 400,
