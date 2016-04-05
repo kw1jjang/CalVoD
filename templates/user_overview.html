@@ -1,4 +1,4 @@
-$def with (user_name, points, account, account_cache, num_cache, num_user, node_info, rank, n_nodes)
+$def with (user_name, points, account, account_cache, num_cache, num_user, node_info, rank, n_nodes, video_owned)
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -42,7 +42,7 @@ $def with (user_name, points, account, account_cache, num_cache, num_user, node_
     <div class="jumbotron">
       <div class="container">
         <div class="col-md-2">
-          <img class="img-circle" src="http://placeimg.com/160/160/animals" alt="Generic placeholder image" width="160" height="160">
+          <img class="img-circle" src="./static/classprofile.png" alt="Generic placeholder image" width="160" height="160">
         </div>
         <div class="col-md-10">
           <h2>Hello $user_name!</h2>
@@ -57,14 +57,14 @@ $def with (user_name, points, account, account_cache, num_cache, num_user, node_
 
       <div class="row">
         <div class="col-md-4">
-          <h2>VoD Leaderboard&nbsp;&nbsp;<!-- <a class="btn btn-primary" href="#" role="button">manage &raquo;</a> --></h2><hr>
+          <h2>User Leaderboard&nbsp;&nbsp;<!-- <a class="btn btn-primary" href="#" role="button">manage &raquo;</a> --></h2><hr>
           <div class="table-responsive">
             <table class="table table-striped">
               <thead>
                 <tr>
                   <th>user_name</th>
                   <th>movie_watched</th>
-                  <th>points</th>
+                  <th>Mbs_uploaded</th>
                 </tr>
                 <tbody>
                   $for user in rank:
@@ -111,7 +111,7 @@ $def with (user_name, points, account, account_cache, num_cache, num_user, node_
                   <th>ip</th>
                   <th>port</th>
                   <th>bytes_uploaded</th>
-                  <th>multiplier</th>
+                  <th>size</th>
                 </tr>
               </thead>
                 <tbody>
@@ -130,77 +130,20 @@ $def with (user_name, points, account, account_cache, num_cache, num_user, node_
         <div class="col-md-4">
           <h2>Points Earned&nbsp;&nbsp;<!-- <a class="btn btn-primary" href="#" role="button">manage &raquo;</a> --></h2><hr>
           <h1 style="color:green;text-align:center;font-family:Impact,Charcoal,sans-serif;">$points[0]</h1>
-          <p>You watched $points[1] movies, and uploaded $points[2] bytes</p>
           <br>
+          <p>You've watched $points[1] movies, and uploaded $points[2] Mbs</p>
           <p>(For each 1 GB of data you shared, you are rewarded 1 point. 5 points will be subtracted each time you watch a new movie. No further points will be subtracted if you re-watch a movie)</p>
+        </div>
+
+        <div class="col-md-8">
+          <h2>Movies I Watched</h2><hr>
+          <ul class="list-group">
+            $for n in video_owned:
+            <li class="list-group-item">$n</li>
+          </ul>
         </div>
       </div>
 
-
-        <br>
-        <h1> My movie list</h1>
-        <div class="row">
-          <div class="col-lg-2 col-sm-3 col-xs-4">
-              <a href="#">
-                   <img src="http://ia.media-imdb.com/images/M/MV5BMjAxMzY3NjcxNF5BMl5BanBnXkFtZTcwNTI5OTM0Mw@@._V1_SX300.jpg" class="thumbnail img-responsive">
-              </a>
-          </div>
-           <div class="col-lg-2 col-sm-3 col-xs-4">
-              <a href="#">
-                   <img src="http://ia.media-imdb.com/images/M/MV5BOTIyMDY2NGQtOGJjNi00OTk4LWFhMDgtYmE3M2NiYzM0YTVmXkEyXkFqcGdeQXVyNTU1NTcwOTk@._V1_SX300.jpg" class="thumbnail img-responsive">
-              </a>
-          </div>
-           <div class="col-lg-2 col-sm-3 col-xs-4">
-              <a href="#">
-                   <img src="http://ia.media-imdb.com/images/M/MV5BMjM2Nzg4MzkwOF5BMl5BanBnXkFtZTgwNzA0OTE3NjE@._V1_SX300.jpg" class="thumbnail img-responsive">
-              </a>
-          </div>
-           <div class="col-lg-2 col-sm-3 col-xs-4">
-              <a href="#">
-                   <img src="http://ia.media-imdb.com/images/M/MV5BNTE5NzU3MTYzOF5BMl5BanBnXkFtZTgwNTM5NjQxODE@._V1_SX300.jpg" class="thumbnail img-responsive">
-              </a>
-          </div>
-           <div class="col-lg-2 col-sm-3 col-xs-4">
-              <a href="#">
-                   <img src="http://ia.media-imdb.com/images/M/MV5BOTMyMjEyNzIzMV5BMl5BanBnXkFtZTgwNzIyNjU0NzE@._V1_SX300.jpgg" class="thumbnail img-responsive">
-              </a>
-          </div>
-           <div class="col-lg-2 col-sm-3 col-xs-4">
-              <a href="#">
-                   <img src="http://ia.media-imdb.com/images/M/MV5BMTU1NDg1Mzg4M15BMl5BanBnXkFtZTYwMDExOTc3._V1_SX300.jp" class="thumbnail img-responsive">
-              </a>
-          </div>
-           <div class="col-lg-2 col-sm-3 col-xs-4">
-              <a href="#">
-                   <img src="http://ia.media-imdb.com/images/M/MV5BMTc5MDY1MjU5MF5BMl5BanBnXkFtZTgwNDM2OTE4MzE@._V1_SX300.j" class="thumbnail img-responsive">
-              </a>
-          </div>
-           <div class="col-lg-2 col-sm-3 col-xs-4">
-              <a href="#">
-                   <img src="http://ia.media-imdb.com/images/M/MV5BMTM1NDc4ODkxNV5BMl5BanBnXkFtZTcwNTI4ODE3MQ@@._V1_SX300.jpg" class="thumbnail img-responsive">
-              </a>
-          </div>
-          <div class="col-lg-2 col-sm-3 col-xs-4">
-              <a href="#">
-                   <img src="http://ia.media-imdb.com/images/M/MV5BMTYzNDc2MDc0N15BMl5BanBnXkFtZTgwOTcwMDQ5MTE@._V1_SX300.jpg" class="thumbnail img-responsive">
-              </a>
-          </div>
-          <div class="col-lg-2 col-sm-3 col-xs-4">
-              <a href="#">
-                   <img src="http://ia.media-imdb.com/images/M/MV5BNzc0MDkwNjI0NF5BMl5BanBnXkFtZTgwMTY1MjEyMDE@._V1_SX300.jpg" class="thumbnail img-responsive">
-              </a>
-          </div>
-          <div class="col-lg-2 col-sm-3 col-xs-4">
-              <a href="#">
-                   <img src="http://ia.media-imdb.com/images/M/MV5BNDUwMjAxNTU1MF5BMl5BanBnXkFtZTgwMzg4NzMxMDE@._V1_SX300.jpg" class="thumbnail img-responsive">
-              </a>
-          </div>
-          <div class="col-lg-2 col-sm-3 col-xs-4">
-              <a href="#">
-                   <img src="http://ia.media-imdb.com/images/M/MV5BMTUyMTE0ODcxNF5BMl5BanBnXkFtZTgwODE4NDQzNTE@._V1_SX300.jpg" class="thumbnail img-responsive">
-              </a>
-          </div>
-        </div>
 
     </div>
 

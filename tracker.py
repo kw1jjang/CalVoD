@@ -164,7 +164,7 @@ class overview:
                 for each in videos_info:
                     videos_info2.append([each.id, str(each.vname), each.n_of_frames, each.code_param_n, each.code_param_k, each.total_size, each.chunk_size, each.last_chunk_size])
                 for each in points:
-                    points2.append([each.id, str(each.user_name), each.bytes_uploaded, each.points, each.owned_videos])
+                    points2.append([each.id, str(each.user_name), int(each.bytes_uploaded/1000000), each.points, each.owned_videos])
                 for each in accounts:
                     accounts2.append([each.id, str(each.user_name), str(each.password), str(each.email_address)])
                 for each in account_caches:
@@ -198,21 +198,32 @@ class overview:
                             nodes_info2.append(["user", str(each.ip), str(each.watching_video)])
                 for each in points:
                     if each.user_name == session.user_name:
-                        points2.append(int(each.points)) #points earned
-                        points2.append(len(each.owned_videos.split("_"))) #num of video watched
-                        points2.append(each.bytes_uploaded) #bytes uploaded
+                        points2.append(int(each.points)) #points earned                    
+                        video_owned = each.owned_videos.split("_")
+                        video_owned.pop(0)
+                        points2.append(len(video_owned)) #num of video watched
+                        points2.append(each.bytes_uploaded/1000000) #bytes uploaded
                     if each.owned_videos != None:
-                        num_movie = len(each.owned_videos.split("_"))
-                    rank.append([each.user_name, num_movie, int(each.points)])
-                rank = sorted(rank, key=lambda user: user[2], reverse=True)[:5] #rank the users by points, get top 5
+                        num_movie = len(each.owned_videos.split("_"))-1
+                    if each.user_name != 'admin':
+                        rank.append([each.user_name, num_movie, int(each.bytes_uploaded)])
+                rank = sorted(rank, key=lambda user: user[2], reverse=True)[:15] #rank the users by points, get top 5
+                for each in rank:
+                    each[2] = each[2]/1000000
                 for each in accounts:
                     if each.user_name == session.user_name:
                         accounts2 = [each.id, str(each.user_name), str(each.password), str(each.email_address)]
                 for each in account_caches:
                     if each.user_name == session.user_name:
                         num_cache = num_cache + 1
-                        account_cache2.append(["cache", str(each.ip), str(each.port), str(each.bytes_uploaded), str(each.multiplier)])
-                return render.user_overview(session.user_name, points2, accounts2, account_cache2, num_cache, num_user, nodes_info2, rank, n_nodes)
+                        if each.multiplier == 0.25:
+                            speed = 'slow'
+                        elif each.multiplier == 0.5:
+                            speed = 'medium'
+                        else:
+                            speed = 'high'
+                        account_cache2.append(["cache", str(each.ip), str(each.port), str(each.bytes_uploaded), speed])
+                return render.user_overview(session.user_name, points2, accounts2, account_cache2, num_cache, num_user, nodes_info2, rank, n_nodes, video_owned)
         else:
             raise web.seeother('/login')
 
@@ -233,6 +244,7 @@ class user_overview:
             num_user = 0
             num_movie = 0
             n_nodes = [0, 0, 0] # Server / cache / user
+            video_owned = []
             for each in nodes_info:
                 if str(each.type_of_node) == 'server':
                     n_nodes[0] = n_nodes[0] + 1
@@ -246,20 +258,31 @@ class user_overview:
             for each in points:
                 if each.user_name == session.user_name:
                     points2.append(int(each.points)) #points earned
-                    points2.append(len(each.owned_videos.split("_"))) #num of video watched
-                    points2.append(each.bytes_uploaded) #bytes uploaded
+                    video_owned = each.owned_videos.split("_")
+                    video_owned.pop(0)
+                    points2.append(len(video_owned)) #num of video watched
+                    points2.append(each.bytes_uploaded/1000000) #bytes uploaded
                 if each.owned_videos != None:
-                    num_movie = len(each.owned_videos.split("_"))
-                rank.append([each.user_name, num_movie, int(each.points)])
+                    num_movie = len(each.owned_videos.split("_"))-1
+                if each.user_name != 'admin':
+                    rank.append([each.user_name, num_movie, int(each.bytes_uploaded)])
             rank = sorted(rank, key=lambda user: user[2], reverse=True)[:5] #rank the users by points, get top 5
+            for each in rank:
+                each[2] = each[2]/1000000
             for each in accounts:
                 if each.user_name == session.user_name:
                     accounts2 = [each.id, str(each.user_name), str(each.password), str(each.email_address)]
             for each in account_caches:
                 if each.user_name == session.user_name:
                     num_cache = num_cache + 1
-                    account_cache2.append(["cache", str(each.ip), str(each.port), str(each.bytes_uploaded), str(each.multiplier)])
-            return render.user_overview(session.user_name, points2, accounts2, account_cache2, num_cache, num_user, nodes_info2, rank, n_nodes)
+                    if each.multiplier == 0.25:
+                        speed = 'slow'
+                    elif each.multiplier == 0.5:
+                        speed = 'medium'
+                    else:
+                        speed = 'high'
+                    account_cache2.append(["cache", str(each.ip), str(each.port), str(each.bytes_uploaded), speed])
+            return render.user_overview(session.user_name, points2, accounts2, account_cache2, num_cache, num_user, nodes_info2, rank, n_nodes, video_owned)
         else:
             raise web.seeother('/login')
     
