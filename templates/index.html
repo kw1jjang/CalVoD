@@ -47,36 +47,30 @@
       <ol class="carousel-indicators">
         <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
         <li data-target="#myCarousel" data-slide-to="1"></li>
-        <li data-target="#myCarousel" data-slide-to="2"></li>
       </ol>
       <div class="carousel-inner" role="listbox">
         <div class="item active">
-          <img class="first-slide" src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" alt="First slide">
+          <img class="first-slide" src="./static/background1.jpg" alt="First slide">
           <div class="container">
             <div class="carousel-caption">
-              <h1>Scalable Video-on-Demand using Edge Resources</h1>
-              <p>Note: If you're viewing this page via a <code>file://</code> URL, the "next" and "previous" Glyphicon buttons on the left and right might not load/display properly due to web browser security rules.</p>
-              <p><a class="btn btn-lg btn-primary" href="#" role="button">Sign up today</a></p>
+              <h1>Scalable VoD using Edge Resources</h1>
+              <br>
+              <p>We propose, analyze, and implement a general architecture for massively parallel VoD content distribution. We allow for devices that have a wide range of reliability, storage and bandwidth constraints. Each device can act as a cache for other devices and can also communicate with a central server. Our goal is to create a marketable product that allows each user device to be able to stream any movie from a large catalog, while minimizing the load of the central server.</p>
+              <br>
+              <p><a class="btn btn-lg btn-primary" href="./signup" role="button">Sign up today</a></p>
             </div>
           </div>
         </div>
         <div class="item">
-          <img class="second-slide" src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" alt="Second slide">
+          <img class="second-slide" src="./static/background2.jpg" alt="Second slide">
           <div class="container">
             <div class="carousel-caption">
-              <h1>Another example headline.</h1>
-              <p>Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.</p>
-              <p><a class="btn btn-lg btn-primary" href="#" role="button">Learn more</a></p>
-            </div>
-          </div>
-        </div>
-        <div class="item">
-          <img class="third-slide" src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" alt="Third slide">
-          <div class="container">
-            <div class="carousel-caption">
-              <h1>One more for good measure.</h1>
-              <p>Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.</p>
-              <p><a class="btn btn-lg btn-primary" href="#" role="button">Browse gallery</a></p>
+              <h1>The System</h1>
+              <br>
+              <p>There are currently <span style="font-size: 250%;">X</span> servers, <span style="font-size: 250%;">Y</span> caches, and <span style="font-size: 250%;">Z</span> users running in the system</p>
+              <p><span style="font-size: 250%;">XX</span> accounts have been registered, and have watched <span style="font-size: 250%;">YY</span> movies in total</p>
+              <p><a class="btn btn-lg btn-primary" href="./help" role="button">Learn more</a></p>
+              <br>
             </div>
           </div>
         </div>
@@ -101,65 +95,42 @@
       <!-- Three columns of text below the carousel -->
       <div class="row">
         <div class="col-lg-4">
-          <img class="img-circle" src="http://placeimg.com/140/140/nature" alt="Generic placeholder image" width="140" height="140">
-          <h2>Heading</h2>
-          <p>Donec sed odio dui. Etiam porta sem malesuada magna mollis euismod. Nullam id dolor id nibh ultricies vehicula ut id elit. Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Praesent commodo cursus magna.</p>
-          <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
+          <img class="img" src="./static/distributed.jpg" alt="Generic placeholder image" width="140" height="140">
+          <h2>Scalable & Distributed</h2>
+          <p>Each edge devices has limited storage, but they can store content even from ones that the device owner is not watching. The chunked movies are distributed in the networks that allows scalability and unreliability.</p>
         </div><!-- /.col-lg-4 -->
         <div class="col-lg-4">
-          <img class="img-circle" src="http://placeimg.com/140/140/nature" alt="Generic placeholder image" width="140" height="140">
-          <h2>Heading</h2>
-          <p>Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Cras mattis consectetur purus sit amet fermentum. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh.</p>
-          <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
+          <img class="img" src="./static/server.jpg" alt="Generic placeholder image" width="140" height="140">
+          <h2>Minimum Server Load</h2>
+          <p>While all chunks from a popular movie are distributed among caches in edge devices, the caches will act as mini servers, which deliver the movie to other users, thus minimize server load and increase system stability.</p>
         </div><!-- /.col-lg-4 -->
         <div class="col-lg-4">
-          <img class="img-circle" src="http://placeimg.com/140/140/nature" alt="Generic placeholder image" width="140" height="140">
-          <h2>Heading</h2>
-          <p>Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
-          <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
+          <img class="img" src="./static/easy.jpg" alt="Generic placeholder image" width="140" height="140">
+          <h2>Easy to Use</h2>
+          <p>Please download the CalVoD desktop application, and login with you credentials registered on this website. You'll then get instant access to enormous amount of classic and popular movies!</p>
+          <p><a class="btn btn-default" href="#" role="button">Download &raquo;</a></p>
         </div><!-- /.col-lg-4 -->
       </div><!-- /.row -->
 
 
       <!-- START THE FEATURETTES -->
 
-      <hr class="featurette-divider">
+      <hr class="divider" style="margin-bottom: 60px;">
 
       <div class="row featurette">
-        <div class="col-md-7">
-          <h2 class="featurette-heading">First featurette heading. <span class="text-muted">It'll blow your mind.</span></h2>
-          <p class="lead">Donec ullamcorper nulla non metus auctor fringilla. Vestibulum id ligula porta felis euismod semper. Praesent commodo cursus magna, vel scelerisque nisl consectetur. Fusce dapibus, tellus ac cursus commodo.</p>
-        </div>
         <div class="col-md-5">
-          <img src="http://placeimg.com/500/500/tch" class="thumbnail img-responsive">
+          <p style="font-size: 200%;">Theoretical Approach</p>
+          <p style="font-size: 125%;">First, we architect and formulate a static optimization problem that accounts for various network bandwidth and storage capacity constraints, as well as the maximum number of network connections for each device. Not surprisingly this formulation is NP-hard. We then use coding and the Markov approximation technique in a primal-dual framework to devise a highly distributed algorithm which is provably close to the optimal. Next we test the practical effectiveness of the distributed algorithm in several ways. We demonstrate remarkable robustness to system scale and changes in demand, user churn, network failure and node failures via a packet level simulation of the system. Finally, we test our system with numerous experiments on a full implementation of the system on Amazon EC2 instances.</p>
+          <p><a class="btn btn-primary" href="./help" role="button">Read Our Capstone Papers</a></p>
         </div>
-      </div>
-
-      <hr class="featurette-divider">
-
-      <div class="row featurette">
-        <div class="col-md-7 col-md-push-5">
-          <h2 class="featurette-heading">Oh yeah, it's that good. <span class="text-muted">See for yourself.</span></h2>
-          <p class="lead">Donec ullamcorper nulla non metus auctor fringilla. Vestibulum id ligula porta felis euismod semper. Praesent commodo cursus magna, vel scelerisque nisl consectetur. Fusce dapibus, tellus ac cursus commodo.</p>
-        </div>
-        <div class="col-md-5 col-md-pull-7">
-          <img src="http://placeimg.com/500/500/tech" class="thumbnail img-responsive">
-        </div>
-      </div>
-
-      <hr class="featurette-divider">
-
-      <div class="row featurette">
         <div class="col-md-7">
-          <h2 class="featurette-heading">And lastly, this one. <span class="text-muted">Checkmate.</span></h2>
-          <p class="lead">Donec ullamcorper nulla non metus auctor fringilla. Vestibulum id ligula porta felis euismod semper. Praesent commodo cursus magna, vel scelerisque nisl consectetur. Fusce dapibus, tellus ac cursus commodo.</p>
+          <img src="./static/system_architecture.png" class="img-thumbnail">
         </div>
-        <div class="col-md-5">
-          <img src="http://placeimg.com/500/500/tech" class="thumbnail img-responsive">
-        </div>
+
       </div>
 
       <hr class="featurette-divider">
+      <p class="lead">This is an UC Berkeley M.Eng. capstone project by Jiayuan Chen, Alagu Sanjana Haribhaskaran, and Ryan Kashi, adviced by Kangwook Lee (PhD) and Prof. Kannan Ramchandran</p>
 
       <!-- /END THE FEATURETTES -->
 
