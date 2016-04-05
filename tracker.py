@@ -207,7 +207,7 @@ class overview:
                         num_movie = len(each.owned_videos.split("_"))-1
                     if each.user_name != 'admin':
                         rank.append([each.user_name, num_movie, int(each.bytes_uploaded)])
-                rank = sorted(rank, key=lambda user: user[2], reverse=True)[:15] #rank the users by points, get top 5
+                rank = sorted(rank, key=lambda user: user[2], reverse=True)[:5] #rank the users by points, get top 5
                 for each in rank:
                     each[2] = each[2]/1000000
                 for each in accounts:

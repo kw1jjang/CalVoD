@@ -57,27 +57,11 @@ $def with (user_name, points, account, account_cache, num_cache, num_user, node_
 
       <div class="row">
         <div class="col-md-4">
-          <h2>User Leaderboard&nbsp;&nbsp;<!-- <a class="btn btn-primary" href="#" role="button">manage &raquo;</a> --></h2><hr>
-          <div class="table-responsive">
-            <table class="table table-striped">
-              <thead>
-                <tr>
-                  <th>user_name</th>
-                  <th>movie_watched</th>
-                  <th>Mbs_uploaded</th>
-                </tr>
-                <tbody>
-                  $for user in rank:
-                  <tr>
-                    $for u in user:
-                    <td>$u</td>
-                  </tr>
-                </body>
-              </thead>
-              <tbody>
-              </tbody>
-            </table>
-          </div>
+          <h2>Movies I Watched</h2><hr>
+          <ul class="list-group">
+            $for n in video_owned:
+            <li class="list-group-item">$n</li>
+          </ul>
         </div>
 
         <div class="col-md-4">
@@ -123,10 +107,8 @@ $def with (user_name, points, account, account_cache, num_cache, num_user, node_
                 </tbody>
             </table>
           </div>
-
         </div>
 
-        
         <div class="col-md-4">
           <h2>Points Earned&nbsp;&nbsp;<!-- <a class="btn btn-primary" href="#" role="button">manage &raquo;</a> --></h2><hr>
           <h1 style="color:green;text-align:center;font-family:Impact,Charcoal,sans-serif;">$points[0]</h1>
@@ -136,15 +118,30 @@ $def with (user_name, points, account, account_cache, num_cache, num_user, node_
         </div>
 
         <div class="col-md-8">
-          <h2>Movies I Watched</h2><hr>
-          <ul class="list-group">
-            $for n in video_owned:
-            <li class="list-group-item">$n</li>
-          </ul>
+          <h2>User Leaderboard&nbsp;&nbsp;<!-- <a class="btn btn-primary" href="#" role="button">manage &raquo;</a> --></h2><hr>
+          <div class="table-responsive">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>user_name</th>
+                  <th>movie_watched</th>
+                  <th>Mbs_uploaded</th>
+                </tr>
+                <tbody>
+                  $for user in rank:
+                  <tr>
+                    $for u in user:
+                    <td>$u</td>
+                  </tr>
+                </body>
+              </thead>
+              <tbody>
+              </tbody>
+            </table>
+          </div>
         </div>
+
       </div>
-
-
     </div>
 
     <!-- Bootstrap core JavaScript
