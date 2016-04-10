@@ -1,15 +1,22 @@
 echo "Enter your option:"
-echo "c1 - Chen's Virginia instance 1"
+echo "c1 - Chen's Virginia instance 1 - server"
 echo "c2 - Chen's Virginia instance 2"
 echo "c3 - Chen's Virginia instance 3"
-echo "c4 - Chen's N. California instance 1"
-echo "a1 - Alagu's N. California instance 1"
+echo "c4 - Chen's Virginia instance 4"
+echo "c5 - Chen's Virginia instance 5"
+echo "c6 - Chen's Virginia instance 6"
+echo "c7 - Chen's Virginia instance 7"
+echo "c8 - Chen's Virginia instance 8"
+echo "c9 - Chen's Virginia instance 9"
+echo "c10 - Chen's Virginia instance 10"
+echo "c11 - Chen's Virginia instance 11"
 
 if [ "$1" == "c1" ]
 then
   echo ""
-  echo "running c1"
+  echo "running c1 - the server"
   ssh -i ~/.ssh/NVirginakey.pem ec2-user@52.22.160.180
+    #ssh -i ~/.ssh/MyFirstkey.pem ec2-user@54.153.85.152 #the original California instance
 
 elif [ "$1" == "c2" ]
 then
@@ -21,13 +28,55 @@ elif [ "$1" == "c3" ]
 then
   echo ""
   echo "running c3"
-  ssh -i ~/.ssh/NVirginakey.pem ec2-user@52.90.36.119
+  ssh -i ~/.ssh/NVirginakey.pem ec2-user@52.207.209.108
 
 elif [ "$1" == "c4" ]
 then
   echo ""
   echo "running c4"
-  ssh -i ~/.ssh/MyFirstkey.pem ec2-user@54.153.85.152
+  ssh -i ~/.ssh/NVirginakey.pem ec2-user@52.91.86.190
+
+elif [ "$1" == "c5" ]
+then
+  echo ""
+  echo "running c5"
+  ssh -i ~/.ssh/NVirginakey.pem ec2-user@54.88.61.224
+
+elif [ "$1" == "c6" ]
+then
+  echo ""
+  echo "running c6"
+  ssh -i ~/.ssh/NVirginakey.pem ec2-user@54.164.148.199
+
+elif [ "$1" == "c7" ]
+then
+  echo ""
+  echo "running c7"
+  ssh -i ~/.ssh/NVirginakey.pem ec2-user@52.207.244.134
+
+elif [ "$1" == "c8" ]
+then
+  echo ""
+  echo "running c8"
+  ssh -i ~/.ssh/NVirginakey.pem ec2-user@52.87.227.26
+
+elif [ "$1" == "c9" ]
+then
+  echo ""
+  echo "running c9"
+  ssh -i ~/.ssh/NVirginakey.pem ec2-user@52.91.187.141
+
+elif [ "$1" == "c10" ]
+then
+  echo ""
+  echo "running c10"
+  ssh -i ~/.ssh/NVirginakey.pem ec2-user@52.87.192.115
+
+elif [ "$1" == "c11" ]
+then
+  echo ""
+  echo "running c11"
+  ssh -i ~/.ssh/NVirginakey.pem ec2-user@52.201.217.227
 
 elif [ "$1" == "a1" ]
 then
