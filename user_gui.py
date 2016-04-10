@@ -591,7 +591,7 @@ if __name__ == "__main__":
         global_password = sys.argv[3]
     else:
         global_user_name = 'user-' + user_id
-        global_account_name = 'ryan'
+        global_account_name = 'chen'
         global_password = '11111'
     movies = movie_LUT.movies_LUT.keys()
     runtime_ct = 0
