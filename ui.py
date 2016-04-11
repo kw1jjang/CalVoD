@@ -90,7 +90,7 @@ class Page3(Page):
 	self.password = "11111"
     
         
-        self.img = PIL.Image.open("pic2.jpg")
+        self.img = PIL.Image.open("pic.jpg")
         self.background_image=PIL.ImageTk.PhotoImage(self.img)
         self.background_label = Label(self, image=self.background_image)
         self.background_label.place(x=0, y=0, relwidth=1, relheight=1)
