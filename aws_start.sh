@@ -34,7 +34,7 @@ elif [ "$1" == "c4" ]
 then
   echo ""
   echo "running c4"
-  ssh -i ~/.ssh/NVirginakey.pem ec2-user@54.164.82.188
+  ssh -i ~/.ssh/NVirginakey.pem ec2-user@54.152.0.39
 
 elif [ "$1" == "c5" ]
 then
