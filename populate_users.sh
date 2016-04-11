@@ -20,6 +20,6 @@ do
     python ../../user_gui_demo.py ../../develpment.ini > /dev/null &
 
     cd ..
-    sleep 1
+    sleep 120
 done
 cd ".."
