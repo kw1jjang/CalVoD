@@ -10,7 +10,7 @@ fi
 mkdir -p caches
 rm -rf caches/*
 cd "caches"
-for (( i = 6; i <= num_of_caches; i++ ))
+for (( i = 1; i <= num_of_caches; i++ ))
 do
     echo "Initiating cache with id # $i ..."
     if [ ! -d "cache"$i ]; then
