@@ -9,7 +9,7 @@ fi
 mkdir -p users
 rm -rf users/*
 cd "users"
-for (( i = 0; i <= num_of_users; i++ ))
+for (( i = 1; i <= num_of_users; i++ ))
 do
     echo "Initiating user with id # $i ..."
     if [ ! -d "user"$i ]; then
@@ -20,6 +20,6 @@ do
     python ../../user_gui_demo.py ../../develpment.ini > /dev/null &
 
     cd ..
-    sleep 1
+    sleep 120
 done
 cd ".."

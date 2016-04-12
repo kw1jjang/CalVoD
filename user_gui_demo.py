@@ -262,6 +262,7 @@ class P2PUser():
             server_request = chunks_to_request(chosen_chunks, range(0, code_param_n), code_param_k - num_chunks_rx_predicted)
             num_of_chks_from_server = len(server_request)
             if num_of_chks_from_server == 0:
+                self.server_client.put_instruction(inst_CACHEDATA + cdrs)
                 self.server_client.put_instruction(inst_NOOP)
                 print '[user.py] Caches handling code_param_k chunks, so no request to server. Sending a NOOP'
             else:
@@ -551,13 +552,22 @@ def main():
     runtime_ct = 0
     popularity_change = False
     while True:
+        path = os.getcwd()
+        for i in os.listdir(os.getcwd()):
+            full_path = path + '/' + i;
+            if int(time.time()) - int(os.stat(full_path).st_mtime) > 60:
+                shutil.rmtree(full_path, ignore_errors=True)
+        print 'Old files cleaned!'
+        print ''
+        
         print 'List of available videos in the system'
         for each in movies:
             print '-', each
         video_name = random.choice(movies)
         rand_sleep = randint(1,100)
         print "sleeping for %i" % rand_sleep
-        sleep(rand_sleep)
+        #sleep(rand_sleep)
+        sleep(1)
 
         # while True:
         #     input_str = raw_input('Please choose a video:')
