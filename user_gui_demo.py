@@ -552,6 +552,14 @@ def main():
     runtime_ct = 0
     popularity_change = False
     while True:
+        path = os.getcwd()
+        for i in os.listdir(os.getcwd()):
+            full_path = path + '/' + i;
+            if int(time.time()) - int(os.stat(full_path).st_mtime) > 60:
+                shutil.rmtree(full_path, ignore_errors=True)
+        print 'Old files cleaned!'
+        print ''
+        
         print 'List of available videos in the system'
         for each in movies:
             print '-', each

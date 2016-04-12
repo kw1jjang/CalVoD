@@ -28,19 +28,19 @@ elif [ "$1" == "c3" ]
 then
   echo ""
   echo "running c3"
-  ssh -i ~/.ssh/NVirginakey.pem ec2-user@52.205.254.196
+  ssh -i ~/.ssh/NVirginakey.pem ec2-user@52.200.196.119
 
 elif [ "$1" == "c4" ]
 then
   echo ""
   echo "running c4"
-  ssh -i ~/.ssh/NVirginakey.pem ec2-user@54.152.0.39
+  ssh -i ~/.ssh/NVirginakey.pem ec2-user@52.201.5.148
 
 elif [ "$1" == "c5" ]
 then
   echo ""
   echo "running c5"
-  ssh -i ~/.ssh/NVirginakey.pem ec2-user@54.175.175.98
+  ssh -i ~/.ssh/NVirginakey.pem ec2-user@52.201.45.124
 
 elif [ "$1" == "c6" ]
 then
