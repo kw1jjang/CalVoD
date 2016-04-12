@@ -101,7 +101,7 @@ class Page3(Page):
         
         self.label_1 = Label(self, text="please select the amount of resources you are willing to contribute:")
         self.label_1.place(x=100, y=10)
-	self.range=[("Slow",1),("Medium",2),("Fast",3)]
+	self.range=[("Minimum",1),("Half",2),("Maximum",3)]
 	self.s=IntVar()
 	self.s.set(0)
 	space=0
