@@ -24,6 +24,7 @@ from Tkinter import Tk, Text, TOP, BOTH, X, N, LEFT, FLAT, StringVar, OptionMenu
 from ttk import Frame, Label, Entry, Button
 import PIL.Image
 import PIL.ImageTk
+import thread
 
 
 import pdb #to run without stopping, uncomment all pdb.set_trace() that appear
@@ -177,6 +178,15 @@ class P2PUser():
             if (DEBUGGING_MSG): print '[server.py] Loading movie : ', row
             movie_name = row[0]
             self.movies_LUT[movie_name] = (int(row[1]), int(row[2]), int(row[3]), int(row[4]), int(row[5]), int(row[6]))
+
+    def play_video(self):
+	movie_name = global_video_name + ".mkv"
+        print "movie name is" + movie_name
+       	folder = "video-"+global_video_name
+       	print folder
+       	os.system('chmod +x play_vlc.sh')
+       	os.system('./play_vlc.sh ' + movie_name + ' ' + folder)
+	
 
 
     def download(self, video_name, start_frame, session=None):
@@ -427,13 +437,9 @@ class P2PUser():
                 print "[user.py] Downloaded chunks from server: ", chunks
 
             # Now play it
-            '''if frame_number==5:
-    		movie_name = global_video_name + ".mkv"
-        	print "movie name is" + movie_name
-        	folder_name = "video-"+global_video_name
-        	print folder_name
-        	os.system('chmod +x play_vlc.sh')
-        	os.system('./play_vlc.sh ' + movie_name + ' ' + folder_name)'''
+            if frame_number==1:
+    		thread.start_new_thread(self.play_video,())
+		print "played"
             if frame_number > start_frame and (server_request or addtl_server_request) and VLC_PLAYER_USE:
                 self.VLC_pause_video()
 
@@ -614,12 +620,12 @@ def true_run_user():
     test_user = P2PUser(tracker_address, global_video_name, global_user_name, session)
     if test_user.able_to_watch_video:
         test_user.download(global_video_name, global_frame_number, session)
-        movie_name = global_video_name + ".mkv"
+        '''movie_name = global_video_name + ".mkv"
         print "movie name is" + movie_name
-        folder_name = "video-"+global_video_name
-        print folder_name
+        folder = "video-"+global_video_name
+        print folder
         os.system('chmod +x play_vlc.sh')
-        os.system('./play_vlc.sh ' + movie_name + ' ' + folder_name)
+        os.system('./play_vlc.sh ' + movie_name + ' ' + folder)'''
         test_user.disconnect(tracker_address, global_video_name, global_user_name)
         print '[user.py] Download of video %s finished.' % global_video_name
         sys.stdout.flush()
