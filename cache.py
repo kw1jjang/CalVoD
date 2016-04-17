@@ -2,6 +2,7 @@ from streamer import StreamFTP
 from threadclient import *
 from server import *
 from pyftpdlib import ftpserver
+import os
 import Queue
 import random
 import csv
@@ -37,12 +38,12 @@ tracker_address = load_tracker_address() # set in helper.
 # CACHE RESOURCE
 #BANDWIDTH_CAP = 2000 # (Kbps)
 #BANDWIDTH_CAP = 8000 * 3# (Kbps)
-BANDWIDTH_CAP = 10 * 1000 #(Kbps), equal to 10 Megabytes
+BANDWIDTH_CAP = 12800 #(Kbps), equal to 12.8 Megabytes
 #STORAGE_CAP_IN_MB = 60 * 3 # (MB)
 #STORAGE_CAP_IN_MB = 60 * 4 # (MB)
 #STORAGE_CAP_IN_MB = 60 * 8 # (MB)
 #STORAGE_CAP_IN_MB = 120 * 8 #(MB)
-STORAGE_CAP_IN_MB = 800 #Megabytes, equal to 1.5 Gigabytes
+STORAGE_CAP_IN_MB = 15000 #Megabytes, equal to 1.5 Gigabytes
 T_rate = .01
 T_storage = .01
 #T_rate = .1
@@ -303,7 +304,17 @@ class Cache(object):
     def remove_one_chunk(self, video_name, index):
         # It should remove all the downloaded chunks at cache
         # Currently, it just removes the index out of the cache_chunk_list
-
+        print '[cache.py] Removing chunk', index , 'of' , video_name
+        frame_num = self.movie_LUT.frame_num_lookup(video_name)
+        code_param_n = self.movie_LUT.code_param_n_lookup(video_name)
+        for i in range(1, frame_num+1):
+            f_num = str(index[0])
+            if len(f_num) == 1:
+                f_num = '0' + f_num
+            # example: rm video-test10/test10.1.dir/test10.1.02_40.chunk
+            command = 'video-'+video_name+'/'+video_name+'.'+str(i)+'.dir/'+video_name+'.'+str(i)+'.'+f_num+'_'+str(code_param_n)+'.chunk'
+            print '[cache.py] removing command:', command
+            os.remove(command)
         return True
 
     def download_one_chunk_from_server(self, video_name, index):
@@ -434,14 +445,13 @@ class Cache(object):
                     if log_ct == 0:
                         print '[cache.py] num_stored_chunks ', num_stored_chunks
                         print '[cache.py] assigned_num_of_chks ', assigned_num_of_chunks
-                    if ct % STORAGE_UPDATE_PERIOD_OUTER == 0:
+                    if ct % STORAGE_UPDATE_PERIOD_OUTER == 0: # 1 second
                         if assigned_num_of_chunks > num_stored_chunks:
                             if num_stored_chunks >= code_param_k:
                                 if log_ct == 0:
                                     print '[cache.py] Downloading nothing from server'
                                 print '[cache.py] Logic error'
                                 sys.exit(0)
-                                #self.download_one_chunk_from_server(video_name, '')
                             else:
                                 chunk_index = random.sample( list(set(range(0,code_param_n)) - set(map(int, stored_chunks))), 1 ) # Sample one out of missing chunks
                                 if self.download_one_chunk_from_server(video_name, chunk_index) == True:
