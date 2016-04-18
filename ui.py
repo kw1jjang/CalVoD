@@ -64,6 +64,7 @@ class Page1(Page):
   		print 'request sent to tracker: ' + tracker_address + req_str
   		ret_str = urllib2.urlopen(tracker_address + req_str).read()
 		print ret_str
+		print "ABCDEFGHIJ"
   		if ret_str == 'True':
     			logged_in = True
 			#tm.showinfo("Login info", "Welcome")
@@ -81,7 +82,7 @@ class Page1(Page):
 
 
         	else:
-            		tm.showerror("Login error", "Incorrect")
+            		tm.showerror("Login error", "The username and password do not match")
 
 class Page3(Page):
     def __init__(self, root, username, password):
@@ -99,7 +100,7 @@ class Page3(Page):
         self.pack()
         
         
-        self.label_1 = Label(self, text="please select the amount of resources you are willing to contribute:")
+        self.label_1 = Label(self, text="Please select the amount of resources you are willing to contribute:")
         self.label_1.place(x=100, y=10)
 	self.range=[("Minimum",1),("Half",2),("Maximum",3)]
 	self.s=IntVar()
@@ -142,6 +143,7 @@ class Page3(Page):
 	cache_options = ['0.25', '0.5', '1']
 	cache_multiplier = cache_options[self.bandwidth - 1]
 	os.system('./populate_caches_local_ui.sh ' + cache_multiplier + ' ' + self.username + ' ' + self.password)
+	print "alagu debug"
 	os.system('./populate_user_ui.sh ' + self.username + ' ' + self.password)
         self.quit()
         self.destroy()

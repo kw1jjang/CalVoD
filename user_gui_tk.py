@@ -20,11 +20,16 @@ import ConfigParser
 import json
 from signal import signal, alarm, SIGPIPE, SIG_DFL, SIG_IGN, SIGALRM
 import requests #used for handling the cache session (associate this cache with a logged in account to tracker)
-from Tkinter import Tk, Text, TOP, BOTH, X, N, LEFT, FLAT, StringVar, OptionMenu
+#from Tkinter import Tk, Text, TOP, BOTH, X, N, LEFT, FLAT, StringVar, OptionMenu, Grid
+from Tkinter import *
 from ttk import Frame, Label, Entry, Button
 import PIL.Image
 import PIL.ImageTk
 import thread
+import requests
+from StringIO import StringIO
+import cStringIO
+import re
 
 
 import pdb #to run without stopping, uncomment all pdb.set_trace() that appear
@@ -77,37 +82,66 @@ class Page1(Page):
         self.background_label.image = self.background_image
         self.background_label.pack()
         self.pack()
+	count_poster=0
+	size=128,128
+	self.btn=[]
+	mo=["The Godfather", "the lord of the rings", "titanic", "the shawshank Redemption", "frozen", "Ocean's Eleven", "the jungle book", "harry potter", "Batman-v-superman", "minions", "spectre"]
+	for x_p in range(3): 
+    		for y_p in range((len(m)/3)+1):
+			if count_poster < len(m):
+				print mo[count_poster]
+				name_movie=mo[count_poster]
+				name_movie=re.sub(r"\s",'+',name_movie)
+				print name_movie
+				url_poster ="http://www.omdbapi.com/?t="+name_movie+"&y=&plot=short&r=json"
+				content = urllib2.urlopen(url_poster).read()
+				print content
+				j_poster=json.loads(content)
+				print j_poster.keys()
+				print j_poster.get('Poster')
+				url_image = j_poster.get('Poster')
+				if url_image==None:
+					img_poster = PIL.Image.open("pic.jpg")
+					img_poster = img_poster.resize(size)
+        				im_poster  = PIL.ImageTk.PhotoImage(img_poster)
+				else: 
+					print "acde is url is " + url_image
+					imagefile=cStringIO.StringIO(urllib2.urlopen(url_image).read())
+					img_poster = PIL.Image.open(imagefile)
+					img_poster = img_poster.resize(size)
+        				im_poster  = PIL.ImageTk.PhotoImage(img_poster)
+        			self.btn.append(Button(self, image=im_poster, command=lambda x=m[count_poster] : self.setmovie(x)))
+				self.btn[count_poster].image=im_poster
+				self.btn[count_poster].place(x=50+x_p*150,y=50+y_p*135)
+				count_poster=count_poster+1
+
+	
         
         
         self.lbl1 = Label(self, text="List of available videos in the system")
     	self.lbl1.pack(side=LEFT, padx=5, pady=5)
-    	self.lbl1.place(x=100, y=100)
+    	self.lbl1.place(x=20, y=20)
     
         
-        self.variable = StringVar(root)
-        self.variable.set(m[0]) # default value
+        #self.variable = StringVar(root)
+        #self.variable.set(m[0]) # default value
 
-        self.w = apply(OptionMenu, (self, self.variable) + tuple(m))
-        self.w.place(x=500, y=100)
-	self.exitButton = Button(self, text = "Enter", command=self.setmovie)
-    	self.exitButton.pack(side=LEFT, padx=2, pady=2)
-    	self.exitButton.place(x=100, y=200)
+        #self.w = apply(OptionMenu, (self, self.variable) + tuple(m))
+        #self.w.place(x=500, y=100)
+	#self.exitButton = Button(self, text = "Enter", command=self.setmovie)
+    	#self.exitButton.pack(side=LEFT, padx=2, pady=2)
+    	#self.exitButton.place(x=100, y=200)
                              
         self.pack()
      
-    def setmovie(self):
-    	input_str = self.variable.get()
+    def setmovie(self,x):
+    	input_str = x
    	print input_str + "kkk" 
     	video_name=input_str
     	self.globa_video_name = video_name 
         self.quit()
         #self.destroy()
-    	#print globa_video_name + "gvn"
-        #self.run_user()
-	#input_movie = self.globa_video_name + ".mkv"
-        #folder_name = "video-"+self.globa_video_name
-   	#os.system("cd folder_name")
-    	#os.system("python vlctk.py " + input_movie)
+    	
 
     def getmovie(self):
         print "in page get movie"
@@ -702,7 +736,7 @@ if __name__ == "__main__":
     root = Tk()
     main = MainView(root,m)
     main.pack(side="top", fill="both", expand=True)
-    root.wm_geometry("720x540+300+300")
+    root.wm_geometry("720x600+300+300")
     root.mainloop()
     global_video_name=main.get_movie_name()
     print global_video_name + "before true run"
