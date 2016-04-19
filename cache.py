@@ -43,9 +43,9 @@ BANDWIDTH_CAP = 12800 #(Kbps), equal to 12.8 Megabytes
 #STORAGE_CAP_IN_MB = 60 * 4 # (MB)
 #STORAGE_CAP_IN_MB = 60 * 8 # (MB)
 #STORAGE_CAP_IN_MB = 120 * 8 #(MB)
-STORAGE_CAP_IN_MB = 15000 #Megabytes, equal to 1.5 Gigabytes
+STORAGE_CAP_IN_MB = 1500 #Megabytes, equal to 1.5 Gigabytes
 T_rate = .01
-T_storage = .01
+T_storage = .1
 #T_rate = .1
 #T_storage = .1
 T_topology = 600
@@ -315,7 +315,7 @@ class Cache(object):
             command = 'video-'+video_name+'/'+video_name+'.'+str(i)+'.dir/'+video_name+'.'+str(i)+'.'+f_num+'_'+str(code_param_n)+'.chunk'
             print '[cache.py] removing command:', command
             os.remove(command)
-        return True
+        #return True
 
     def download_one_chunk_from_server(self, video_name, index):
         print '[cache.py] Caching chunk', index , 'of' , video_name
@@ -467,14 +467,15 @@ class Cache(object):
                                 pass
                             else:
                                 chunk_index = random.sample( list(set(stored_chunks)), 1 )
-                                if self.remove_one_chunk(video_name, chunk_index) == True:
-                                    new_chunks = list(set(self.get_chunks(video_name)) - set(map(str, chunk_index)))
-                                    self.set_chunks(video_name, new_chunks)
-                                    update_chunks_for_cache(tracker_address, self.public_address, self.address[1], video_name, new_chunks)
-                                    self.sum_storage = self.sum_storage - additional_storage_needed
-                                    if log_ct == 0:
-                                        print '[cache.py] chunk ', chunk_index, ' is dropped'
-                                        print '[cache.py] storage Usage' , int(self.sum_storage/1000/1000) , '(MB) /' , int(self.storage_cap/1000/1000) , '(MB)'
+                                #if self.remove_one_chunk(video_name, chunk_index) == True:
+                                self.remove_one_chunk(video_name, chunk_index)
+                                new_chunks = list(set(self.get_chunks(video_name)) - set(map(str, chunk_index)))
+                                self.set_chunks(video_name, new_chunks)
+                                update_chunks_for_cache(tracker_address, self.public_address, self.address[1], video_name, new_chunks)
+                                self.sum_storage = self.sum_storage - additional_storage_needed
+                                if log_ct == 0:
+                                    print '[cache.py] chunk ', chunk_index, ' is dropped'
+                                    print '[cache.py] storage Usage' , int(self.sum_storage/1000/1000) , '(MB) /' , int(self.storage_cap/1000/1000) , '(MB)'
                         else:
                             if log_ct == 0:
                                 print '[cache.py] storage not updated'
