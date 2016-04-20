@@ -551,6 +551,7 @@ def main():
     movies = movie_LUT.movies_LUT.keys()
     runtime_ct = 0
     popularity_change = False
+    video_count = 1
     while True:
         path = os.getcwd()
         for i in os.listdir(os.getcwd()):
@@ -576,7 +577,9 @@ def main():
         #         break
 
         user_id = ''.join(random.choice(string.ascii_uppercase + string.digits) for x in range(6))
-        user_name = 'user-' + user_id
+        #added user_num and video_num for that user for debugging
+        user_name = 'user-' + str(sys.argv[2]) + '-' + str(video_count) + '-' + user_id
+        video_count = video_count + 1
         global_user_name = user_name
         global_video_name = video_name
         global_account_name = 'chen'
