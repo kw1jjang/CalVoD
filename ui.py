@@ -27,6 +27,7 @@ class Page1(Page):
         self.img = PIL.Image.open("pic.jpg")
         self.background_image=PIL.ImageTk.PhotoImage(self.img)
         self.background_label = Label(self, image=self.background_image)
+	#self.background_label = Label(self, bg="white")
         self.background_label.place(x=0, y=0, relwidth=1, relheight=1)
         self.background_label.image = self.background_image
         self.background_label.pack()
@@ -72,7 +73,7 @@ class Page1(Page):
 			root3 = Toplevel()
     			main3 = MainView3(root3, username, password)
     			main3.pack(side="top", fill="both", expand=True)
-    			root3.wm_geometry("720x540+300+300")
+    			root3.wm_geometry("720x580+300+300")
     			root3.mainloop()
 			self.destroy()
 
@@ -142,7 +143,7 @@ class Page3(Page):
     def btn_clickked(self):
 	cache_options = ['0.25', '0.5', '1']
 	cache_multiplier = cache_options[self.bandwidth - 1]
-	os.system('./populate_caches_local_ui.sh ' + cache_multiplier + ' ' + self.username + ' ' + self.password)
+	os.system('./populate_caches_public_ui.sh ' + cache_multiplier + ' ' + self.username + ' ' + self.password)
 	print "alagu debug"
 	os.system('./populate_user_ui.sh ' + self.username + ' ' + self.password)
         self.quit()
@@ -187,5 +188,5 @@ if __name__ == "__main__":
     root = Tk()
     main = MainView(root)
     main.pack(side="top", fill="both", expand=True)
-    root.wm_geometry("720x540+300+300")
+    root.wm_geometry("720x580+300+300")
     root.mainloop()

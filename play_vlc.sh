@@ -8,6 +8,7 @@ if [ ! -z "$2" ] ; then
 fi
 cp "vlctk.py" "$folder_name"
 cp "vlc.py" "$folder_name"
+cp "pic.jpg" "$folder_name"
 cd "$folder_name"
 
 python vlctk.py "$video_name"

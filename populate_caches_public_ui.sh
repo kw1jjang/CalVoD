@@ -24,6 +24,6 @@ fi
 cd "cache001"
 
 rm -rf video*
-python ../../cache.py $cache_multiplier public $username $password > /dev/null 2>&1 &
+python ../../cache.py 1 public $username $password $cache_multiplier> /dev/null 2>&1 &
 cd ".."
 cd ".."

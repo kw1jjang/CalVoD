@@ -27,6 +27,8 @@ import os
 from threading import Thread, Event
 import time
 import platform
+import PIL.Image
+import PIL.ImageTk
 
 
 class Player(Tk.Frame):
@@ -43,41 +45,56 @@ class Player(Tk.Frame):
 
         # Menu Bar
         #   File Menu
-        menubar = Tk.Menu(self.parent)
+        
+	size=256,256
+	img = PIL.Image.open("pic.jpg")
+	img = img.resize(size)
+        background_image=PIL.ImageTk.PhotoImage(img)
+        background_label = Tk.Label(self, image=background_image)
+        background_label.place(x=0, y=0, relwidth=1, relheight=1)
+        background_label.image = background_image
+        background_label.pack()
+	self.pack()
+	menubar = Tk.Menu(self.parent)
         self.parent.config(menu=menubar)
-
         fileMenu = Tk.Menu(menubar)
         fileMenu.add_command(label="Open", underline=0, command=self.OnOpen)
         fileMenu.add_command(label="Exit", underline=1, command=_quit)
-        menubar.add_cascade(label="File", menu=fileMenu)
+        menubar.add_cascade(label="Player Controls", menu=fileMenu)
+	
+        self.pack()
 
         # The second panel holds controls
         self.player = None
-        self.videopanel = ttk.Frame(self.parent)
-        self.canvas = Tk.Canvas(self.videopanel).pack(fill=Tk.BOTH,expand=1)
-        self.videopanel.pack(fill=Tk.BOTH,expand=1)
+        self.videopanel = ttk.Frame(self.parent, width=256, height=256)
+        self.canvas = Tk.Canvas(self.videopanel).pack()
+        self.videopanel.pack()
+#fill=Tk.BOTH,expand=1
 
-        ctrlpanel = ttk.Frame(self.parent)
+        ctrlpanel = ttk.Frame(self.parent, width=256, height=256)
         pause  = ttk.Button(ctrlpanel, text="Pause", command=self.OnPause)
         play   = ttk.Button(ctrlpanel, text="Play", command=self.OnPlay)
         stop   = ttk.Button(ctrlpanel, text="Stop", command=self.OnStop)
         #volume = ttk.Button(ctrlpanel, text="Volume", command=self.OnSetVolume)
+	pause.place(x=50, y=200)
         pause.pack(side=Tk.LEFT)
+	play.place(x=100, y=200)
         play.pack(side=Tk.LEFT)
+	stop.place(x=150, y=200)
         stop.pack(side=Tk.LEFT)
         #volume.pack(side=Tk.LEFT)
         #self.volume_var = Tk.IntVar()
         #self.volslider = Tk.Scale(ctrlpanel, variable=self.volume_var, command=self.volume_sel,from_=0, to=100, orient=Tk.HORIZONTAL, length=100)
         #self.volslider.pack(side=Tk.LEFT)
-        ctrlpanel.pack(side=Tk.BOTTOM)
+        ctrlpanel.pack(side=Tk.TOP)
 
-        ctrlpanel2 = ttk.Frame(self.parent)
+        #ctrlpanel2 = ttk.Frame(self.parent)
         #self.scale_var = Tk.DoubleVar()
         #self.timeslider_last_val = ""
         #self.timeslider = Tk.Scale(ctrlpanel2, variable=self.scale_var, command=self.scale_sel, from_=0, to=1000, orient=Tk.HORIZONTAL, length=500)
         #self.timeslider.pack(side=Tk.BOTTOM, fill=Tk.X,expand=1)
         #self.timeslider_last_update = time.time()
-        ctrlpanel2.pack(side=Tk.BOTTOM,fill=Tk.X)
+        #ctrlpanel2.pack(side=Tk.BOTTOM,fill=Tk.X)
 
 
         # VLC player controls
@@ -255,7 +272,8 @@ def _quit():
     root = Tk_get_root()
     root.quit()     # stops mainloop
     root.destroy()  # this is necessary on Windows to prevent
-                    # Fatal Python Error: PyEval_RestoreThread: NULL tstate
+    #os.system('./populate_user_ui.sh ')    
+            # Fatal Python Error: PyEval_RestoreThread: NULL tstate
     os._exit(1)
 
 if __name__ == "__main__":

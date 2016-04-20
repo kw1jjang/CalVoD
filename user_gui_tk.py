@@ -22,7 +22,7 @@ from signal import signal, alarm, SIGPIPE, SIG_DFL, SIG_IGN, SIGALRM
 import requests #used for handling the cache session (associate this cache with a logged in account to tracker)
 #from Tkinter import Tk, Text, TOP, BOTH, X, N, LEFT, FLAT, StringVar, OptionMenu, Grid
 from Tkinter import *
-from ttk import Frame, Label, Entry, Button
+#from ttk import Frame, Label, Entry, Button
 import PIL.Image
 import PIL.ImageTk
 import thread
@@ -35,13 +35,13 @@ import re
 import pdb #to run without stopping, uncomment all pdb.set_trace() that appear
 
 DEBUG_RYAN = False
-global_user_name = 'temp'
+global global_user_name
 global_port = 0
 global global_video_name
 global global_frame_number
 global_frame_number = 1
-global_account_name = 'temp'
-global_password = 'temp'
+global global_account_name
+global global_password 
 
 class Page(Frame):
     def __init__(self, *args, **kwargs):
@@ -55,7 +55,7 @@ class MainView(Frame):
         self.p1 = Page1(self, m)
 
         buttonframe = Frame(self)
-        container = Frame(self)
+        container = Frame(self, width=1200, height=900, bg="black")
         buttonframe.pack(side="top", fill="x", expand=False)
         container.pack(side="top", fill="both", expand=True)
     
@@ -75,10 +75,12 @@ class Page1(Page):
         Page.__init__(self, root)
     
         
-        self.img = PIL.Image.open("pic.jpg")
+        self.img = PIL.Image.open("black.jpg")
         self.background_image=PIL.ImageTk.PhotoImage(self.img)
         self.background_label = Label(self, image=self.background_image)
+	#self.background_label = Label(self, bg="black")
         self.background_label.place(x=0, y=0, relwidth=1, relheight=1)
+	self.background_label.place(x=0, y=0, width=1200, height=900)
         self.background_label.image = self.background_image
         self.background_label.pack()
         self.pack()
@@ -86,19 +88,19 @@ class Page1(Page):
 	size=128,128
 	self.btn=[]
 	mo=["The Godfather", "the lord of the rings", "titanic", "the shawshank Redemption", "frozen", "Ocean's Eleven", "the jungle book", "harry potter", "Batman-v-superman", "minions", "spectre"]
-	for x_p in range(3): 
-    		for y_p in range((len(m)/3)+1):
+	for x_p in range(4): 
+    		for y_p in range((len(m)/4)+1):
 			if count_poster < len(m):
 				print mo[count_poster]
 				name_movie=mo[count_poster]
 				name_movie=re.sub(r"\s",'+',name_movie)
-				print name_movie
+				#print name_movie
 				url_poster ="http://www.omdbapi.com/?t="+name_movie+"&y=&plot=short&r=json"
 				content = urllib2.urlopen(url_poster).read()
-				print content
+				#print content
 				j_poster=json.loads(content)
-				print j_poster.keys()
-				print j_poster.get('Poster')
+				#print j_poster.keys()
+				#print j_poster.get('Poster')
 				url_image = j_poster.get('Poster')
 				if url_image==None:
 					img_poster = PIL.Image.open("pic.jpg")
@@ -112,7 +114,7 @@ class Page1(Page):
         				im_poster  = PIL.ImageTk.PhotoImage(img_poster)
         			self.btn.append(Button(self, image=im_poster, command=lambda x=m[count_poster] : self.setmovie(x)))
 				self.btn[count_poster].image=im_poster
-				self.btn[count_poster].place(x=50+x_p*150,y=50+y_p*135)
+				self.btn[count_poster].place(x=50+x_p*190,y=50+y_p*170)
 				count_poster=count_poster+1
 
 	
@@ -220,6 +222,9 @@ class P2PUser():
        	print folder
        	os.system('chmod +x play_vlc.sh')
        	os.system('./play_vlc.sh ' + movie_name + ' ' + folder)
+	self.disconnect(tracker_address, global_video_name, global_user_name)
+	os.system('chmod +x populate_user_next_ui.sh')
+	os.system('./populate_user_next_ui.sh ' + global_account_name + ' ' + global_password)
 	
 
 
@@ -473,6 +478,7 @@ class P2PUser():
             # Now play it
             if frame_number==1:
     		thread.start_new_thread(self.play_video,())
+		
 		print "played"
             if frame_number > start_frame and (server_request or addtl_server_request) and VLC_PLAYER_USE:
                 self.VLC_pause_video()
@@ -736,8 +742,9 @@ if __name__ == "__main__":
     root = Tk()
     main = MainView(root,m)
     main.pack(side="top", fill="both", expand=True)
-    root.wm_geometry("720x600+300+300")
+    root.wm_geometry("850x900+300+300")
     root.mainloop()
+    
     global_video_name=main.get_movie_name()
     print global_video_name + "before true run"
     true_run_user()
