@@ -266,7 +266,7 @@ class P2PUser():
                 self.server_client.put_instruction(inst_NOOP)
                 print '[user.py] Caches handling code_param_k chunks, so no request to server. Sending a NOOP'
             else:
-                print '[user.py] Server_request = "' , server_request , '"'
+                print '[user.py] Server_request (help from server) = "' , server_request , '"'
                 server_request_string = '%'.join(server_request) + '&1'
                 #if DEBUG_RYAN:
                     #pdb.set_trace()
@@ -349,10 +349,10 @@ class P2PUser():
 
             chunk_nums = chunk_nums_in_frame_dir(folder_name)
             num_chunks_rx = len(chunk_nums)
-            if num_chunks_rx >= code_param_k and DEBUGGING_MSG:
+            if num_chunks_rx >= code_param_k:
                 print "[user.py] Received", code_param_k, "packets"
             else:
-                print "[user.py] Did not receive", code_param_k, "packets for this frame."
+                print "[user.py] Did not receive", code_param_k, "packets for this frame, received: ", num_chunks_rx
 
             # abort the connection to the server
             self.server_client.client.abort()
@@ -505,8 +505,8 @@ def alert_handler(signum, frame):
     #pdb.set_trace()
     deregister_to_tracker_as_user(tracker_address, global_user_name, global_port, global_video_name)
     frame_address = 'video-' + global_video_name + '/' + global_video_name + '.' + global_frame_number + '.dir'
-    if os.path.exists(frame_address):
-        shutil.rmtree(frame_address)
+    print '[user.py] deleting', frame_address
+    shutil.rmtree(frame_address)
     while os.path.exists(frame_address):
         pass
     print 'frame ' + global_frame_number + ' is removed, ready to rerun the user...'
