@@ -586,6 +586,8 @@ def main():
         print 'starting removal'
         video_removal_time = time.time()
         shutil.rmtree('video-' + global_video_name)
+        while os.path.exists('video-' + global_video_name): #wait until the directory is not exist
+            pass
         video_removal_time = time.time() - video_removal_time
         print video_removal_time
         temporary = open(global_video_name + '.txt','w')
