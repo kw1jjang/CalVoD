@@ -302,20 +302,20 @@ class Cache(object):
                     print '[cache.py] dual_la ' + str(self.dual_la)
 
     def remove_one_chunk(self, video_name, index):
-        # It should remove all the downloaded chunks at cache
-        # Currently, it just removes the index out of the cache_chunk_list
-        print '[cache.py] Removing chunk', index , 'of' , video_name
-        frame_num = self.movie_LUT.frame_num_lookup(video_name)
-        code_param_n = self.movie_LUT.code_param_n_lookup(video_name)
-        for i in range(1, frame_num+1):
-            f_num = str(index[0])
-            if len(f_num) == 1:
-                f_num = '0' + f_num
-            # example: rm video-test10/test10.1.dir/test10.1.02_40.chunk
-            command = 'video-'+video_name+'/'+video_name+'.'+str(i)+'.dir/'+video_name+'.'+str(i)+'.'+f_num+'_'+str(code_param_n)+'.chunk'
-            print '[cache.py] removing command:', command
-            os.remove(command)
-        #return True
+        # # It should remove all the downloaded chunks at cache
+        # # Currently, it just removes the index out of the cache_chunk_list
+        # print '[cache.py] Removing chunk', index , 'of' , video_name
+        # frame_num = self.movie_LUT.frame_num_lookup(video_name)
+        # code_param_n = self.movie_LUT.code_param_n_lookup(video_name)
+        # for i in range(1, frame_num+1):
+        #     f_num = str(index[0])
+        #     if len(f_num) == 1:
+        #         f_num = '0' + f_num
+        #     # example: rm video-test10/test10.1.dir/test10.1.02_40.chunk
+        #     command = 'video-'+video_name+'/'+video_name+'.'+str(i)+'.dir/'+video_name+'.'+str(i)+'.'+f_num+'_'+str(code_param_n)+'.chunk'
+        #     print '[cache.py] removing command:', command
+        #     os.remove(command)
+        return True
 
     def download_one_chunk_from_server(self, video_name, index):
         print '[cache.py] Caching chunk', index , 'of' , video_name
@@ -467,15 +467,14 @@ class Cache(object):
                                 pass
                             else:
                                 chunk_index = random.sample( list(set(stored_chunks)), 1 )
-                                #if self.remove_one_chunk(video_name, chunk_index) == True:
-                                self.remove_one_chunk(video_name, chunk_index)
-                                new_chunks = list(set(self.get_chunks(video_name)) - set(map(str, chunk_index)))
-                                self.set_chunks(video_name, new_chunks)
-                                update_chunks_for_cache(tracker_address, self.public_address, self.address[1], video_name, new_chunks)
-                                self.sum_storage = self.sum_storage - additional_storage_needed
-                                if log_ct == 0:
-                                    print '[cache.py] chunk ', chunk_index, ' is dropped'
-                                    print '[cache.py] storage Usage' , int(self.sum_storage/1000/1000) , '(MB) /' , int(self.storage_cap/1000/1000) , '(MB)'
+                                if self.remove_one_chunk(video_name, chunk_index) == True:
+                                    new_chunks = list(set(self.get_chunks(video_name)) - set(map(str, chunk_index)))
+                                    self.set_chunks(video_name, new_chunks)
+                                    update_chunks_for_cache(tracker_address, self.public_address, self.address[1], video_name, new_chunks)
+                                    self.sum_storage = self.sum_storage - additional_storage_needed
+                                    if log_ct == 0:
+                                        print '[cache.py] chunk ', chunk_index, ' is dropped'
+                                        print '[cache.py] storage Usage' , int(self.sum_storage/1000/1000) , '(MB) /' , int(self.storage_cap/1000/1000) , '(MB)'
                         else:
                             if log_ct == 0:
                                 print '[cache.py] storage not updated'

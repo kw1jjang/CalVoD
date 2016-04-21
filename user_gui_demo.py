@@ -551,24 +551,22 @@ def main():
     movies = movie_LUT.movies_LUT.keys()
     runtime_ct = 0
     popularity_change = False
+    paty = os.getcwd()
+    video_removal_time = 0
     video_count = 1
-    while True:
-        path = os.getcwd()
-        for i in os.listdir(os.getcwd()):
-            full_path = path + '/' + i;
-            if int(time.time()) - int(os.stat(full_path).st_mtime) > 60:
-                shutil.rmtree(full_path, ignore_errors=True)
-        print 'Old files cleaned!'
-        print ''
-        
+    while True:        
         print 'List of available videos in the system'
         for each in movies:
             print '-', each
         video_name = random.choice(movies)
+        while video_name == 'starwars': #If we pick starwars as the random movie, pick another video
+            video_name = random.choice(movies)
         rand_sleep = randint(1,100)
-        print "sleeping for %i" % rand_sleep
+        print "sleeping for 3 seconds"
+        print 'took %i seconds to delete the last video' % video_removal_time
+        #print "sleeping for %i" % rand_sleep
         #sleep(rand_sleep)
-        sleep(1)
+        sleep(3)
 
         # while True:
         #     input_str = raw_input('Please choose a video:')
@@ -585,7 +583,14 @@ def main():
         global_account_name = 'chen'
         global_password = '11111'
         true_run_user()
-    
+        print 'starting removal'
+        video_removal_time = time.time()
+        shutil.rmtree('video-' + global_video_name)
+        video_removal_time = time.time() - video_removal_time
+        print video_removal_time
+        temporary = open(global_video_name + '.txt','w')
+        temporary.write(str(video_removal_time))
+        temporary.close()
 
 if __name__ == "__main__":
     # Load configurations
