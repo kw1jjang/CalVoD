@@ -161,7 +161,7 @@ class P2PUser():
         self.info_thread.start()
 
         for frame_number in range(start_frame, num_frames + 1):
-            global_frame_number = frame_number - 1
+            global_frame_number = frame_number
             sys.stdout.flush()
             effective_rates = [0]*len(self.clients)
             assigned_chunks = [0]*len(self.clients)
@@ -504,6 +504,12 @@ def broken_pipe_handler(signum, frame):
 def alert_handler(signum, frame):
     #pdb.set_trace()
     deregister_to_tracker_as_user(tracker_address, global_user_name, global_port, global_video_name)
+    frame_address = 'video-' + global_video_name + '/' + global_video_name + '.' + global_frame_number + '.dir'
+    if os.path.exists(frame_address):
+        shutil.rmtree(frame_address)
+    while os.path.exists(frame_address):
+        pass
+    print 'frame ' + global_frame_number + ' is removed, ready to rerun the user...'
     true_run_user()
     
     
