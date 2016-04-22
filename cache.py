@@ -29,7 +29,7 @@ cache_config_file = '../../config/cache_config.csv'
 LOG_PERIOD = 1000
 
 INFINITY = 10e10
-MAX_CONNS = 10000
+MAX_CONNS = 10000 #chen debug
 MAX_VIDEOS = 1000
 BUFFER_LENGTH = 10
 path = "."
@@ -232,7 +232,7 @@ class Cache(object):
                     print '[cache.py] No user is connected'
             else:
                 sum_x = 0
-                print '[cache.py] update PRIMAL_X'
+                print '[cache.py] handler_length', len(handlers)
                 for i in range(len(handlers)):
                     if i not in CacheHandler.id_to_index.values():
                         continue
@@ -290,7 +290,7 @@ class Cache(object):
                         self.dual_k[i] = max(0, self.dual_k[i])
                     if log_ct == 0:
                         print '[cache.py] User ' + str(i) + ' dual_k ' + str(self.dual_k[i])
-
+                #print '[cache.py] primal_x: ', self.primal_x
                 ## 3. UPDATE DUAL_LA
                 if log_ct == 0:
 		            print '[cache.py] sum_x ' , sum_x

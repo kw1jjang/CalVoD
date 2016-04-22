@@ -107,7 +107,6 @@ class P2PUser():
         self.server_client.put_instruction(inst_SENDPORT + str(self.my_port) + ' ' + self.my_ip + ' ' + video_name + ' user')
         # Connect to the caches
         cache_ip_addr = retrieve_caches_address_from_tracker(self.tracker_address, 100, self.user_name, session = session)
-        #cache_ip_addr[0][0] = '[' + cache_ip_addr[0][0] + ']'
         self.cache_ip_addr = cache_ip_addr
         self.num_of_caches = min(self.num_of_caches, len(cache_ip_addr))
 
@@ -177,7 +176,7 @@ class P2PUser():
                     client.put_instruction(inst_INTL)
                 self.server_client.put_instruction(inst_INTL)
 
-            print '[user.py] frame_number : ', frame_number
+            print '[user.py] frame_number requesting: ', frame_number
             filename = 'file-' + video_name + '.' + str(frame_number)
             # directory for this frame
             folder_name = 'video-' + video_name + '/' + video_name + '.' + str(frame_number) + '.dir/'
@@ -210,17 +209,17 @@ class P2PUser():
 
             ## index assignment here
             # Assign chunks to cache using cache_chunks_to_request.
-            print '[user.py] Rates ', rates
-            print '[user.py] Available chunks', available_chunks
+            print '[user.py] Cache returned rates ', rates
+            print '[user.py] Cache returned available chunks', available_chunks
 
             assigned_chunks = cache_chunks_to_request(available_chunks, rates, code_param_n, code_param_k)
-
+            print '[user.py] Assigned chunks:', assigned_chunks
             effective_rates = [0]*len(rates)
             for i in range(len(rates)):
                 effective_rates[i] = len(assigned_chunks[i])
-
+            print '[user.py] effective rates: ', effective_rates
             chosen_chunks = [j for i in assigned_chunks for j in i]
-
+            print '[user.py] chosen chunks: ', chosen_chunks
             flag_deficit = int(sum(effective_rates) < code_param_k) # True if user needs more rate from caches
 
             list_of_cache_requests = []
@@ -228,7 +227,7 @@ class P2PUser():
             for i in range(len(self.clients)):
                 client = self.clients[i]
                 client_ip_address = client.address[0] + '@' + str(client.address[1])
-                print '[user.py] Server_request 2 = "' , assigned_chunks[i] , '"'
+                print '[user.py] Server_request (to cache) = "' , assigned_chunks[i] , '"'
                 client_request_string = '%'.join(assigned_chunks[i]) + '&1'
                 print "[user.py] [Client " + str(i) + "] flag_deficit: ", flag_deficit, \
                     ", Assigned chunks: ", assigned_chunks[i], \
@@ -266,7 +265,7 @@ class P2PUser():
                 self.server_client.put_instruction(inst_NOOP)
                 print '[user.py] Caches handling code_param_k chunks, so no request to server. Sending a NOOP'
             else:
-                print '[user.py] Server_request (help from server) = "' , server_request , '"'
+                print '[user.py] Server_request (to server) = "' , server_request , '"'
                 server_request_string = '%'.join(server_request) + '&1'
                 #if DEBUG_RYAN:
                     #pdb.set_trace()
@@ -350,7 +349,7 @@ class P2PUser():
             chunk_nums = chunk_nums_in_frame_dir(folder_name)
             num_chunks_rx = len(chunk_nums)
             if num_chunks_rx >= code_param_k:
-                print "[user.py] Received", code_param_k, "packets"
+                print "[user.py] Received", code_param_k, "packets, that is enough."
             else:
                 print "[user.py] Did not receive", code_param_k, "packets for this frame, received: ", num_chunks_rx
 
