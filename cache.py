@@ -44,7 +44,7 @@ BANDWIDTH_CAP = 12800 #(Kbps), equal to 12.8 Megabytes
 #STORAGE_CAP_IN_MB = 60 * 8 # (MB)
 #STORAGE_CAP_IN_MB = 120 * 8 #(MB)
 STORAGE_CAP_IN_MB = 1500 #Megabytes, equal to 1.5 Gigabytes
-T_rate = .01
+T_rate = .02
 T_storage = .1
 #T_rate = .1
 #T_storage = .1
@@ -417,7 +417,7 @@ class Cache(object):
                                 dual_k_sum += self.dual_k[j]
                         except IndexError:
                             sys.stderr.write('IndexError occured. j = %d' % j)
-                    print 'Handler %d is watching %s. dual_k = %.1f, dual_k_sum = %.1f' % (j, video_name, self.dual_k[j],  dual_k_sum)
+                    print 'Handler %d is watching %s. dual_k = %.1f, dual_k_sum = %.1f' % (i, video_name, self.dual_k[j],  dual_k_sum)
                     if log_ct == 0:
                         print '[cache.py] dual_k_sum = ', dual_k_sum
                         print '[cache.py] dual_mu = ', self.dual_mu
