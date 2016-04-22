@@ -445,7 +445,7 @@ class Cache(object):
                     if log_ct == 0:
                         print '[cache.py] num_stored_chunks ', num_stored_chunks
                         print '[cache.py] assigned_num_of_chks ', assigned_num_of_chunks
-                    if ct % STORAGE_UPDATE_PERIOD_OUTER == 0: # 1 second
+                    if ct % STORAGE_UPDATE_PERIOD_OUTER == 0:
                         if assigned_num_of_chunks > num_stored_chunks:
                             if num_stored_chunks >= code_param_k:
                                 if log_ct == 0:
