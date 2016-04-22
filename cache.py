@@ -775,7 +775,7 @@ def main():
         #config = [sys.argv[1], '0.0.0.0', str(60000+int(sys.argv[1])), sys.argv[2], 15000000]
         config = [sys.argv[1], sys.argv[2], str(60000+int(sys.argv[1])), sys.argv[2], 15000000]
         multiplier = float(1)
-        username = 'chen'
+        username = 'ryan'
         password = '11111'
         #Originally it was the one on the bottem. I have it here for reference in case the on on top
         #Does not work for some reason.
