@@ -254,17 +254,28 @@ class P2PUser():
             # Before CACHE_DOWNLOAD_DURATION, also start requesting chunks from server.
             server_request = []
             server_request_2 = []
-            cdrs = '_' .join(list_of_cache_requests) #cache data request string. Used for parsing inside of server.py's ftp_CACHEDATA
+            #cdrs = '_' .join(list_of_cache_requests) #cache data request string. Used for parsing inside of server.py's ftp_CACHEDATA
             if frame_number < num_frames:
                 size_of_chunks = vlen_items[2]
             else:
                 size_of_chunks = vlen_items[3]
-            cdrs = cdrs + '?' + str(size_of_chunks)
-            cdrs = cdrs + '_' + self.user_name
+            #cdrs = cdrs + '?' + str(size_of_chunks)
+            #cdrs = cdrs + '_' + self.user_name
             chosen_chunks = list(chosen_chunks)
             num_chunks_rx_predicted = len(chosen_chunks)
             server_request = chunks_to_request(chosen_chunks, range(0, code_param_n), code_param_k - num_chunks_rx_predicted)
             num_of_chks_from_server = len(server_request)
+            #pdb.set_trace()
+            #UPLOAD SERVER CHUNKS TO THE GUI
+            server_ip_address = self.server_client.address[0] + '@' + str(self.server_client.address[1])
+            server_chunk_string = '%' .join(server_request)
+            srs = filename + '.' + server_chunk_string + '&' + server_ip_address
+            list_of_cache_requests.insert(0,srs)        
+            #END UPLOAD SERVER CHUNKS TO THE GUI
+            #pdb.set_trace()
+            cdrs = '_' .join(list_of_cache_requests)
+            cdrs = cdrs + '?' + str(size_of_chunks)
+            cdrs = cdrs + '_' + self.user_name
             if num_of_chks_from_server == 0:
                 self.server_client.put_instruction(inst_CACHEDATA + cdrs)
                 self.server_client.put_instruction(inst_NOOP)
