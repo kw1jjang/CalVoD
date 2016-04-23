@@ -19,7 +19,7 @@ do
     cd "cache"$i
     rm -rf video*
     #python ../../cache.py $i > ../../log/cache_$i.txt &
-    python ../../cache.py $i > ./cache$i.txt &
+    python ../../cache.py $i > ../cache$i.txt &
 
     cd ..
     sleep .1

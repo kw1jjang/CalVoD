@@ -26,10 +26,10 @@ POSITIVE_CONSTRAINT = True
 cache_config_file = '../../config/cache_config.csv'
 
 # Log Configuration
-LOG_PERIOD = 1000
+LOG_PERIOD = 2000
 
 INFINITY = 10e10
-MAX_CONNS = 600 #for debug purpose
+MAX_CONNS = 600 #chen debug
 MAX_VIDEOS = 1000
 BUFFER_LENGTH = 10
 path = "."
@@ -44,7 +44,7 @@ BANDWIDTH_CAP = 12800 #(Kbps), equal to 12.8 Megabytes
 #STORAGE_CAP_IN_MB = 60 * 8 # (MB)
 #STORAGE_CAP_IN_MB = 120 * 8 #(MB)
 STORAGE_CAP_IN_MB = 1500 #Megabytes, equal to 1.5 Gigabytes
-T_rate = .02
+T_rate = .01
 T_storage = .1
 #T_rate = .1
 #T_storage = .1
@@ -230,67 +230,62 @@ class Cache(object):
                 print '[cache.py -debug] No user is connected, len(handler) = 0'
             else:
                 sum_x = 0
-                print '[cache.py -debug] Initialize sum_x = 0'
-                print '[cache.py -debug] handler_length', len(handlers)
+                if log_ct == 0:
+                    print '[cache.py -debug] Initialize sum_x = 0'
+                    print '[cache.py -debug] handler_length', len(handlers)
                 for i in range(len(handlers)):
                     if i not in CacheHandler.id_to_index.values():
-                        print '[cache.py -debug] i not in CacheHandler.id_to_index.values(), continue'
                         continue
 
                     ## 1. UPDATE PRIMAL_X
                     handler = handlers[i]
                     if handler._closed == True:
-                        print '[cache.py -debug] Connection ' + str(i) + ' is closed, continue'
                         continue
                     else:
-                        print '[cache.py -debug] Connection ' + str(i) + ' is open, proceed!'
-
+                        if log_ct == 0:
+                            print '[cache.py -debug] Connection ' + str(i) + ' is open, proceed!'
                     video_name = self.get_watching_video(i)
                     code_param_n = self.movie_LUT.code_param_n_lookup(video_name)
                     code_param_k = self.movie_LUT.code_param_k_lookup(video_name)
-                    print '[cache.py -debug] ' + str(i) + 'th connection, index = ' + str(handler.index) + ', watching ' + str(video_name)
-                    
                     packet_size = self.movie_LUT.chunk_size_lookup(video_name)
                     if packet_size == 0:
-                        print  '[cache.py -debug] packet_size == 0, continue'
                         continue
-
+                    
                     # First, find the optiaml variables
                     g = self.get_g(i)
-
-                    print "[cache.py -debug] Connection " + str(i) + " : (self.index, g, x) =", (handlers[i].index, g, self.primal_x[i])
-                    print "[cache.py -debyg] Connection " + str(i) + " : (g, self.dual_la, self.dual_k[i]) =", (g, self.dual_la, self.dual_k[i])
                     delta_x = self.bound(g - (self.dual_la + self.dual_k[i]), \
                                         self.primal_x[i], 0, self.bandwidth_cap)
-                    print "[cache.py -debug] delta_x =", delta_x
                     self.primal_x[i] += self.eps_x * delta_x
-                    print "[cache.py -debug] eps_x =", self.eps_x
-                    print "[cache.py -debug] primal_x =", primal_x
                     if POSITIVE_CONSTRAINT:
                         self.primal_x[i] = max(self.primal_x[i], 0)
                     sum_x += self.primal_x[i]
-                    print "[cache.py -debug -important] sum_x =", sum_x
+
                     # Apply it if it goes over some rate
                     rate_per_chunk = packet_size / 1000 / BUFFER_LENGTH * 8 # (Kbps)
                     assigned_rate = max(round(self.primal_x[i] / rate_per_chunk), 0)
                     num_of_stored_chunks = len(self.get_chunks(video_name))
-
                     self.set_conn_rate(i, min(assigned_rate, num_of_stored_chunks))
-                    print "[cache.py -debug] current_rate =", self.get_conn_rate(i)
 
                     ## 2. UPDATE DUAL_K
                     if video_name not in self.primal_f.keys():
                         self.primal_f[video_name] = 0.0
-                    print '[cache.py -debug] total rate =', (rate_per_chunk * code_param_k)
                     delta_k = self.bound(self.primal_x[i] - self.primal_f[video_name] * rate_per_chunk * code_param_k, self.dual_k[i], 0, INFINITY)
-		            print '[cache.py -debug] User ' + str(i) + ' delta_k ' + str(delta_k)
                     self.dual_k[i] += self.eps_k * delta_k
                     if POSITIVE_CONSTRAINT:
                         self.dual_k[i] = max(0, self.dual_k[i])
-                    print '[cache.py -debug] User ' + str(i) + ' dual_k ' + str(self.dual_k[i])
+                    # if log_ct == 0:
+                    #     print '[cache.py -debug] ' + str(i) + 'th connection, index = ' + str(handler.index) + ', watching ' + str(video_name)
+                    #     print "[cache.py -debug] Connection " + str(i) + " : (self.index, g, x) =", (handlers[i].index, g, self.primal_x[i])
+                    #     print "[cache.py -debyg] Connection " + str(i) + " : (g, self.dual_la, self.dual_k[i]) =", (g, self.dual_la, self.dual_k[i])
+                    #     print "[cache.py -debug] delta_x =", delta_x
+                    #     print "[cache.py -debug] primal_x =", primal_x[i]
+                    #     print "[cache.py -debug -important] sum_x =", sum_x
+                    #     print "[cache.py -debug] current_rate =", self.get_conn_rate(i)
+                    #     print '[cache.py -debug] total rate =', (rate_per_chunk * code_param_k)
+                    #     print '[cache.py -debug] User ' + str(i) + ' delta_k ' + str(delta_k)
+                    #     print '[cache.py -debug] User ' + str(i) + ' dual_k ' + str(self.dual_k[i])
+                # print '[cache.py -debug] primal_x after update =', self.primal_x
                 
-                print '[cache.py -debug] primal_x after update =', self.primal_x
-
                 ## 3. UPDATE DUAL_LA
                 print '[cache.py -debug -important] sum_x (after updating primal_x and dual_k) =', sum_x
                 delta_la = self.bound(sum_x - self.bandwidth_cap, self.dual_la, 0, INFINITY)
@@ -388,7 +383,7 @@ class Cache(object):
                     else:
                         if DEBUGGING_MSG:
                             print '[cache.py] Connection ' + str(i) + ' is open'
-#                    print '[cache.py] ' + str(i) + 'th connection, index = ' + str(handler.index)
+                    #print '[cache.py] ' + str(i) + 'th connection, index = ' + str(handler.index)
 
                     # Open connection
                     current_rate = self.get_conn_rate(i)
@@ -559,7 +554,7 @@ class CacheHandler(StreamHandler):
     connected = []
     stream_rate = 10*1024 # Default is 10 Kbps
     def __init__(self, conn, server, index=0, spec_rate=0):
-        print '[cache.py] new handler: ', index
+        print '[cache.py]', index
         StreamHandler.__init__(self, conn, server, index, spec_rate)
 
     def close(self): # Callback function on a connection close
