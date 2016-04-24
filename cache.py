@@ -7,6 +7,7 @@ import Queue
 import random
 import csv
 import time
+from time import gmtime, strftime
 import threading
 import resource
 import sys
@@ -26,10 +27,10 @@ POSITIVE_CONSTRAINT = True
 cache_config_file = '../../config/cache_config.csv'
 
 # Log Configuration
-LOG_PERIOD = 2000
+LOG_PERIOD = 1000
 
 INFINITY = 10e10
-MAX_CONNS = 600 #chen debug
+MAX_CONNS = 10000
 MAX_VIDEOS = 1000
 BUFFER_LENGTH = 10
 path = "."
@@ -225,14 +226,29 @@ class Cache(object):
                 log_ct = 0
             time.sleep(T_period)
             print '[cache.py -debug] RATE ALLOCATION BEGINS UPDATE =================='
+            print '[cache.py -debug] current_time =', strftime("%Y-%m-%d %H:%M:%S")
+
             handlers = self.get_handlers()
             if len(handlers) == 0:
                 print '[cache.py -debug] No user is connected, len(handler) = 0'
             else:
                 sum_x = 0
-                if log_ct == 0:
-                    print '[cache.py -debug] Initialize sum_x = 0'
-                    print '[cache.py -debug] handler_length', len(handlers)
+                #if log_ct == 0:
+                print '[cache.py -debug] Initialize sum_x = 0'
+                print '[cache.py -debug] handler_length', len(handlers)
+                print '[cache.py -debug] Initialize debug variables....'
+                handler_debug = []
+                watching_debug = []
+                debug_1 = []
+                debug_2 = []
+                delta_x_debug = []
+                primal_x_debug = []
+                sum_x_debug = []
+                current_rate_debug = []
+                total_rate_debug = []
+                delta_k_debug = []
+                dual_k_debug = []
+
                 for i in range(len(handlers)):
                     if i not in CacheHandler.id_to_index.values():
                         continue
@@ -241,9 +257,9 @@ class Cache(object):
                     handler = handlers[i]
                     if handler._closed == True:
                         continue
-                    else:
-                        if log_ct == 0:
-                            print '[cache.py -debug] Connection ' + str(i) + ' is open, proceed!'
+                    #else:
+                        #if log_ct == 0:
+                        #print '[cache.py -debug] Connection ' + str(i) + ' is open, proceed!'
                     video_name = self.get_watching_video(i)
                     code_param_n = self.movie_LUT.code_param_n_lookup(video_name)
                     code_param_k = self.movie_LUT.code_param_k_lookup(video_name)
@@ -273,18 +289,32 @@ class Cache(object):
                     self.dual_k[i] += self.eps_k * delta_k
                     if POSITIVE_CONSTRAINT:
                         self.dual_k[i] = max(0, self.dual_k[i])
-                    # if log_ct == 0:
-                    #     print '[cache.py -debug] ' + str(i) + 'th connection, index = ' + str(handler.index) + ', watching ' + str(video_name)
-                    #     print "[cache.py -debug] Connection " + str(i) + " : (self.index, g, x) =", (handlers[i].index, g, self.primal_x[i])
-                    #     print "[cache.py -debyg] Connection " + str(i) + " : (g, self.dual_la, self.dual_k[i]) =", (g, self.dual_la, self.dual_k[i])
-                    #     print "[cache.py -debug] delta_x =", delta_x
-                    #     print "[cache.py -debug] primal_x =", primal_x[i]
-                    #     print "[cache.py -debug -important] sum_x =", sum_x
-                    #     print "[cache.py -debug] current_rate =", self.get_conn_rate(i)
-                    #     print '[cache.py -debug] total rate =', (rate_per_chunk * code_param_k)
-                    #     print '[cache.py -debug] User ' + str(i) + ' delta_k ' + str(delta_k)
-                    #     print '[cache.py -debug] User ' + str(i) + ' dual_k ' + str(self.dual_k[i])
-                # print '[cache.py -debug] primal_x after update =', self.primal_x
+
+                    # Log Debug message
+                    handler_debug.append(i)
+                    watching_debug.append(str(video_name))
+                    debug_1.append([handlers[i].index, g, self.primal_x[i]])
+                    debug_2.append([g, self.dual_la, self.dual_k[i]])
+                    delta_x_debug.append(delta_x)
+                    primal_x_debug.append(self.primal_x[i])
+                    sum_x_debug.append(sum_x)
+                    current_rate_debug.append(self.get_conn_rate(i))
+                    total_rate_debug.append((rate_per_chunk * code_param_k))
+                    delta_k_debug.append(delta_k)
+                    dual_k_debug.append(self.dual_k[i])
+
+                # print debug message
+                print '[cache.py -debug] index of active handlers =', handler_debug
+                print '[cache.py -debug] watching =', watching_debug
+                print '[cache.py -debug] (self.index, g, x) =', debug_1
+                print '[cache.py -debug] (self.index, g, x) =', debug_2
+                print '[cache.py -debug] delta_x =', delta_x_debug
+                print '[cache.py -debug] primal_x =', primal_x_debug
+                print '[cache.py -debug -important] sum_x (after updating primal_x) =', sum_x_debug
+                print '[cache.py -debug] current_rate =', current_rate_debug
+                print '[cache.py -debug] total_rate =', total_rate_debug
+                print '[cache.py -debug] delta_k =', delta_k_debug
+                print '[cache.py -debug] dual_k =', dual_k_debug
                 
                 ## 3. UPDATE DUAL_LA
                 print '[cache.py -debug -important] sum_x (after updating primal_x and dual_k) =', sum_x

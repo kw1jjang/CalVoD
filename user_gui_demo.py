@@ -14,6 +14,7 @@ import urllib2
 import csv
 import math
 import sys
+from time import gmtime, strftime
 import threading
 import string
 from infoThread import infoThread
@@ -175,7 +176,9 @@ class P2PUser():
                 for client in self.clients:
                     client.put_instruction(inst_INTL)
                 self.server_client.put_instruction(inst_INTL)
-
+            
+            print '[cache.py -debug] Requesting frame =================='
+            print '[user.py -debug] current_time =', strftime("%Y-%m-%d %H:%M:%S")
             print '[user.py] frame_number requesting: ', frame_number
             filename = 'file-' + video_name + '.' + str(frame_number)
             # directory for this frame
@@ -400,7 +403,10 @@ class P2PUser():
                                 choke_ct = 0
                                 print '[user.py] Topology Update : Now the state is changed to overhead staet'
                                 #print '[user.py]', connected_caches, not_connected_caches, self.clients
-                                print '[user.py] conneced caches', self.clients
+                                print '[user.py -debug] connected caches', self.clients
+                                for c in range(len(self.clients)):
+                                    print '[user.py -debug] cache addressaddress', self.clients[c].address
+
 
                 elif choke_state == 1: # Overhead state
                     print '[user.py] Overhead state : ', choke_ct
@@ -514,7 +520,7 @@ def broken_pipe_handler(signum, frame):
 def alert_handler(signum, frame):
     #pdb.set_trace()
     deregister_to_tracker_as_user(tracker_address, global_user_name, global_port, global_video_name)
-    frame_address = 'video-' + global_video_name + '/' + global_video_name + '.' + global_frame_number + '.dir'
+    frame_address = 'video-' + str(global_video_name) + '/' + str(global_video_name) + '.' + str(global_frame_number) + '.dir'
     print '[user.py] deleting', frame_address
     shutil.rmtree(frame_address)
     while os.path.exists(frame_address):
