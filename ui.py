@@ -143,7 +143,7 @@ class Page3(Page):
     def btn_clickked(self):
 	cache_options = ['0.25', '0.5', '1']
 	cache_multiplier = cache_options[self.bandwidth - 1]
-	os.system('./populate_caches_public_ui.sh ' + cache_multiplier + ' ' + self.username + ' ' + self.password)
+	os.system('./populate_caches_local_ui.sh ' + cache_multiplier + ' ' + self.username + ' ' + self.password)
 	print "alagu debug"
 	os.system('./populate_user_ui.sh ' + self.username + ' ' + self.password)
         self.quit()

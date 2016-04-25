@@ -795,7 +795,7 @@ def main():
                 sys.argv[2] = urllib2.urlopen('http://icanhazip.com').read().strip('\n')
             config = [1, sys.argv[2], str(60000+int(sys.argv[1])), sys.argv[2], 15000000]
             #config = [sys.argv[1], sys.argv[2], str(60000+int(sys.argv[1])), sys.argv[2], 15000000]
-            multiplier = sys.argv[5]
+            multiplier = float(sys.argv[5])
             #multiplier = float(1)
             username = sys.argv[3]
             password = sys.argv[4]
