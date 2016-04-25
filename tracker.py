@@ -353,17 +353,20 @@ class request:
                 port = cache_dict['port']
                 bytes_uploaded = int(cache_dict['bytes_downloaded'])
                 #pdb.set_trace()
-                account_name = db_manager.get_account_from_cache(ip, port)
-                account_name = account_name[0].user_name
-
-                if db_manager.get_account_from_points_table(account_name) == []:
-                    #will never get to this condition
-                    db_manager.add_account_to_points_table(account_name)
-                    db_manager.update_points_for_account(account_name, bytes_uploaded)
-                    db_manager.update_bytes_for_cache(account_name, ip, port, bytes_uploaded)
-                else:
-                    db_manager.update_points_for_account(account_name, bytes_uploaded)
-                    db_manager.update_bytes_for_cache(account_name, ip, port, bytes_uploaded)
+                ftp_server_address = db_manager.get_server()
+                ftp_server_ip = ftp_server_address[0].ip
+                ftp_server_port = ftp_server_address[0].port
+                if((ip != ftp_server_ip)|(port != str(ftp_server_port))):
+                    account_name = db_manager.get_account_from_cache(ip, port)
+                    account_name = account_name[0].user_name
+                    if db_manager.get_account_from_points_table(account_name) == []:
+                        #will never get to this condition
+                        db_manager.add_account_to_points_table(account_name)
+                        db_manager.update_points_for_account(account_name, bytes_uploaded)
+                        db_manager.update_bytes_for_cache(account_name, ip, port, bytes_uploaded)
+                    else:
+                        db_manager.update_points_for_account(account_name, bytes_uploaded)
+                        db_manager.update_bytes_for_cache(account_name, ip, port, bytes_uploaded)
             #pdb.set_trace()
             print data
     
