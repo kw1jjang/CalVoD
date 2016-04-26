@@ -504,7 +504,11 @@ class Cache(object):
                                 print '[cache.py] storage not updated'
 
                 ## 2. UPDATE DUAL_K
-                # print '[cache.py] Update dual_k'
+                print '[cache.py -debug -storage] Update dual_k ========'
+                print '[cache.py -debug -storage] current_time =', strftime("%Y-%m-%d %H:%M:%S")
+                handler_storage = []
+                debug_storage = []
+                delta_k_storage = []
                 for i in range(len(handlers)):
                     if i not in CacheHandler.id_to_index.values():
                         # print '[cache.py]', i, 'is not in map values, we skip'
@@ -512,8 +516,8 @@ class Cache(object):
 
                     handler = handlers[i]
                     if handler._closed == True:
-                        if log_ct == 0:
-                            print '[cache.py] Connection ' + str(i) + ' is closed'
+                        #if log_ct == 0:
+                        #    print '[cache.py] Connection ' + str(i) + ' is closed'
                         continue
                     video_name = self.get_watching_video(i)
                     if video_name not in self.primal_f.keys():
@@ -522,18 +526,28 @@ class Cache(object):
                     if packet_size == 0:
                         continue
                     rate_per_chunk = packet_size / 1000 / BUFFER_LENGTH * 8 # (Kbps)
-                    if log_ct == 0:
-                        print '[cache.py] self.primal_f', self.primal_f
-                    print '[cache.py] self.primal_f[', video_name, '] = ', self.primal_f[video_name]
+                    #if log_ct == 0:
+                    #    print '[cache.py] self.primal_f', self.primal_f
+                    #print '[cache.py] self.primal_f[', video_name, '] = ', self.primal_f[video_name]
+
                     delta_k = self.bound(self.primal_x[i] - self.primal_f[video_name] * rate_per_chunk * code_param_k, self.dual_k[i], 0, INFINITY)
-                    if log_ct == 0:
-                        print '[cache.py] User ' + str(i) + ' delta_k ' + str(delta_k)
+                    
+                    handler_storage.append(i)
+                    debug_storage.append([self.primal_x[i], self.primal_f[video_name], rate_per_chunk, code_param_k, self.dual_k[i]])
+                    delta_k_storage.append(delta_k)
+
+                    # if log_ct == 0:
+                    #     print '[cache.py] User ' + str(i) + ' delta_k ' + str(delta_k)
                     self.dual_k[i] += self.eps_k * delta_k
                     if POSITIVE_CONSTRAINT:
                         self.dual_k[i] = max(0, self.dual_k[i])
-                    if log_ct == 0:
-                        print '[cache.py] User ' + str(i) + ' dual_k ' + str(self.dual_k[i])
+                    # if log_ct == 0:
+                    #     print '[cache.py] User ' + str(i) + ' dual_k ' + str(self.dual_k[i])
                     # print '[cache.py]DEBUG__ self.dual_k', self.dual_k[:2]
+
+                print '[cache.py -debug -storage] index of active handlers =', handler_storage
+                print '[cache.py -debug -storage] (primal_x, primal_f, rate_per_chunk, code_param_k, dual_k) =', debug_storage
+                print '[cache.py -debug -storage] delta_k =', delta_k_storage
 
                 # Need to update dual_mu
                 if log_ct == 0:

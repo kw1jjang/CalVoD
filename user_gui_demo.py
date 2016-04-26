@@ -525,7 +525,7 @@ def alert_handler(signum, frame):
     shutil.rmtree(frame_address)
     while os.path.exists(frame_address):
         pass
-    print 'frame ' + global_frame_number + ' is removed, ready to rerun the user...'
+    print 'frame ' + str(global_frame_number) + ' is removed, ready to rerun the user...'
     true_run_user()
     
     
