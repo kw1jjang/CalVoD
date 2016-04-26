@@ -39,7 +39,11 @@ global global_user_name
 global_port = 0
 global global_video_name
 global global_frame_number
+#global bytes_downloaded
+#global bytes_uploaded
 global_frame_number = 1
+#bytes_downloaded = 0
+#bytes_uploaded = 0
 global global_account_name
 global global_password 
 
@@ -225,6 +229,11 @@ class P2PUser():
 	self.disconnect(tracker_address, global_video_name, global_user_name)
 	os.system('chmod +x populate_user_next_ui.sh')
 	os.system('./populate_user_next_ui.sh ' + global_account_name + ' ' + global_password)
+
+    def data_ui(self, bytes_uploaded, bytes_downloaded):
+    	os.system('chmod +x user_data_display.sh')
+	print "upload is " + str(bytes_uploaded) + "download is " + str(bytes_downloaded)
+    	os.system('./user_data_display.sh '+ str(bytes_uploaded) + ' ' + str(bytes_downloaded))
 	
 
 
@@ -393,6 +402,15 @@ class P2PUser():
             num_chunks_rx_predicted = len(chosen_chunks)
             server_request = chunks_to_request(chosen_chunks, range(0, code_param_n), code_param_k - num_chunks_rx_predicted)
             num_of_chks_from_server = len(server_request)
+	    '''server_ip_address = self.server_client.address[0] + '@' + str(self.server_client.address[1])
+            server_chunk_string = '%' .join(server_request)
+            srs = filename + '.' + server_chunk_string + '&' + server_ip_address
+            list_of_cache_requests.insert(0,srs)        
+            #END UPLOAD SERVER CHUNKS TO THE GUI
+            #pdb.set_trace()
+            cdrs = '_' .join(list_of_cache_requests)
+            cdrs = cdrs + '?' + str(size_of_chunks)
+            cdrs = cdrs + '_' + self.user_name'''
             if num_of_chks_from_server == 0:
                 self.server_client.put_instruction(inst_CACHEDATA + cdrs)
                 self.server_client.put_instruction(inst_NOOP)
@@ -485,26 +503,31 @@ class P2PUser():
 	    req_str_ui = 'GET_CACHE_DATA'
 	    ret_str_ui = urllib2.urlopen(tracker_address + req_str_ui).read()
 	    j_ret=json.loads(ret_str_ui)
-    	    print 'return about data API 1 is ' 
-    	    print json.dumps(j_ret, indent=4, sort_keys=True)
+    	    #print 'return about data API 1 is ' 
+    	    #print json.dumps(j_ret, indent=4, sort_keys=True)
 	    if len(j_ret) > 0: 
-	    	print j_ret[0][0].keys()
-		print j_ret[0][0].get('data')
+	    	#print j_ret[0][0].keys()
+		#print j_ret[0][0].get('data')
 		data_from_cache = j_ret[0][0].get('data')
-		print "bytes uploaded " + str(data_from_cache.get('bytes_downloaded'))
+		bytes_downloaded = data_from_cache.get('bytes_downloaded')
+		print "bytes uploaded " + str(bytes_downloaded)
 	    req_str_ui2 = 'GET_CACHE_DATA2'
 	    ret_str_ui2 = urllib2.urlopen(tracker_address + req_str_ui2).read()
 	    j_ret2=json.loads(ret_str_ui2)
-    	    print 'return about data API 2 is ' 
-    	    print json.dumps(j_ret2, indent=4, sort_keys=True)
+    	    #print 'return about data API 2 is ' 
+    	    #print json.dumps(j_ret2, indent=4, sort_keys=True)
 	    if len(j_ret2) > 0:
-	    	print j_ret2[0].keys()
-		print j_ret2[0].get('cache')
+	    	#print j_ret2[0].keys()
+		#print j_ret2[0].get('cache')
 		data_by_cache = j_ret2[0].get('cache')
 		data_cache =  data_by_cache.get('contents')
-		print data_cache[0].get('data')
+		#print data_cache[0].get('data')
 		datacache = data_cache[0].get('data')
-		print "bytes sent "+ str(datacache.get('bytes_sent'))
+		bytes_uploaded = datacache.get('bytes_sent')
+		print "bytes sent "+ str(bytes_uploaded)
+	    if len(j_ret) > 0 and len(j_ret2) > 0:
+		print "upload is if" + str(bytes_uploaded) + "download is if" + str(bytes_downloaded)
+		thread.start_new_thread(self.data_ui,(bytes_uploaded, bytes_downloaded, ))
             if frame_number > start_frame and (server_request or addtl_server_request) and VLC_PLAYER_USE:
                 self.VLC_pause_video()
 
@@ -691,16 +714,6 @@ def true_run_user():
         print folder
         os.system('chmod +x play_vlc.sh')
         os.system('./play_vlc.sh ' + movie_name + ' ' + folder)'''
-	req_str_ui = 'GET_CACHE_DATA'
-	ret_str_ui = urllib2.urlopen(tracker_address + req_str_ui).read()
-	j_ret=json.loads(ret_str_ui)
-    	print 'return about data API is ' 
-    	print json.dumps(j_ret, indent=4, sort_keys=True)
-	req_str_ui2 = 'GET_CACHE_DATA2'
-	ret_str_ui2 = urllib2.urlopen(tracker_address + req_str_ui2).read()
-	j_ret2=json.loads(ret_str_ui2)
-    	print 'return about data API is ' 
-    	print json.dumps(j_ret2, indent=4, sort_keys=True)
         test_user.disconnect(tracker_address, global_video_name, global_user_name)
         print '[user.py] Download of video %s finished.' % global_video_name
 	os.system('chmod +x populate_user_next_ui.sh')
@@ -709,10 +722,6 @@ def true_run_user():
         
     else:
         print 'Not enough points to watch ' + global_video_name
-
-def data_ui():
-    os.system('chmod +x user_data_display.sh')
-    os.system('./user_data_display.sh')
 
 
 if __name__ == "__main__":
@@ -775,11 +784,6 @@ if __name__ == "__main__":
     runtime_ct = 0
     popularity_change = False
     print "create tk"
-    req_str_ui = 'GET_CACHE_DATA2'
-    ret_str_ui = urllib2.urlopen(tracker_address + req_str_ui).read()
-    j_ret=json.loads(ret_str_ui)
-    print 'return about data API is ' 
-    print json.dumps(j_ret, indent=4, sort_keys=True)
     m=[]
         #print 'List of available videos in the system'
     for each in movies:
@@ -793,8 +797,6 @@ if __name__ == "__main__":
     
     global_video_name=main.get_movie_name()
     print global_video_name + "before true run"
-    thread.start_new_thread(data_ui,())
-    print "after calling thread"
     true_run_user()
 	
     
