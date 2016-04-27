@@ -45,8 +45,8 @@ BANDWIDTH_CAP = 12800 #(Kbps), equal to 12.8 Megabytes
 #STORAGE_CAP_IN_MB = 60 * 8 # (MB)
 #STORAGE_CAP_IN_MB = 120 * 8 #(MB)
 STORAGE_CAP_IN_MB = 1500 #Megabytes, equal to 1.5 Gigabytes
-T_rate = .01
-T_storage = .1
+T_rate = .1
+T_storage = 1
 #T_rate = .1
 #T_storage = .1
 T_topology = 600
@@ -105,7 +105,7 @@ class Cache(object):
             average_streaming_rate = 3000 # Kbps
             average_length = 120 # sec
 
-            scale = .3
+            scale = 3
             self.eps_x = 1 * scale
             self.eps_k = 1 * scale
             self.eps_la = .3 * scale
