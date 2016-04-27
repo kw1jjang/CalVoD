@@ -46,37 +46,37 @@ elif [ "$1" == "c6" ]
 then
   echo ""
   echo "running c6"
-  ssh -i ~/.ssh/NVirginakey.pem ec2-user@54.152.0.39
+  ssh -i ~/.ssh/NVirginakey.pem ec2-user@54.89.107.172
 
 elif [ "$1" == "c7" ]
 then
   echo ""
   echo "running c7"
-  ssh -i ~/.ssh/NVirginakey.pem ec2-user@54.89.21.173
+  ssh -i ~/.ssh/NVirginakey.pem ec2-user@54.152.116.105
 
 elif [ "$1" == "c8" ]
 then
   echo ""
   echo "running c8"
-  ssh -i ~/.ssh/NVirginakey.pem ec2-user@52.90.52.152
+  ssh -i ~/.ssh/NVirginakey.pem ec2-user@54.86.170.149
 
 elif [ "$1" == "c9" ]
 then
   echo ""
   echo "running c9"
-  ssh -i ~/.ssh/NVirginakey.pem ec2-user@52.87.158.10
+  ssh -i ~/.ssh/NVirginakey.pem ec2-user@54.84.101.123
 
 elif [ "$1" == "c10" ]
 then
   echo ""
   echo "running c10"
-  ssh -i ~/.ssh/NVirginakey.pem ec2-user@52.87.228.14
+  ssh -i ~/.ssh/NVirginakey.pem ec2-user@52.87.246.52
 
 elif [ "$1" == "c11" ]
 then
   echo ""
   echo "running c11"
-  ssh -i ~/.ssh/NVirginakey.pem ec2-user@52.90.30.117
+  ssh -i ~/.ssh/NVirginakey.pem ec2-user@54.165.253.88
 
 elif [ "$1" == "a1" ]
 then

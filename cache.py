@@ -2,10 +2,12 @@ from streamer import StreamFTP
 from threadclient import *
 from server import *
 from pyftpdlib import ftpserver
+import os
 import Queue
 import random
 import csv
 import time
+from time import gmtime, strftime
 import threading
 import resource
 import sys
@@ -37,14 +39,14 @@ tracker_address = load_tracker_address() # set in helper.
 # CACHE RESOURCE
 #BANDWIDTH_CAP = 2000 # (Kbps)
 #BANDWIDTH_CAP = 8000 * 3# (Kbps)
-BANDWIDTH_CAP = 10 * 1000 #(Kbps), equal to 10 Megabytes
+BANDWIDTH_CAP = 12800 #(Kbps), equal to 12.8 Megabytes
 #STORAGE_CAP_IN_MB = 60 * 3 # (MB)
 #STORAGE_CAP_IN_MB = 60 * 4 # (MB)
 #STORAGE_CAP_IN_MB = 60 * 8 # (MB)
 #STORAGE_CAP_IN_MB = 120 * 8 #(MB)
-STORAGE_CAP_IN_MB = 800 #Megabytes, equal to 1.5 Gigabytes
-T_rate = .01
-T_storage = .01
+STORAGE_CAP_IN_MB = 1500 #Megabytes, equal to 1.5 Gigabytes
+T_rate = .1
+T_storage = 1
 #T_rate = .1
 #T_storage = .1
 T_topology = 600
@@ -103,7 +105,7 @@ class Cache(object):
             average_streaming_rate = 3000 # Kbps
             average_length = 120 # sec
 
-            scale = .3
+            scale = 3
             self.eps_x = 1 * scale
             self.eps_k = 1 * scale
             self.eps_la = .3 * scale
@@ -223,15 +225,30 @@ class Cache(object):
             if log_ct == LOG_PERIOD:
                 log_ct = 0
             time.sleep(T_period)
-            if DEBUGGING_MSG:
-                print '[cache.py] RATE ALLOCATION BEGINS'
+            print '[cache.py -debug] RATE ALLOCATION BEGINS UPDATE =================='
+            print '[cache.py -debug] current_time =', strftime("%Y-%m-%d %H:%M:%S")
+
             handlers = self.get_handlers()
             if len(handlers) == 0:
-                if DEBUGGING_MSG:
-                    print '[cache.py] No user is connected'
+                print '[cache.py -debug] No user is connected, len(handler) = 0'
             else:
                 sum_x = 0
-                print '[cache.py] update PRIMAL_X'
+                #if log_ct == 0:
+                print '[cache.py -debug] Initialize sum_x = 0'
+                print '[cache.py -debug] handler_length', len(handlers)
+                print '[cache.py -debug] Initialize debug variables....'
+                handler_debug = []
+                watching_debug = []
+                debug_1 = []
+                debug_2 = []
+                delta_x_debug = []
+                primal_x_debug = []
+                sum_x_debug = []
+                current_rate_debug = []
+                total_rate_debug = []
+                delta_k_debug = []
+                dual_k_debug = []
+
                 for i in range(len(handlers)):
                     if i not in CacheHandler.id_to_index.values():
                         continue
@@ -239,27 +256,19 @@ class Cache(object):
                     ## 1. UPDATE PRIMAL_X
                     handler = handlers[i]
                     if handler._closed == True:
-                        if DEBUGGING_MSG:
-                            print '[cache.py] Connection ' + str(i) + ' is closed'
                         continue
-                    else:
-                        if DEBUGGING_MSG:
-                            print '[cache.py] Connection ' + str(i) + ' is open'
-                    #print '[cache.py] ' + str(i) + 'th connection, index = ' + str(handler.index)
-
+                    #else:
+                        #if log_ct == 0:
+                        #print '[cache.py -debug] Connection ' + str(i) + ' is open, proceed!'
                     video_name = self.get_watching_video(i)
                     code_param_n = self.movie_LUT.code_param_n_lookup(video_name)
                     code_param_k = self.movie_LUT.code_param_k_lookup(video_name)
-                    if DEBUGGING_MSG:
-                        print '[cache.py] User ' + str(i) + ' is watching ' + str(video_name)
                     packet_size = self.movie_LUT.chunk_size_lookup(video_name)
                     if packet_size == 0:
                         continue
-
+                    
                     # First, find the optiaml variables
                     g = self.get_g(i)
-                    #print "[cache.py] Connection " + str(i) + " : (self.index, g, x) ", (handlers[i].index,  g, self.primal_x[i])
-                    #print "[cache.py] Connection " + str(i) + " : (g, self.dual_la, self.dual_k[i]) ", (g, self.dual_la, self.dual_k[i])
                     delta_x = self.bound(g - (self.dual_la + self.dual_k[i]), \
                                         self.primal_x[i], 0, self.bandwidth_cap)
                     self.primal_x[i] += self.eps_x * delta_x
@@ -270,40 +279,66 @@ class Cache(object):
                     # Apply it if it goes over some rate
                     rate_per_chunk = packet_size / 1000 / BUFFER_LENGTH * 8 # (Kbps)
                     assigned_rate = max(round(self.primal_x[i] / rate_per_chunk), 0)
-                    num_of_stored_chunks = len(self.get_chunks(video_name)) # FIX : it should be video(i)
+                    num_of_stored_chunks = len(self.get_chunks(video_name))
                     self.set_conn_rate(i, min(assigned_rate, num_of_stored_chunks))
-                    #current_rate = self.get_conn_rate(i)
-                    if log_ct == 0:
-                        print '[cache.py] User ' + str(i) + ' (g,x,assigned_rate,num_of_stored) ' + str(g) + ',' + str(self.primal_x[i]) + ',' + str(assigned_rate) + ',' + str(num_of_stored_chunks)
 
                     ## 2. UPDATE DUAL_K
                     if video_name not in self.primal_f.keys():
                         self.primal_f[video_name] = 0.0
-                    if DEBUGGING_MSG:
-                        print '[cache.py] total rate = ', (rate_per_chunk * code_param_k)
                     delta_k = self.bound(self.primal_x[i] - self.primal_f[video_name] * rate_per_chunk * code_param_k, self.dual_k[i], 0, INFINITY)
-                    if log_ct == 0:
-		                print '[cache.py] User ' + str(i) + ' delta_k ' + str(delta_k)
                     self.dual_k[i] += self.eps_k * delta_k
                     if POSITIVE_CONSTRAINT:
                         self.dual_k[i] = max(0, self.dual_k[i])
-                    if log_ct == 0:
-                        print '[cache.py] User ' + str(i) + ' dual_k ' + str(self.dual_k[i])
 
+                    # Log Debug message
+                    handler_debug.append(i)
+                    watching_debug.append(str(video_name))
+                    debug_1.append([handlers[i].index, g, self.primal_x[i]])
+                    debug_2.append([g, self.dual_la, self.dual_k[i]])
+                    delta_x_debug.append(delta_x)
+                    primal_x_debug.append(self.primal_x[i])
+                    sum_x_debug.append(sum_x)
+                    current_rate_debug.append(self.get_conn_rate(i))
+                    total_rate_debug.append((rate_per_chunk * code_param_k))
+                    delta_k_debug.append(delta_k)
+                    dual_k_debug.append(self.dual_k[i])
+
+                # print debug message
+                print '[cache.py -debug] index of active handlers =', handler_debug
+                print '[cache.py -debug] watching =', watching_debug
+                print '[cache.py -debug] (self.index, g, x) =', debug_1
+                print '[cache.py -debug] (self.index, g, x) =', debug_2
+                print '[cache.py -debug] delta_x =', delta_x_debug
+                print '[cache.py -debug] primal_x =', primal_x_debug
+                print '[cache.py -debug -important] sum_x (after updating primal_x) =', sum_x_debug
+                print '[cache.py -debug] current_rate =', current_rate_debug
+                print '[cache.py -debug] total_rate =', total_rate_debug
+                print '[cache.py -debug] delta_k =', delta_k_debug
+                print '[cache.py -debug] dual_k =', dual_k_debug
+                
                 ## 3. UPDATE DUAL_LA
-                if log_ct == 0:
-		            print '[cache.py] sum_x ' , sum_x
+                print '[cache.py -debug -important] sum_x (after updating primal_x and dual_k) =', sum_x
                 delta_la = self.bound(sum_x - self.bandwidth_cap, self.dual_la, 0, INFINITY)
+                print "[cache.py -debug] delta_la =", delta_la
                 self.dual_la += self.eps_la * delta_la
                 if POSITIVE_CONSTRAINT:
                     self.dual_la = max(self.dual_la, 0)
-                if log_ct == 0:
-                    print '[cache.py] dual_la ' + str(self.dual_la)
+                print '[cache.py -debug] dual_la =' + str(self.dual_la)
 
     def remove_one_chunk(self, video_name, index):
-        # It should remove all the downloaded chunks at cache
-        # Currently, it just removes the index out of the cache_chunk_list
-
+        # # It should remove all the downloaded chunks at cache
+        # # Currently, it just removes the index out of the cache_chunk_list
+        # print '[cache.py] Removing chunk', index , 'of' , video_name
+        # frame_num = self.movie_LUT.frame_num_lookup(video_name)
+        # code_param_n = self.movie_LUT.code_param_n_lookup(video_name)
+        # for i in range(1, frame_num+1):
+        #     f_num = str(index[0])
+        #     if len(f_num) == 1:
+        #         f_num = '0' + f_num
+        #     # example: rm video-test10/test10.1.dir/test10.1.02_40.chunk
+        #     command = 'video-'+video_name+'/'+video_name+'.'+str(i)+'.dir/'+video_name+'.'+str(i)+'.'+f_num+'_'+str(code_param_n)+'.chunk'
+        #     print '[cache.py] removing command:', command
+        #     os.remove(command)
         return True
 
     def download_one_chunk_from_server(self, video_name, index):
@@ -378,7 +413,7 @@ class Cache(object):
                     else:
                         if DEBUGGING_MSG:
                             print '[cache.py] Connection ' + str(i) + ' is open'
-#                    print '[cache.py] ' + str(i) + 'th connection, index = ' + str(handler.index)
+                    #print '[cache.py] ' + str(i) + 'th connection, index = ' + str(handler.index)
 
                     # Open connection
                     current_rate = self.get_conn_rate(i)
@@ -407,7 +442,7 @@ class Cache(object):
                                 dual_k_sum += self.dual_k[j]
                         except IndexError:
                             sys.stderr.write('IndexError occured. j = %d' % j)
-                    print 'Handler %d is watching %s. dual_k = %.1f, dual_k_sum = %.1f' % (j, video_name, self.dual_k[j],  dual_k_sum)
+                    print 'Handler %d is watching %s. dual_k = %.1f, dual_k_sum = %.1f' % (i, video_name, self.dual_k[j],  dual_k_sum)
                     if log_ct == 0:
                         print '[cache.py] dual_k_sum = ', dual_k_sum
                         print '[cache.py] dual_mu = ', self.dual_mu
@@ -441,7 +476,6 @@ class Cache(object):
                                     print '[cache.py] Downloading nothing from server'
                                 print '[cache.py] Logic error'
                                 sys.exit(0)
-                                #self.download_one_chunk_from_server(video_name, '')
                             else:
                                 chunk_index = random.sample( list(set(range(0,code_param_n)) - set(map(int, stored_chunks))), 1 ) # Sample one out of missing chunks
                                 if self.download_one_chunk_from_server(video_name, chunk_index) == True:
@@ -470,7 +504,11 @@ class Cache(object):
                                 print '[cache.py] storage not updated'
 
                 ## 2. UPDATE DUAL_K
-                # print '[cache.py] Update dual_k'
+                print '[cache.py -debug -storage] Update dual_k ========'
+                print '[cache.py -debug -storage] current_time =', strftime("%Y-%m-%d %H:%M:%S")
+                handler_storage = []
+                debug_storage = []
+                delta_k_storage = []
                 for i in range(len(handlers)):
                     if i not in CacheHandler.id_to_index.values():
                         # print '[cache.py]', i, 'is not in map values, we skip'
@@ -478,28 +516,40 @@ class Cache(object):
 
                     handler = handlers[i]
                     if handler._closed == True:
-                        if log_ct == 0:
-                            print '[cache.py] Connection ' + str(i) + ' is closed'
+                        #if log_ct == 0:
+                        #    print '[cache.py] Connection ' + str(i) + ' is closed'
                         continue
                     video_name = self.get_watching_video(i)
                     if video_name not in self.primal_f.keys():
                         self.primal_f[video_name] = 0.0
+                    code_param_n = self.movie_LUT.code_param_n_lookup(video_name)
+                    code_param_k = self.movie_LUT.code_param_k_lookup(video_name)
                     packet_size = self.movie_LUT.chunk_size_lookup(video_name)
                     if packet_size == 0:
                         continue
                     rate_per_chunk = packet_size / 1000 / BUFFER_LENGTH * 8 # (Kbps)
-                    if log_ct == 0:
-                        print '[cache.py] self.primal_f', self.primal_f
-                    print '[cache.py] self.primal_f[', video_name, '] = ', self.primal_f[video_name]
+                    #if log_ct == 0:
+                    #    print '[cache.py] self.primal_f', self.primal_f
+                    #print '[cache.py] self.primal_f[', video_name, '] = ', self.primal_f[video_name]
+
                     delta_k = self.bound(self.primal_x[i] - self.primal_f[video_name] * rate_per_chunk * code_param_k, self.dual_k[i], 0, INFINITY)
-                    if log_ct == 0:
-                        print '[cache.py] User ' + str(i) + ' delta_k ' + str(delta_k)
+                    
+                    handler_storage.append(i)
+                    debug_storage.append([self.primal_x[i], self.primal_f[video_name], rate_per_chunk, code_param_k, self.dual_k[i]])
+                    delta_k_storage.append(delta_k)
+
+                    # if log_ct == 0:
+                    #     print '[cache.py] User ' + str(i) + ' delta_k ' + str(delta_k)
                     self.dual_k[i] += self.eps_k * delta_k
                     if POSITIVE_CONSTRAINT:
                         self.dual_k[i] = max(0, self.dual_k[i])
-                    if log_ct == 0:
-                        print '[cache.py] User ' + str(i) + ' dual_k ' + str(self.dual_k[i])
+                    # if log_ct == 0:
+                    #     print '[cache.py] User ' + str(i) + ' dual_k ' + str(self.dual_k[i])
                     # print '[cache.py]DEBUG__ self.dual_k', self.dual_k[:2]
+
+                print '[cache.py -debug -storage] index of active handlers =', handler_storage
+                print '[cache.py -debug -storage] (primal_x, primal_f, rate_per_chunk, code_param_k, dual_k) =', debug_storage
+                print '[cache.py -debug -storage] delta_k =', delta_k_storage
 
                 # Need to update dual_mu
                 if log_ct == 0:

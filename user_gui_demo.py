@@ -14,6 +14,7 @@ import urllib2
 import csv
 import math
 import sys
+from time import gmtime, strftime
 import threading
 import string
 from infoThread import infoThread
@@ -107,7 +108,6 @@ class P2PUser():
         self.server_client.put_instruction(inst_SENDPORT + str(self.my_port) + ' ' + self.my_ip + ' ' + video_name + ' user')
         # Connect to the caches
         cache_ip_addr = retrieve_caches_address_from_tracker(self.tracker_address, 100, self.user_name, session = session)
-        #cache_ip_addr[0][0] = '[' + cache_ip_addr[0][0] + ']'
         self.cache_ip_addr = cache_ip_addr
         self.num_of_caches = min(self.num_of_caches, len(cache_ip_addr))
 
@@ -161,7 +161,7 @@ class P2PUser():
         self.info_thread.start()
 
         for frame_number in range(start_frame, num_frames + 1):
-            global_frame_number = frame_number - 1
+            global_frame_number = frame_number
             sys.stdout.flush()
             effective_rates = [0]*len(self.clients)
             assigned_chunks = [0]*len(self.clients)
@@ -176,8 +176,10 @@ class P2PUser():
                 for client in self.clients:
                     client.put_instruction(inst_INTL)
                 self.server_client.put_instruction(inst_INTL)
-
-            print '[user.py] frame_number : ', frame_number
+            
+            print '[cache.py -debug] Requesting frame =================='
+            print '[user.py -debug] current_time =', strftime("%Y-%m-%d %H:%M:%S")
+            print '[user.py] frame_number requesting: ', frame_number
             filename = 'file-' + video_name + '.' + str(frame_number)
             # directory for this frame
             folder_name = 'video-' + video_name + '/' + video_name + '.' + str(frame_number) + '.dir/'
@@ -210,17 +212,17 @@ class P2PUser():
 
             ## index assignment here
             # Assign chunks to cache using cache_chunks_to_request.
-            print '[user.py] Rates ', rates
-            print '[user.py] Available chunks', available_chunks
+            print '[user.py] Cache returned rates ', rates
+            print '[user.py] Cache returned available chunks', available_chunks
 
             assigned_chunks = cache_chunks_to_request(available_chunks, rates, code_param_n, code_param_k)
-
+            print '[user.py] Assigned chunks:', assigned_chunks
             effective_rates = [0]*len(rates)
             for i in range(len(rates)):
                 effective_rates[i] = len(assigned_chunks[i])
-
+            print '[user.py] effective rates: ', effective_rates
             chosen_chunks = [j for i in assigned_chunks for j in i]
-
+            print '[user.py] chosen chunks: ', chosen_chunks
             flag_deficit = int(sum(effective_rates) < code_param_k) # True if user needs more rate from caches
 
             list_of_cache_requests = []
@@ -228,7 +230,7 @@ class P2PUser():
             for i in range(len(self.clients)):
                 client = self.clients[i]
                 client_ip_address = client.address[0] + '@' + str(client.address[1])
-                print '[user.py] Server_request 2 = "' , assigned_chunks[i] , '"'
+                print '[user.py] Server_request (to cache) = "' , assigned_chunks[i] , '"'
                 client_request_string = '%'.join(assigned_chunks[i]) + '&1'
                 print "[user.py] [Client " + str(i) + "] flag_deficit: ", flag_deficit, \
                     ", Assigned chunks: ", assigned_chunks[i], \
@@ -250,23 +252,34 @@ class P2PUser():
             # Before CACHE_DOWNLOAD_DURATION, also start requesting chunks from server.
             server_request = []
             server_request_2 = []
-            cdrs = '_' .join(list_of_cache_requests) #cache data request string. Used for parsing inside of server.py's ftp_CACHEDATA
+            #cdrs = '_' .join(list_of_cache_requests) #cache data request string. Used for parsing inside of server.py's ftp_CACHEDATA
             if frame_number < num_frames:
                 size_of_chunks = vlen_items[2]
             else:
                 size_of_chunks = vlen_items[3]
-            cdrs = cdrs + '?' + str(size_of_chunks)
-            cdrs = cdrs + '_' + self.user_name
+            #cdrs = cdrs + '?' + str(size_of_chunks)
+            #cdrs = cdrs + '_' + self.user_name
             chosen_chunks = list(chosen_chunks)
             num_chunks_rx_predicted = len(chosen_chunks)
             server_request = chunks_to_request(chosen_chunks, range(0, code_param_n), code_param_k - num_chunks_rx_predicted)
             num_of_chks_from_server = len(server_request)
+            #pdb.set_trace()
+            #UPLOAD SERVER CHUNKS TO THE GUI
+            server_ip_address = self.server_client.address[0] + '@' + str(self.server_client.address[1])
+            server_chunk_string = '%' .join(server_request)
+            srs = filename + '.' + server_chunk_string + '&' + server_ip_address
+            list_of_cache_requests.insert(0,srs)        
+            #END UPLOAD SERVER CHUNKS TO THE GUI
+            #pdb.set_trace()
+            cdrs = '_' .join(list_of_cache_requests)
+            cdrs = cdrs + '?' + str(size_of_chunks)
+            cdrs = cdrs + '_' + self.user_name
             if num_of_chks_from_server == 0:
                 self.server_client.put_instruction(inst_CACHEDATA + cdrs)
                 self.server_client.put_instruction(inst_NOOP)
                 print '[user.py] Caches handling code_param_k chunks, so no request to server. Sending a NOOP'
             else:
-                print '[user.py] Server_request = "' , server_request , '"'
+                print '[user.py] Server_request (to server) = "' , server_request , '"'
                 server_request_string = '%'.join(server_request) + '&1'
                 #if DEBUG_RYAN:
                     #pdb.set_trace()
@@ -349,10 +362,10 @@ class P2PUser():
 
             chunk_nums = chunk_nums_in_frame_dir(folder_name)
             num_chunks_rx = len(chunk_nums)
-            if num_chunks_rx >= code_param_k and DEBUGGING_MSG:
-                print "[user.py] Received", code_param_k, "packets"
+            if num_chunks_rx >= code_param_k:
+                print "[user.py] Received", code_param_k, "packets, that is enough."
             else:
-                print "[user.py] Did not receive", code_param_k, "packets for this frame."
+                print "[user.py] Did not receive", code_param_k, "packets for this frame, received: ", num_chunks_rx
 
             # abort the connection to the server
             self.server_client.client.abort()
@@ -390,7 +403,10 @@ class P2PUser():
                                 choke_ct = 0
                                 print '[user.py] Topology Update : Now the state is changed to overhead staet'
                                 #print '[user.py]', connected_caches, not_connected_caches, self.clients
-                                print '[user.py] conneced caches', self.clients
+                                print '[user.py -debug] connected caches', self.clients
+                                for c in range(len(self.clients)):
+                                    print '[user.py -debug] cache addressaddress', self.clients[c].address
+
 
                 elif choke_state == 1: # Overhead state
                     print '[user.py] Overhead state : ', choke_ct
@@ -504,6 +520,12 @@ def broken_pipe_handler(signum, frame):
 def alert_handler(signum, frame):
     #pdb.set_trace()
     deregister_to_tracker_as_user(tracker_address, global_user_name, global_port, global_video_name)
+    frame_address = 'video-' + str(global_video_name) + '/' + str(global_video_name) + '.' + str(global_frame_number) + '.dir'
+    print '[user.py] deleting', frame_address
+    shutil.rmtree(frame_address)
+    while os.path.exists(frame_address):
+        pass
+    print 'frame ' + str(global_frame_number) + ' is removed, ready to rerun the user...'
     true_run_user()
     
     
@@ -553,20 +575,19 @@ def main():
     popularity_change = False
     paty = os.getcwd()
     video_removal_time = 0
+
+    video_count = 1
     while True:
-        
         print 'List of available videos in the system'
         for each in movies:
             print '-', each
         video_name = random.choice(movies)
         while video_name == 'starwars': #If we pick starwars as the random movie, pick another video
             video_name = random.choice(movies)
-        #video_name = 'small-video'
         rand_sleep = randint(1,100)
-        #print "sleeping for %i" % rand_sleep
         print "sleeping for 3 seconds"
         print 'took %i seconds to delete the last video' % video_removal_time
-        #pdb.set_trace()
+        #print "sleeping for %i" % rand_sleep
         #sleep(rand_sleep)
         sleep(3)
 
@@ -577,7 +598,9 @@ def main():
         #         break
 
         user_id = ''.join(random.choice(string.ascii_uppercase + string.digits) for x in range(6))
-        user_name = 'user-' + user_id
+        #added user_num and video_num for that user for debugging
+        user_name = 'user-' + str(sys.argv[2]) + '-' + str(video_count) + '-' + user_id
+        video_count = video_count + 1
         global_user_name = user_name
         global_video_name = video_name
         global_account_name = 'chen'
@@ -586,12 +609,14 @@ def main():
         print 'starting removal'
         video_removal_time = time.time()
         shutil.rmtree('video-' + global_video_name)
+
+        while os.path.exists('video-' + global_video_name): #wait until the directory is not exist
+            pass
         video_removal_time = time.time() - video_removal_time
         print video_removal_time
         temporary = open(global_video_name + '.txt','w')
         temporary.write(str(video_removal_time))
         temporary.close()
-    
 
 if __name__ == "__main__":
     # Load configurations

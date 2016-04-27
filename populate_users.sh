@@ -17,7 +17,7 @@ do
     fi
     cd "user"$i
     rm -rf video*
-    python ../../user_gui_demo.py ../../develpment.ini > /dev/null &
+    python ../../user_gui_demo.py ../../develpment.ini $i > ../user$i.txt &
 
     cd ..
     sleep 30

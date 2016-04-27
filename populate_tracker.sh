@@ -1,7 +1,8 @@
 mkdir -p log
 mkdir -p server
 mkdir -p server/user_log
-rm -rf log/* sessions/*
+rm -rf log/* 
+rm -rf sessions/*
 rm -f server/*.txt
 echo ""
 echo "cleared logs"
