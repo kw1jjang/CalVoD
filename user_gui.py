@@ -17,6 +17,7 @@ import sys
 from time import gmtime, strftime
 import threading
 import string
+import json
 from infoThread import infoThread
 import ConfigParser
 from signal import signal, alarm, SIGPIPE, SIG_DFL, SIG_IGN, SIGALRM
@@ -29,6 +30,7 @@ DEBUG_RYAN = False
 global_user_name = 'temp'
 global_port = 0
 global_video_name = 'temp'
+global global_frame_number
 global_frame_number = 1
 global_account_name = 'temp'
 global_password = 'temp'
@@ -43,7 +45,10 @@ class P2PUser():
         self.user_name = user_name
         self.my_ip = user_name
         self.my_port = 0
-        register_to_tracker_as_user(tracker_address, self.my_ip, self.my_port, video_name,session)
+        self.able_to_watch_video = 0
+        register_success = register_to_tracker_as_user(tracker_address, self.my_ip, self.my_port, video_name,session)
+        if register_success != 'Not enough points':
+            self.able_to_watch_video = 1
 
         # Connect to the server
         # Cache will get a response when each chunk is downloaded from the server.
@@ -534,18 +539,21 @@ def true_run_user():
     sys.stdout.flush()
     session = requests.Session()
     log_in_to_tracker(session, tracker_address, global_account_name, global_password)
+    my_videos = get_owned_videos_from_tracker(tracker_address, session)
+    my_videos = json.loads(my_videos)
+    print 'Currently owned videos:'
+    print my_videos
+
     test_user = P2PUser(tracker_address, global_video_name, global_user_name, session)
-    test_user.download(global_video_name, global_frame_number, session)
-    #try:
-        #test_user.download(video_name, global_frame_number)
-    #except:
-    #    print('\n\n\n\n USER WILL DC NOW \n\n\n\n')
-    #    continue
-    test_user.disconnect(tracker_address, global_video_name, global_user_name)
-    global global_frame_number
-    global_frame_number = 1
-    print '[user.py] Download of video %s finished.' % global_video_name
-    sys.stdout.flush()
+    if test_user.able_to_watch_video:
+        test_user.download(global_video_name, global_frame_number, session)
+        test_user.disconnect(tracker_address, global_video_name, global_user_name)
+        global global_frame_number
+        global_frame_number = 1
+        print '[user.py] Download of video %s finished.' % global_video_name
+        sys.stdout.flush()
+    else:
+        print 'Not enough points to watch ' + global_video_name
     
 def main():
     signal(SIGALRM, alert_handler)
