@@ -69,13 +69,8 @@ def create_cache_json(raw_cache_string, chunk_byte_size, user_name):
         cache_dict['data'] = cache_d
         
         return cache_dict
-    
-    
-    
-    
-    
-    
-    
+
+
 class StreamFTPServer(ftpserver.FTPServer):
     """One instance of the server is created every time this file is run.
     On a new client connection, the server makes a new FTP connection handler.
@@ -389,8 +384,6 @@ class StreamHandler(ftpserver.FTPHandler):
         producer = ftpserver.FileProducer(fd, self._current_type)
         self.push_dtp_data(producer, isproducer=True, file=fd, cmd="RETR")
 
-        
-        
     def get_chunk_files(self, path, chunks=None):
         """For the specified path, open up all files for reading. and return
         an array of file objects opened for read."""
@@ -441,7 +434,6 @@ class StreamHandler(ftpserver.FTPHandler):
         print vlen_str
         self.push_dtp_data(vlen_str, isproducer=False, cmd="VLEN")
         
-        
     def ftp_CACHEDATA(self, line):
         """Send the chunks receieved by each cache from the user. Take this information and later send to tracker.
         For now, it is just written into a file.
@@ -480,7 +472,6 @@ class StreamHandler(ftpserver.FTPHandler):
             #f.write(']')
             #f.close()
         
-        
         #self.push_dtp_data(line, isproducer=False, cmd='CDAT')
         self.respond("200 success.")
         
@@ -500,8 +491,6 @@ class StreamHandler(ftpserver.FTPHandler):
         print self.remote_port
         
         self.respond("200 port recieved.")
-        
-        
         
     def ftp_CNKS(self, line):
         """

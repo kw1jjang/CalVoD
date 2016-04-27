@@ -1,7 +1,7 @@
 ./kill_caches.sh
 
 num_of_caches=5
-echo "Initiating cache, pleae enter the number of caches (default 5):"
+echo "Initiating local caches, enter the number to run (default 5):"
 read option
 if [ ! -z "$option" ] ; then
     num_of_caches=$option
@@ -18,8 +18,8 @@ do
     fi
     cd "cache"$i
     rm -rf video*
-    #python ../../cache.py $i > ../../log/cache_$i.txt &
-    python ../../cache.py $i > ../cache$i.txt &
+    #python ../../cache.py $i > ../../log/cache$i.txt &
+    python ../../cache.py $i > /dev/null &
 
     cd ..
     sleep .1

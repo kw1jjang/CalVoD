@@ -548,7 +548,8 @@ def true_run_user():
     sys.stdout.flush()
     
 def main():
-    mu = 1
+    #mu = 1
+
     #signal(SIGPIPE,broken_pipe_handler)
     signal(SIGALRM, alert_handler)
     #signal(SIGPIPE,SIG_IGN)
@@ -606,17 +607,13 @@ def main():
         global_account_name = 'chen'
         global_password = '11111'
         true_run_user()
+        
         print 'starting removal'
         video_removal_time = time.time()
         shutil.rmtree('video-' + global_video_name)
-
         while os.path.exists('video-' + global_video_name): #wait until the directory is not exist
             pass
         video_removal_time = time.time() - video_removal_time
-        print video_removal_time
-        temporary = open(global_video_name + '.txt','w')
-        temporary.write(str(video_removal_time))
-        temporary.close()
 
 if __name__ == "__main__":
     # Load configurations

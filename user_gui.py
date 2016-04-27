@@ -9,15 +9,16 @@ from threadclient import ThreadClient
 from ftplib import error_perm
 from zfec import filefec
 import random
+from random import randint
 import urllib2
 import csv
 import math
 import sys
+from time import gmtime, strftime
 import threading
 import string
 from infoThread import infoThread
 import ConfigParser
-import json
 from signal import signal, alarm, SIGPIPE, SIG_DFL, SIG_IGN, SIGALRM
 import requests #used for handling the cache session (associate this cache with a logged in account to tracker)
 
@@ -28,7 +29,6 @@ DEBUG_RYAN = False
 global_user_name = 'temp'
 global_port = 0
 global_video_name = 'temp'
-global global_frame_number
 global_frame_number = 1
 global_account_name = 'temp'
 global_password = 'temp'
@@ -43,11 +43,8 @@ class P2PUser():
         self.user_name = user_name
         self.my_ip = user_name
         self.my_port = 0
-        self.able_to_watch_video = 0
-        register_success = register_to_tracker_as_user(tracker_address, self.my_ip, self.my_port, video_name,session)
-        #if this returns "Not enough points" then that user does not have enough points to download that video
-        if register_success != 'Not enough points':
-            self.able_to_watch_video = 1
+        register_to_tracker_as_user(tracker_address, self.my_ip, self.my_port, video_name,session)
+
         # Connect to the server
         # Cache will get a response when each chunk is downloaded from the server.
         # Note that this flag should **NOT** be set for the caches, as the caches
@@ -111,7 +108,6 @@ class P2PUser():
         self.server_client.put_instruction(inst_SENDPORT + str(self.my_port) + ' ' + self.my_ip + ' ' + video_name + ' user')
         # Connect to the caches
         cache_ip_addr = retrieve_caches_address_from_tracker(self.tracker_address, 100, self.user_name, session = session)
-        #cache_ip_addr[0][0] = '[' + cache_ip_addr[0][0] + ']'
         self.cache_ip_addr = cache_ip_addr
         self.num_of_caches = min(self.num_of_caches, len(cache_ip_addr))
 
@@ -165,7 +161,7 @@ class P2PUser():
         self.info_thread.start()
 
         for frame_number in range(start_frame, num_frames + 1):
-            global_frame_number = frame_number - 1
+            global_frame_number = frame_number
             sys.stdout.flush()
             effective_rates = [0]*len(self.clients)
             assigned_chunks = [0]*len(self.clients)
@@ -180,8 +176,10 @@ class P2PUser():
                 for client in self.clients:
                     client.put_instruction(inst_INTL)
                 self.server_client.put_instruction(inst_INTL)
-
-            print '[user.py] frame_number : ', frame_number
+            
+            print '[cache.py -debug] Requesting frame =================='
+            print '[user.py -debug] current_time =', strftime("%Y-%m-%d %H:%M:%S")
+            print '[user.py] frame_number requesting: ', frame_number
             filename = 'file-' + video_name + '.' + str(frame_number)
             # directory for this frame
             folder_name = 'video-' + video_name + '/' + video_name + '.' + str(frame_number) + '.dir/'
@@ -214,17 +212,17 @@ class P2PUser():
 
             ## index assignment here
             # Assign chunks to cache using cache_chunks_to_request.
-            print '[user.py] Rates ', rates
-            print '[user.py] Available chunks', available_chunks
+            print '[user.py] Cache returned rates ', rates
+            print '[user.py] Cache returned available chunks', available_chunks
 
             assigned_chunks = cache_chunks_to_request(available_chunks, rates, code_param_n, code_param_k)
-
+            print '[user.py] Assigned chunks:', assigned_chunks
             effective_rates = [0]*len(rates)
             for i in range(len(rates)):
                 effective_rates[i] = len(assigned_chunks[i])
-
+            print '[user.py] effective rates: ', effective_rates
             chosen_chunks = [j for i in assigned_chunks for j in i]
-
+            print '[user.py] chosen chunks: ', chosen_chunks
             flag_deficit = int(sum(effective_rates) < code_param_k) # True if user needs more rate from caches
 
             list_of_cache_requests = []
@@ -232,7 +230,7 @@ class P2PUser():
             for i in range(len(self.clients)):
                 client = self.clients[i]
                 client_ip_address = client.address[0] + '@' + str(client.address[1])
-                print '[user.py] Server_request 2 = "' , assigned_chunks[i] , '"'
+                print '[user.py] Server_request (to cache) = "' , assigned_chunks[i] , '"'
                 client_request_string = '%'.join(assigned_chunks[i]) + '&1'
                 print "[user.py] [Client " + str(i) + "] flag_deficit: ", flag_deficit, \
                     ", Assigned chunks: ", assigned_chunks[i], \
@@ -281,7 +279,7 @@ class P2PUser():
                 self.server_client.put_instruction(inst_NOOP)
                 print '[user.py] Caches handling code_param_k chunks, so no request to server. Sending a NOOP'
             else:
-                print '[user.py] Server_request = "' , server_request , '"'
+                print '[user.py] Server_request (to server) = "' , server_request , '"'
                 server_request_string = '%'.join(server_request) + '&1'
                 #if DEBUG_RYAN:
                     #pdb.set_trace()
@@ -364,10 +362,10 @@ class P2PUser():
 
             chunk_nums = chunk_nums_in_frame_dir(folder_name)
             num_chunks_rx = len(chunk_nums)
-            if num_chunks_rx >= code_param_k and DEBUGGING_MSG:
-                print "[user.py] Received", code_param_k, "packets"
+            if num_chunks_rx >= code_param_k:
+                print "[user.py] Received", code_param_k, "packets, that is enough."
             else:
-                print "[user.py] Did not receive", code_param_k, "packets for this frame."
+                print "[user.py] Did not receive", code_param_k, "packets for this frame, received: ", num_chunks_rx
 
             # abort the connection to the server
             self.server_client.client.abort()
@@ -405,7 +403,10 @@ class P2PUser():
                                 choke_ct = 0
                                 print '[user.py] Topology Update : Now the state is changed to overhead staet'
                                 #print '[user.py]', connected_caches, not_connected_caches, self.clients
-                                print '[user.py] conneced caches', self.clients
+                                print '[user.py -debug] connected caches', self.clients
+                                for c in range(len(self.clients)):
+                                    print '[user.py -debug] cache addressaddress', self.clients[c].address
+
 
                 elif choke_state == 1: # Overhead state
                     print '[user.py] Overhead state : ', choke_ct
@@ -519,6 +520,12 @@ def broken_pipe_handler(signum, frame):
 def alert_handler(signum, frame):
     #pdb.set_trace()
     deregister_to_tracker_as_user(tracker_address, global_user_name, global_port, global_video_name)
+    frame_address = 'video-' + str(global_video_name) + '/' + str(global_video_name) + '.' + str(global_frame_number) + '.dir'
+    print '[user.py] deleting', frame_address
+    shutil.rmtree(frame_address)
+    while os.path.exists(frame_address):
+        pass
+    print 'frame ' + str(global_frame_number) + ' is removed, ready to rerun the user...'
     true_run_user()
     
     
@@ -527,33 +534,66 @@ def true_run_user():
     sys.stdout.flush()
     session = requests.Session()
     log_in_to_tracker(session, tracker_address, global_account_name, global_password)
-    #pdb.set_trace()
-    #Get the list of owned videos here
-    my_videos = get_owned_videos_from_tracker(tracker_address, session)
-    my_videos = json.loads(my_videos)
-    print 'Currently owned videos:'
-    print my_videos
-    #pdb.set_trace()
-    
-    
     test_user = P2PUser(tracker_address, global_video_name, global_user_name, session)
-    if test_user.able_to_watch_video:
-        test_user.download(global_video_name, global_frame_number, session)
+    test_user.download(global_video_name, global_frame_number, session)
     #try:
         #test_user.download(video_name, global_frame_number)
     #except:
     #    print('\n\n\n\n USER WILL DC NOW \n\n\n\n')
     #    continue
-        test_user.disconnect(tracker_address, global_video_name, global_user_name)
-        print '[user.py] Download of video %s finished.' % global_video_name
-        sys.stdout.flush()
+    test_user.disconnect(tracker_address, global_video_name, global_user_name)
+    global global_frame_number
+    global_frame_number = 1
+    print '[user.py] Download of video %s finished.' % global_video_name
+    sys.stdout.flush()
+    
+def main():
+    signal(SIGALRM, alert_handler)
+    print '[user.py]', tracker_address
+
+    # clean up old movies
+    path = os.getcwd()
+    for i in os.listdir(os.getcwd()):
+        full_path = path + '/' + i;
+        if int(time.time()) - int(os.stat(full_path).st_mtime) > 60:
+            shutil.rmtree(full_path, ignore_errors=True)
+    print 'Old files cleaned!'
+    print ''
+
+    #get movile list
+    movie_LUT = retrieve_MovieLUT_from_tracker(tracker_address)
+    global global_user_name
+    global global_video_name
+    global global_account_name
+    global global_password
+    user_id = ''.join(random.choice(string.ascii_uppercase + string.digits) for x in range(6))
+    if(len(sys.argv) == 4): #username and pw provided
+        global_user_name = 'user-' + sys.argv[2] + '-' + user_id
+        global_account_name = sys.argv[2]
+        global_password = sys.argv[3]
     else:
-        print 'Not enough points to watch ' + global_video_name
+        global_user_name = 'user-' + user_id
+        global_account_name = 'chen'
+        global_password = '11111'
+    movies = movie_LUT.movies_LUT.keys()
+    runtime_ct = 0
+    popularity_change = False
+    
+    while True:
+        print 'List of available videos in the system'
+        for each in movies:
+            print '-', each
+        while True:
+            input_str = raw_input('Please choose a video:')
+            if input_str in movies:
+                video_name = input_str
+                break
+        global_video_name = video_name
+        true_run_user()
 
 if __name__ == "__main__":
     # Load configurations
     config = ConfigParser.ConfigParser()
-    #config.read(sys.argv[1])
     config.read('../../development.ini')
 
     # General
@@ -571,50 +611,7 @@ if __name__ == "__main__":
     SERVER_DOWNLOAD_DURATION = config.getfloat('Global', 'SERVER_DOWNLOAD_DURATION');
     DECODE_WAIT_DURATION = config.getfloat('Global', 'DECODE_WAIT_DURATION');
     tracker_address = config.get('Global', 'tracker_address');
+    print tracker_address
     num_of_caches = config.getint('Global', 'num_of_caches');
 
-    #mu = 1
-
-    #signal(SIGPIPE,broken_pipe_handler)
-    signal(SIGALRM, alert_handler)
-    #signal(SIGPIPE,SIG_IGN)
-
-    # clean up old movies
-    path = os.getcwd()
-    for i in os.listdir(os.getcwd()):
-        full_path = path + '/' + i;
-        if int(time.time()) - int(os.stat(full_path).st_mtime) > 60:
-            shutil.rmtree(full_path, ignore_errors=True)
-    print 'Old files cleaned!'
-
-    #get movile list
-    movie_LUT = retrieve_MovieLUT_from_tracker(tracker_address)
-
-    #configure global variables
-    global global_user_name
-    global global_video_name
-    global global_account_name
-    global global_password
-    user_id = ''.join(random.choice(string.ascii_uppercase + string.digits) for x in range(6))
-    if(len(sys.argv) == 4): #username and pw provided
-        global_user_name = 'user-' + sys.argv[2] + '-' + user_id
-        global_account_name = sys.argv[2]
-        global_password = sys.argv[3]
-    else:
-        global_user_name = 'user-' + user_id
-        global_account_name = 'chen'
-        global_password = '11111'
-    movies = movie_LUT.movies_LUT.keys()
-    runtime_ct = 0
-    popularity_change = False
-    while True:
-        print 'List of available videos in the system'
-        for each in movies:
-            print '-', each
-        while True:
-            input_str = raw_input('Please choose a video:')
-            if input_str in movies:
-                video_name = input_str
-                break
-        global_video_name = video_name
-        true_run_user()
+    main()

@@ -1,6 +1,6 @@
 #populate multiple users onto the system
 num_of_users=5
-echo "Initiating users, pleae enter the number of users (default 5):"
+echo "Initiating users, enter the number to run (default 5):"
 read option
 if [ ! -z "$option" ] ; then
     num_of_users=$option
@@ -17,7 +17,8 @@ do
     fi
     cd "user"$i
     rm -rf video*
-    python ../../user_gui_demo.py ../../develpment.ini $i > ../user$i.txt &
+    #python ../../user_gui_demo.py ../../develpment.ini $i > ../user$i.txt &
+    python ../../user_gui_demo.py ../../develpment.ini $i > /dev/null &
 
     cd ..
     sleep 30

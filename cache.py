@@ -37,18 +37,10 @@ path = "."
 tracker_address = load_tracker_address() # set in helper.
 
 # CACHE RESOURCE
-#BANDWIDTH_CAP = 2000 # (Kbps)
-#BANDWIDTH_CAP = 8000 * 3# (Kbps)
 BANDWIDTH_CAP = 12800 #(Kbps), equal to 12.8 Megabytes
-#STORAGE_CAP_IN_MB = 60 * 3 # (MB)
-#STORAGE_CAP_IN_MB = 60 * 4 # (MB)
-#STORAGE_CAP_IN_MB = 60 * 8 # (MB)
-#STORAGE_CAP_IN_MB = 120 * 8 #(MB)
 STORAGE_CAP_IN_MB = 1500 #Megabytes, equal to 1.5 Gigabytes
 T_rate = .1
 T_storage = 1
-#T_rate = .1
-#T_storage = .1
 T_topology = 600
 STORAGE_UPDATE_PERIOD_OUTER = 1
 
@@ -839,7 +831,6 @@ def main():
             multiplier = float(1)
             username = sys.argv[3]
             password = sys.argv[4]
-
     elif len(sys.argv) == 6:
             if(sys.argv[2] == 'public'):
                 sys.argv[2] = urllib2.urlopen('http://icanhazip.com').read().strip('\n')
