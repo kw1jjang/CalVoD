@@ -260,7 +260,9 @@ class Cache(object):
                     #else:
                         #if log_ct == 0:
                         #print '[cache.py -debug] Connection ' + str(i) + ' is open, proceed!'
+                    print "[cache.py -new] lookup for " + str(i)
                     video_name = self.get_watching_video(i)
+                    print "[cache.py -new] found video: " + str(video_name)
                     code_param_n = self.movie_LUT.code_param_n_lookup(video_name)
                     code_param_k = self.movie_LUT.code_param_k_lookup(video_name)
                     packet_size = self.movie_LUT.chunk_size_lookup(video_name)
@@ -522,6 +524,8 @@ class Cache(object):
                     video_name = self.get_watching_video(i)
                     if video_name not in self.primal_f.keys():
                         self.primal_f[video_name] = 0.0
+                    code_param_n = self.movie_LUT.code_param_n_lookup(video_name)
+                    code_param_k = self.movie_LUT.code_param_k_lookup(video_name)
                     packet_size = self.movie_LUT.chunk_size_lookup(video_name)
                     if packet_size == 0:
                         continue
