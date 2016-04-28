@@ -82,7 +82,7 @@ elif [ "$1" == "a1" ]
 then
   echo ""
   echo "running a1"
-  ssh -i ~/.ssh/sanj.pem ec2-user@52.9.120
+  ssh -i ~/.ssh/sanj.pem ec2-user@52.9.120.86
 
 else
   echo ""
