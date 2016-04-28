@@ -31,5 +31,5 @@ cd "user001"
 # mkdir -p .user001
 # cd ".user001"
 rm -rf video*
-python ../../user_gui_tk.py ../../development.ini $username $password
+python ../../user_tk.py ../../development.ini $username $password
 cd "../.."
