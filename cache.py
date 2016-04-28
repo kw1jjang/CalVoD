@@ -38,7 +38,7 @@ tracker_address = load_tracker_address() # set in helper.
 
 # CACHE RESOURCE
 BANDWIDTH_CAP = 12800 #(Kbps), equal to 12.8 Megabytes
-STORAGE_CAP_IN_MB = 1500 #Megabytes, equal to 1.5 Gigabytes
+STORAGE_CAP_IN_MB = 40 #Megabytes, equal to 1.5 Gigabytes
 T_rate = .1
 T_storage = 1
 T_topology = 600
@@ -318,19 +318,17 @@ class Cache(object):
                 print '[cache.py -debug] dual_la =' + str(self.dual_la)
 
     def remove_one_chunk(self, video_name, index):
-        # # It should remove all the downloaded chunks at cache
-        # # Currently, it just removes the index out of the cache_chunk_list
-        # print '[cache.py] Removing chunk', index , 'of' , video_name
-        # frame_num = self.movie_LUT.frame_num_lookup(video_name)
-        # code_param_n = self.movie_LUT.code_param_n_lookup(video_name)
-        # for i in range(1, frame_num+1):
-        #     f_num = str(index[0])
-        #     if len(f_num) == 1:
-        #         f_num = '0' + f_num
-        #     # example: rm video-test10/test10.1.dir/test10.1.02_40.chunk
-        #     command = 'video-'+video_name+'/'+video_name+'.'+str(i)+'.dir/'+video_name+'.'+str(i)+'.'+f_num+'_'+str(code_param_n)+'.chunk'
-        #     print '[cache.py] removing command:', command
-        #     os.remove(command)
+        print '[cache.py] Removing chunk', index , 'of' , video_name
+        frame_num = self.movie_LUT.frame_num_lookup(video_name)
+        code_param_n = self.movie_LUT.code_param_n_lookup(video_name)
+        for i in range(1, frame_num+1):
+            f_num = str(index[0])
+            if len(f_num) == 1:
+                f_num = '0' + f_num
+            # example: rm video-test10/test10.1.dir/test10.1.02_40.chunk
+            command = 'video-'+video_name+'/'+video_name+'.'+str(i)+'.dir/'+video_name+'.'+str(i)+'.'+f_num+'_'+str(code_param_n)+'.chunk'
+            print '[cache.py] removing command:', command
+            os.remove(command)
         return True
 
     def download_one_chunk_from_server(self, video_name, index):
