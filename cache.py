@@ -38,7 +38,7 @@ tracker_address = load_tracker_address() # set in helper.
 
 # CACHE RESOURCE
 BANDWIDTH_CAP = 12800 #(Kbps), equal to 12.8 Megabytes
-STORAGE_CAP_IN_MB = 40 #Megabytes, equal to 1.5 Gigabytes
+STORAGE_CAP_IN_MB = 1500 #Megabytes, equal to 1.5 Gigabytes
 T_rate = .1
 T_storage = 1
 T_topology = 600
