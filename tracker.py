@@ -9,7 +9,6 @@ import json
 import urllib2
 import pdb
 import numpy as np
-import pandas
 web.config.debug = False
 urls = (
     '/overview', 'overview',
