@@ -8,6 +8,8 @@ import data_visualization as dv
 import json
 import urllib2
 import pdb
+import numpy as np
+import pandas
 web.config.debug = False
 urls = (
     '/overview', 'overview',
@@ -197,10 +199,16 @@ class overview:
                 print '[tracker.py] accounts', accounts2
                 print '[tracker.py] account_cache', account_cache2
                 server_load = get_server_load()
+                smoothing_filter = np.ones(10)/10
+                server_load_user = np.convolve(server_load[0],smoothing_filter)
+                server_load_cache = np.convolve(server_load[1],smoothing_filter)
                 #pdb.set_trace()
+                filtered_server_load = []
+                filtered_server_load.append(server_load_user.tolist())
+                filtered_server_load.append(server_load_cache.tolist())
                 average_server_load = [sum(server_load[0])/len(server_load[0]), sum(server_load[1])/len(server_load[1])]
                 #return 'hi'
-                return render.overview(nodes_info2, n_nodes, videos_info2, server_load, average_server_load, points2, accounts2, account_cache2)
+                return render.overview(nodes_info2, n_nodes, videos_info2, filtered_server_load, average_server_load, points2, accounts2, account_cache2)
             else: #normal user
                 rank = []
                 num_user = 0
