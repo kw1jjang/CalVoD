@@ -33,6 +33,7 @@ global_frame_number = 1
 global_account_name = 'temp'
 global_password = 'temp'
 global movies
+global video_count
 
 class P2PUser():
     def __init__(self, tracker_address, video_name, user_name, session = None):
@@ -523,6 +524,7 @@ def alert_handler(signum, frame):
     global movies
     global global_user_name
     global global_port
+    global video_count
     #pdb.set_trace()
     deregister_to_tracker_as_user(tracker_address, global_user_name, global_port, global_video_name)
     frame_address = 'video-' + str(global_video_name) + '/' + str(global_video_name) + '.' + str(global_frame_number) + '.dir'
@@ -534,7 +536,7 @@ def alert_handler(signum, frame):
     true_run_user()
     video_removal_time = 0
     while True:
-        pdb.set_trace()
+        #pdb.set_trace()
         print 'List of available videos in the system'
         for each in movies:
             print '-', each
@@ -615,6 +617,7 @@ def main():
     global global_account_name
     global global_password
     global movies
+    global video_count
     movies = movie_LUT.movies_LUT.keys()
     runtime_ct = 0
     popularity_change = False
@@ -629,6 +632,7 @@ def main():
         video_name = random.choice(movies)
         while video_name == 'starwars': #If we pick starwars as the random movie, pick another video
             video_name = random.choice(movies)
+        #video_name = 'small-video'
         rand_sleep = randint(1,100)
         print "sleeping for 3 seconds"
         print 'took %i seconds to delete the last video' % video_removal_time
@@ -650,6 +654,7 @@ def main():
         global_video_name = video_name
         global_account_name = 'chen'
         global_password = '11111'
+        #pdb.set_trace()
         true_run_user()
         
         print 'starting removal'
