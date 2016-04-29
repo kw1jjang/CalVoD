@@ -32,6 +32,7 @@ global_video_name = 'temp'
 global_frame_number = 1
 global_account_name = 'temp'
 global_password = 'temp'
+global movies
 
 class P2PUser():
     def __init__(self, tracker_address, video_name, user_name, session = None):
@@ -518,6 +519,10 @@ def broken_pipe_handler(signum, frame):
     print 'ASDFASDFASDFASDFASDFASDFASFASDFASDFASDFASDFASDFASDFASDFASDF'
 
 def alert_handler(signum, frame):
+    global global_video_name
+    global movies
+    global global_user_name
+    global global_port
     #pdb.set_trace()
     deregister_to_tracker_as_user(tracker_address, global_user_name, global_port, global_video_name)
     frame_address = 'video-' + str(global_video_name) + '/' + str(global_video_name) + '.' + str(global_frame_number) + '.dir'
@@ -527,6 +532,44 @@ def alert_handler(signum, frame):
         pass
     print 'frame ' + str(global_frame_number) + ' is removed, ready to rerun the user...'
     true_run_user()
+    video_removal_time = 0
+    while True:
+        pdb.set_trace()
+        print 'List of available videos in the system'
+        for each in movies:
+            print '-', each
+        video_name = random.choice(movies)
+        while video_name == 'starwars': #If we pick starwars as the random movie, pick another video
+            video_name = random.choice(movies)
+        rand_sleep = randint(1,100)
+        print "sleeping for 3 seconds"
+        print 'took %i seconds to delete the last video' % video_removal_time
+        #print "sleeping for %i" % rand_sleep
+        #sleep(rand_sleep)
+        sleep(3)
+
+        # while True:
+        #     input_str = raw_input('Please choose a video:')
+        #     if input_str in movies:
+        #         video_name = input_str
+        #         break
+
+        user_id = ''.join(random.choice(string.ascii_uppercase + string.digits) for x in range(6))
+        #added user_num and video_num for that user for debugging
+        user_name = 'user-' + str(sys.argv[2]) + '-' + str(video_count) + '-' + user_id
+        video_count = video_count + 1
+        global_user_name = user_name
+        global_video_name = video_name
+        global_account_name = 'chen'
+        global_password = '11111'
+        true_run_user()
+        
+        print 'starting removal'
+        video_removal_time = time.time()
+        shutil.rmtree('video-' + global_video_name)
+        while os.path.exists('video-' + global_video_name): #wait until the directory is not exist
+            pass
+        video_removal_time = time.time() - video_removal_time
     
     
 def true_run_user():
@@ -571,6 +614,7 @@ def main():
     global global_video_name
     global global_account_name
     global global_password
+    global movies
     movies = movie_LUT.movies_LUT.keys()
     runtime_ct = 0
     popularity_change = False

@@ -29,11 +29,13 @@ import pdb #to run without stopping, uncomment all pdb.set_trace() that appear
 DEBUG_RYAN = False
 global_user_name = 'temp'
 global_port = 0
+#global global_video_name
 global_video_name = 'temp'
-global global_frame_number
+#global global_frame_number
 global_frame_number = 1
 global_account_name = 'temp'
 global_password = 'temp'
+global movies
 
 class P2PUser():
     def __init__(self, tracker_address, video_name, user_name, session = None):
@@ -523,6 +525,10 @@ def broken_pipe_handler(signum, frame):
     print 'ASDFASDFASDFASDFASDFASDFASFASDFASDFASDFASDFASDFASDFASDFASDF'
 
 def alert_handler(signum, frame):
+    global global_video_name
+    global movies
+    global global_user_name
+    global global_port
     #pdb.set_trace()
     deregister_to_tracker_as_user(tracker_address, global_user_name, global_port, global_video_name)
     frame_address = 'video-' + str(global_video_name) + '/' + str(global_video_name) + '.' + str(global_frame_number) + '.dir'
@@ -532,6 +538,18 @@ def alert_handler(signum, frame):
         pass
     print 'frame ' + str(global_frame_number) + ' is removed, ready to rerun the user...'
     true_run_user()
+    while True:
+        print 'List of available videos in the system'
+        for each in movies:
+            print '-', each
+        while True:
+            input_str = raw_input('Please choose a video:')
+            if input_str in movies:
+                video_name = input_str
+                break
+        global_video_name = video_name
+        #pdb.set_trace()
+        true_run_user()
     
     
 def true_run_user():
@@ -574,6 +592,7 @@ def main():
     global global_video_name
     global global_account_name
     global global_password
+    global movies
     user_id = ''.join(random.choice(string.ascii_uppercase + string.digits) for x in range(6))
     if(len(sys.argv) == 4): #username and pw provided
         global_user_name = 'user-' + sys.argv[2] + '-' + user_id
@@ -597,6 +616,7 @@ def main():
                 video_name = input_str
                 break
         global_video_name = video_name
+        #pdb.set_trace()
         true_run_user()
 
 if __name__ == "__main__":
