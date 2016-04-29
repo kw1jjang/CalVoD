@@ -199,14 +199,15 @@ class overview:
                 print '[tracker.py] accounts', accounts2
                 print '[tracker.py] account_cache', account_cache2
                 server_load = get_server_load()
-                smoothing_filter = np.ones(10)/10
+                smoothing_filter = np.ones(10)/10 #controls smoothing on the load to users
+                smoothing_filter2 = np.ones(10)/10 #controls smoothing on the load to caches
                 server_load_user = np.convolve(server_load[0],smoothing_filter)
-                server_load_cache = np.convolve(server_load[1],smoothing_filter)
+                server_load_cache = np.convolve(server_load[1],smoothing_filter2)
                 #pdb.set_trace()
                 filtered_server_load = []
                 filtered_server_load.append(server_load_user.tolist())
                 filtered_server_load.append(server_load_cache.tolist())
-                average_server_load = [sum(server_load[0])/len(server_load[0]), sum(server_load[1])/len(server_load[1])]
+                average_server_load = [sum(filtered_server_load[0])/len(filtered_server_load[0]), sum(filtered_server_load[1])/len(filtered_server_load[1])]
                 #return 'hi'
                 return render.overview(nodes_info2, n_nodes, videos_info2, filtered_server_load, average_server_load, points2, accounts2, account_cache2)
             else: #normal user
