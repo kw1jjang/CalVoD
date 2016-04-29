@@ -96,8 +96,8 @@ def get_server_load():
             server_load_cache[time] += int(parsed_str[2])
         f_user.close()
         f_cache.close()
-        print '[tracker.py] server_load_user:', server_load_user
-        print '[tracker.py] server_load_cache:', server_load_cache
+        #print '[tracker.py] server_load_user:', server_load_user
+        #print '[tracker.py] server_load_cache:', server_load_cache
         if False:
             f2 = open('server/server_load_manipulated.txt', 'w')
             for i in range(3600 * 24):
@@ -199,6 +199,7 @@ class overview:
                 server_load = get_server_load()
                 #pdb.set_trace()
                 average_server_load = [sum(server_load[0])/len(server_load[0]), sum(server_load[1])/len(server_load[1])]
+                #return 'hi'
                 return render.overview(nodes_info2, n_nodes, videos_info2, server_load, average_server_load, points2, accounts2, account_cache2)
             else: #normal user
                 rank = []
