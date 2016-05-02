@@ -56,7 +56,7 @@ def rearrange_data_for_caches(user_data):
 				temp_dict['cache'] = {}
 				cache_name_dict.append(temp_dict)
 				index_of_dict = cache_name_list.index(cache['data']['full_address'])
-				#pdb.set_trace()
+				##
 				cache_name_dict[index_of_dict]['cache']['full_address'] = cache['data']['full_address']
 				cache_name_dict[index_of_dict]['cache']['contents'] = []
 			i = cache_name_list.index(cache['data']['full_address'])

@@ -132,7 +132,7 @@ def update_points_for_account(user_name, bytes_uploaded):
     float_bytes = float(bytes_uploaded)
     additional_points = float_bytes / 1000000000
     updated_points = query_result[0].points + additional_points
-    #pdb.set_trace()
+    ##
     db.update('points', where="user_name=$user_name", bytes_uploaded=updated_bytes, points=updated_points, vars=locals())
 def get_owned_videos(user_name):
     query_result = db.select('points',where="user_name=$user_name", vars=locals()).list()

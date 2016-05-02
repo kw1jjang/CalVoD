@@ -143,7 +143,7 @@ class index:
 
 class overview:
     def GET(self):
-        #pdb.set_trace()
+        ##
         if session.get('login', False):
             print 'SUCCESSFULLY DETECTS LOGIN'
             nodes_info = db_manager.get_all_nodes()
@@ -158,7 +158,7 @@ class overview:
             account_cache2 = []
             n_nodes = [0, 0, 0] # Server / cache / user
             if session.user_name == 'admin': #admin
-                #pdb.set_trace()
+                ##
 
                 # Convert 'chunk indexes' to ints
                 for each in nodes_info:
@@ -202,7 +202,7 @@ class overview:
                 smoothing_filter2 = np.ones(10)/10 #controls smoothing on the load to caches
                 server_load_user = np.convolve(server_load[0],smoothing_filter)
                 server_load_cache = np.convolve(server_load[1],smoothing_filter2)
-                #pdb.set_trace()
+                ##
                 filtered_server_load = []
                 filtered_server_load.append(server_load_user.tolist())
                 filtered_server_load.append(server_load_cache.tolist())
@@ -361,7 +361,7 @@ class request:
                 ip = cache_dict['ip_address']
                 port = cache_dict['port']
                 bytes_uploaded = int(cache_dict['bytes_downloaded'])
-                #pdb.set_trace()
+                ##
                 ftp_server_address = db_manager.get_server()
                 ftp_server_ip = ftp_server_address[0].ip
                 ftp_server_port = ftp_server_address[0].port
@@ -376,7 +376,7 @@ class request:
                     else:
                         db_manager.update_points_for_account(account_name, bytes_uploaded)
                         db_manager.update_bytes_for_cache(account_name, ip, port, bytes_uploaded)
-            #pdb.set_trace()
+            ##
             print data
     
     def GET(self, request_str):
@@ -448,7 +448,7 @@ class request:
                     raise web.seeother('/login')
             elif req_type == 'REGISTER_CACHE':
                 if session.get('login', False):
-                    #pdb.set_trace()
+                    ##
                     arg_ip = req_arg.split('_')[0]
                     arg_port = req_arg.split('_')[1]
                     multiplier = req_arg.split('_')[2]
@@ -498,7 +498,7 @@ class request:
                     un = session.user_name
                     owned_videos= db_manager.get_owned_videos(un)
                     
-                    #pdb.set_trace()
+                    ##
                     web.header('Content-Type', 'application/json')
                     return json.dumps(owned_videos)
                 else:
@@ -529,7 +529,7 @@ class request:
                 arg_ip = req_arg.split('_')[0]
                 arg_port = req_arg.split('_')[1]
                 db_manager.remove_cache(arg_ip, arg_port)
-                #pdb.set_trace()
+                ##
                 un = session.user_name
                 #Right now not using username as input, because the server can remove any user it wants.
                 #Need to have server logged in as admin for its extra priverlages
@@ -595,13 +595,13 @@ class login:
     #import requests
     #s = requests.Session()
     #r = s.get('http://localhost:8080') will return login page
-    #r = s.post('http://localhost:8080/login', data='inputUserName=ryan&inputPassword=11111')
+    #r = s.post('http://localhost:8080/login', data='inputUserName=username&inputPassword=password')
     #s will save the logged in session
     def GET(self):
-        #pdb.set_trace()
+        ##
         return render.login()
     def POST(self):
-        #pdb.set_trace()
+        ##
         #if web.data() != {}:
          #   pdb.set_trace()
         #    data = web.data()

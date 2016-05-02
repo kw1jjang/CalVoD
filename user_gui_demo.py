@@ -25,7 +25,7 @@ import requests #used for handling the cache session (associate this cache with 
 
 import pdb #to run without stopping, uncomment all pdb.set_trace() that appear
 
-DEBUG_RYAN = False
+DEBUG_FULL = False
 global_user_name = 'temp'
 global_port = 0
 global_video_name = 'temp'
@@ -105,7 +105,7 @@ class P2PUser():
         connected_caches = []
         self.not_connected_caches = not_connected_caches = []
         inst_SENDPORT = 'SENDPORT '
-        if DEBUG_RYAN:
+        if DEBUG_FULL:
             pdb.set_trace()                                #str(self.my_port) self.my_ip video_name user
         self.server_client.put_instruction(inst_SENDPORT + str(self.my_port) + ' ' + self.my_ip + ' ' + video_name + ' user')
         # Connect to the caches
@@ -122,11 +122,11 @@ class P2PUser():
             self.clients.append(each_client)
             connected_caches.append(each_client)
             print '[user.py] ', i, 'th connection is CONNECTED : ' , cache_ip_addr[i]
-            if DEBUG_RYAN:
+            if DEBUG_FULL:
                 pdb.set_trace()
 
         for i in range(self.num_of_caches, len(cache_ip_addr)): #Is it not entering this statement here?
-            if DEBUG_RYAN:
+            if DEBUG_FULL:
                 pdb.set_trace()
             each_client = ThreadClient(self, cache_ip_addr[i], self.packet_size, i)
             each_client.put_instruction('ID %s' % self.user_name)
@@ -194,8 +194,8 @@ class P2PUser():
             inst_CACHEDATA = 'CACHEDATA ' 
 
             ###### DECIDING WHICH CHUNKS TO DOWNLOAD FROM CACHES: TIME 0 ######
-            #if DEBUG_RYAN:
-                #pdb.set_trace()
+            #if DEBUG_FULL:
+                ##
             available_chunks = [0]*len(self.clients) # available_chunks[i] = cache i's availble chunks
             rates = [0]*len(self.clients) # rates[i] = cache i's offered rate
             union_chunks = [] # union of all available indices
@@ -237,7 +237,7 @@ class P2PUser():
                 print "[user.py] [Client " + str(i) + "] flag_deficit: ", flag_deficit, \
                     ", Assigned chunks: ", assigned_chunks[i], \
                     ", Request string: ", client_request_string
-                if DEBUG_RYAN:
+                if DEBUG_FULL:
                     pdb.set_trace()
                 cachedata_request_string = client_request_string.replace('&1','&' + client_ip_address)
                 list_of_cache_requests.append(filename+ '.' + cachedata_request_string)
@@ -265,14 +265,14 @@ class P2PUser():
             num_chunks_rx_predicted = len(chosen_chunks)
             server_request = chunks_to_request(chosen_chunks, range(0, code_param_n), code_param_k - num_chunks_rx_predicted)
             num_of_chks_from_server = len(server_request)
-            #pdb.set_trace()
+            ##
             #UPLOAD SERVER CHUNKS TO THE GUI
             server_ip_address = self.server_client.address[0] + '@' + str(self.server_client.address[1])
             server_chunk_string = '%' .join(server_request)
             srs = filename + '.' + server_chunk_string + '&' + server_ip_address
             list_of_cache_requests.insert(0,srs)        
             #END UPLOAD SERVER CHUNKS TO THE GUI
-            #pdb.set_trace()
+            ##
             cdrs = '_' .join(list_of_cache_requests)
             cdrs = cdrs + '?' + str(size_of_chunks)
             cdrs = cdrs + '_' + self.user_name
@@ -283,7 +283,7 @@ class P2PUser():
             else:
                 print '[user.py] Server_request (to server) = "' , server_request , '"'
                 server_request_string = '%'.join(server_request) + '&1'
-                #if DEBUG_RYAN:
+                #if DEBUG_FULL:
                     #pdb.set_trace()
                 self.server_client.put_instruction(inst_CACHEDATA + cdrs)
                 self.server_client.put_instruction(inst_RETR + '.' + server_request_string)
@@ -299,11 +299,11 @@ class P2PUser():
             # immediately stop cache downloads.
             for client in self.clients:
                 try:
-                    #pdb.set_trace()
+                    ##
                     client.client.abort()
                 except: #I think should be EOFError
                     #e = sys.exc_info()[0]
-                    #pdb.set_trace()
+                    ##
                     print sys.exc_info()[0]
                     print "[user.py] Cache connections suddenly aborted. Stopping all download."
                     self.clients.remove(client)
@@ -448,7 +448,7 @@ class P2PUser():
             client.put_instruction('QUIT')
         self.server_client.put_instruction('QUIT')
         print "[user.py] Closed all connections."
-        #pdb.set_trace()
+        ##
         my_ip = user_name
         my_port = 0
         my_video_name = video_name
@@ -525,7 +525,7 @@ def alert_handler(signum, frame):
     global global_user_name
     global global_port
     global video_count
-    #pdb.set_trace()
+    ##
     deregister_to_tracker_as_user(tracker_address, global_user_name, global_port, global_video_name)
     frame_address = 'video-' + str(global_video_name) + '/' + str(global_video_name) + '.' + str(global_frame_number) + '.dir'
     print '[user.py] deleting', frame_address
@@ -536,7 +536,7 @@ def alert_handler(signum, frame):
     true_run_user()
     video_removal_time = 0
     while True:
-        #pdb.set_trace()
+        ##
         print 'List of available videos in the system'
         for each in movies:
             print '-', each
@@ -654,7 +654,7 @@ def main():
         global_video_name = video_name
         global_account_name = 'chen'
         global_password = '11111'
-        #pdb.set_trace()
+        ##
         true_run_user()
         
         print 'starting removal'

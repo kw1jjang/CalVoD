@@ -19,7 +19,7 @@ import pdb #remove all pdb.set_trace() to make it run continuously
 
 # Debugging MSG
 DEBUGGING_MSG = False
-DEBUG_RYAN = False
+DEBUG_FULL = False
 # Algorithm DEBUGGING
 POSITIVE_CONSTRAINT = True
 
@@ -81,7 +81,7 @@ class Cache(object):
         server_ip_address = get_server_address(tracker_address, session)
         self.server_client = ThreadClient(self, server_ip_address, self.packet_size)
         inst_SENDPORT = 'SENDPORT '
-        if DEBUG_RYAN:
+        if DEBUG_FULL:
             pdb.set_trace()
         self.server_client.put_instruction(inst_SENDPORT + cache_config[2] + ' ' + cache_config[3] +' cache')
         self.server_client.set_respond_RETR(True)

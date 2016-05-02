@@ -17,7 +17,7 @@ import pdb
 
 # Debugging MSG
 DEBUGGING_MSG = True
-DEBUG_RYAN = False
+DEBUG_FULL = False
 # Cache Configuration
 # server_address = ("0.0.0.0", 61000)
 server_address = ["localhost", 8082] #this value is no longer used but is kept anyways.
@@ -251,7 +251,7 @@ class StreamHandler(ftpserver.FTPHandler):
 
     def on_disconnect(self):
         print "### to-fix ###"
-        if DEBUG_RYAN:
+        if DEBUG_FULL:
             pdb.set_trace()
         print self.remote_ip
         print self.remote_port
@@ -450,7 +450,7 @@ class StreamHandler(ftpserver.FTPHandler):
         if len(cache_dicts) != 0:
             #take cache_dicts, convert to dict so that it can be encoded
             dumped_dicts = json.dumps(cache_dicts)
-            #pdb.set_trace()
+            ##
             send_cache_data_to_tracker(tracker_address, dumped_dicts)
             #my_dict = ({ 'cache_data', cache_dicts})
             #urllib.urlencode(my_dict)
