@@ -797,6 +797,8 @@ def main():
         if config == None:                           # This is kept here for backwards compatibality
             print '[cache.py] cache_id not found'
             sys.exit()
+            
+    #DO NOT EVER USE THIS ONE HERE.
     elif len(sys.argv) == 4:
         config = load_cache_config(1)
         multiplier = float(sys.argv[1])
@@ -806,9 +808,9 @@ def main():
     # python ../../cache.py 1 public
     # python ../../cache.py multiplier public username password
     # THE ABOVE DOES NOT SPECIFY THE PORT. IT IS USING THE MULTIPLIER AS THE PORT WHICH IS WRONG.
-    #the correct way of doing should be:
-    #on elif len(6)
-    # ../../cache.py port_number multiplier public username password
+    # DO NOT EVER USE THE ONE ABOVE HERE
+    
+    #../../cache.py port_number public
     elif len(sys.argv) == 3:
         if(sys.argv[2] == 'public'):
             sys.argv[2] = urllib2.urlopen('http://icanhazip.com').read().strip('\n')
@@ -819,6 +821,8 @@ def main():
         password = '11111'
         #Originally it was the one on the bottem. I have it here for reference in case the on on top
         #Does not work for some reason.
+        
+    #../../cache.py port_number public username password
     elif len(sys.argv) == 5:
         #WAS ORIGINALLY MAKING THE PORT NUMBER THE MULTIPLIER WHICH IS WRONG. SETTING MULTIPLIER TO 1
             if(sys.argv[2] == 'public'):
@@ -829,6 +833,8 @@ def main():
             multiplier = float(1)
             username = sys.argv[3]
             password = sys.argv[4]
+            
+    #../../cache.py port_number public username password multiplier
     elif len(sys.argv) == 6:
             if(sys.argv[2] == 'public'):
                 sys.argv[2] = urllib2.urlopen('http://icanhazip.com').read().strip('\n')
