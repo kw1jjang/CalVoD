@@ -1,3 +1,4 @@
+#To run the desktop GUI, it displays the list of movies
 username="alagu"
 password="11111"
 if [ ! -z "$1" ] ; then

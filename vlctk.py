@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+# The VLC player
 """
 Created on Fri Feb 19 10:40:49 2016
 

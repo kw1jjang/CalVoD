@@ -1,3 +1,5 @@
+#To pop up the VLC media player
+
 video_name="none"
 folder_name="none"
 if [ ! -z "$1" ] ; then

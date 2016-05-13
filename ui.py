@@ -3,6 +3,7 @@ Created on Fri Mar  4 12:30:46 2016
 
 @author: alagu
 """
+#TK GUI for desktop applications
 
 from Tkinter import *
 import tkMessageBox as tm

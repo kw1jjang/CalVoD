@@ -1,3 +1,4 @@
+# this is similar to user_gui.py, with slight modifications for TK GUI
 from streamer import *
 from time import sleep
 import time

@@ -1,3 +1,4 @@
+#It displays data related to upload and donload bytes of the user.
 uploaded_server=0
 downloaded_server=0
 uploaded_cache=0

@@ -1,3 +1,4 @@
+#It pops up a GUI to display the the upload and download bytes of the user.
 from time import sleep
 from Tkinter import *
 import PIL.Image
