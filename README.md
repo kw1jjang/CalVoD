@@ -1,7 +1,7 @@
 P2PVoD
 ======
 
-CalVoD is an open-source implementation of a general architecture for massively parallel VoD content distribution system, proposed in [1] . It allows for devices that have a wide range of reliability, storage and bandwidth constraints. Each device can act as a cache for other users and can also communicate with a central server. We have witnessed practical efficiency of the distributed algorithm in several ways (see [1]), and demonstrated remarkable robustness to system scale and changes in demand, user churn, network failure and node failures.
+CalVoD is an open-source implementation of a distributed architecture for Video-on-Demand content distribution system, proposed in [1]. In this system, each user runs a distributed caching/streaming algorithm, which in turn results in the minimal streaming load on the central server. Via extensive experiments (in [1]), we have witnessed practical efficiency of the proposed system, and demonstrated remarkable robustness to system scale and changes in demand, user churn, network failure and node failures. 
 
 
 How to use
