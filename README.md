@@ -1,18 +1,18 @@
-P2PVoD
+CalVoD
 ======
 
-P2PVoD is an open-source implementation of a distributed architecture for Video-on-Demand content distribution system, proposed in [1]. In this system, each user runs a distributed caching/streaming algorithm, which in turn results in the minimal streaming load on the central server. Our extensive experiments (in [1]) prove practical efficiency of the proposed system and demonstrate remarkable robustness to system scale and changes in demand, user churn, network failure and node failures. 
+CalVoD is an open-source implementation of a distributed architecture for Video-on-Demand content distribution system, proposed in [1]. In this system, each user runs a distributed caching/streaming algorithm, which in turn results in the minimal streaming load on the central server. Our extensive experiments (in [1]) prove practical efficiency of the proposed system and demonstrate remarkable robustness to system scale and changes in demand, user churn, network failure and node failures. 
 
 
 How to use
 ======
-Installation Guide on a new machine: [Installation Guide](https://github.com/kw1jjang/P2PVoD/wiki/Installation-Guide)
+Installation Guide on a new machine: [Installation Guide](https://github.com/kw1jjang/CalVoD/wiki/Installation-Guide)
 
-Run the P2PVoD system (locally & publicly): [run P2PVoD system](https://github.com/kw1jjang/P2PVoD/wiki/run-P2PVoD-system)
+Run the CalVoD system (locally & publicly): [run CalVoD system](https://github.com/kw1jjang/CalVoD/wiki/run-CalVoD-system)
 
-Using AWS for large scale test: [Running scale up test on AWS](https://github.com/kw1jjang/P2PVoD/wiki/Running-scale-up-test-on-AWS)
+Using AWS for large scale test: [Running scale up test on AWS](https://github.com/kw1jjang/CalVoD/wiki/Running-scale-up-test-on-AWS)
 
-Current open issues for future improvements: [Issues](https://github.com/kw1jjang/P2PVoD/issues)
+Current open issues for future improvements: [Issues](https://github.com/kw1jjang/CalVoD/issues)
 
 
 Contributors
