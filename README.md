@@ -1,7 +1,7 @@
 P2PVoD
 ======
 
-CalVoD is an open-source implementation of a distributed architecture for Video-on-Demand content distribution system, proposed in [1]. In this system, each user runs a distributed caching/streaming algorithm, which in turn results in the minimal streaming load on the central server. Via extensive experiments (in [1]), we have witnessed practical efficiency of the proposed system, and demonstrated remarkable robustness to system scale and changes in demand, user churn, network failure and node failures. 
+CalVoD is an open-source implementation of a distributed architecture for Video-on-Demand content distribution system, proposed in [1]. In this system, each user runs a distributed caching/streaming algorithm, which in turn results in the minimal streaming load on the central server. Our extensive experiments (in [1]) prove practical efficiency of the proposed system and demonstrate remarkable robustness to system scale and changes in demand, user churn, network failure and node failures. 
 
 
 How to use
