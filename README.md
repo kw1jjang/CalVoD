@@ -17,7 +17,7 @@ Current open issues for future improvements: [Issues](https://github.com/kw1jjan
 
 Contributors
 ======
-The beta version of the system is written by Kangwook Lee, and the current release is written/improved by Jiayuan Chen, Alagu Santana Haribhiskaran, Ryan Kashi.
+The original version of the system is written by Kangwook Lee, and the current release is written/improved by Jiayuan Chen, Alagu Santana Haribhiskaran, Ryan Kashi.
 
 
 Related publications
