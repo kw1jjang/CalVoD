@@ -14,10 +14,26 @@ Using AWS for large scale test: [Running scale up test on AWS](https://github.co
 
 Current open issues for future improvements: [Issues](https://github.com/kw1jjang/CalVoD/issues)
 
+Please checkout the Wiki page for more information!
+
+Screenshots
+======
+<img src="static/readme_images/1.png" height="400" alt="Screenshot"/>
+<img src="static/readme_images/2.png" height="400" alt="Screenshot"/>
+<img src="static/readme_images/3.png" height="400" alt="Screenshot"/>
+<img src="static/readme_images/4.png" height="400" alt="Screenshot"/>
+<img src="static/readme_images/5.png" height="400" alt="Screenshot"/>
+<img src="static/readme_images/6.png" height="400" alt="Screenshot"/>
+<img src="static/readme_images/7.png" height="400" alt="Screenshot"/>
+<img src="static/readme_images/8.png" height="400" alt="Screenshot"/>
+<img src="static/readme_images/9.png" height="400" alt="Screenshot"/>
+
 
 Contributors
 ======
-The original version of the system is written by Kangwook Lee, and the current release is written/improved by Jiayuan Chen, Alagu Santana Haribhiskaran, Ryan Kashi.
+The original version of the system is written by Kangwook Lee, and the current release is written/improved by Jiayuan Chen, Alagu Santana Haribhiskaran, Ryan Kashi, as part of the capstone project for their master degrees. Corresponding capstone reports are listed here: [Jiayuan](https://www2.eecs.berkeley.edu/Pubs/TechRpts/2016/EECS-2016-42.html) [Alagu](https://www2.eecs.berkeley.edu/Pubs/TechRpts/2016/EECS-2016-96.html) [Ryan](https://www2.eecs.berkeley.edu/Pubs/TechRpts/2016/EECS-2016-84.html)
+
+Google Drive of the capstone project: [CalVoD_Project_Folder](https://drive.google.com/drive/u/1/folders/0B539-s6-LK--bUhkdXlCT1FNQkU) 
 
 
 Related publications
@@ -35,4 +51,3 @@ Related publications
 [6] Hao Zhang, Jiajun Wang, Minghua Chen and Kannan Ramchandran, “Scaling Peer-to-Peer Video-on-Demand Systems Using Helpers,” IEEE International Conference on Image Processing (ICIP), Nov, 2009.
 
 [7] Hao Zhang and Kannan Ramchandran, “A Reliable Decentralized Peer-to- Peer Video-on-Demand System Using Helpers,” Picture Coding Symposium (PCS), May, 2009. (invited paper)
-
